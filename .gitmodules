@@ -1,0 +1,3 @@
+[submodule "clearstyle"]
+	path = clearstyle
+	url = https://github.com/ClearBlade/ClearStyle

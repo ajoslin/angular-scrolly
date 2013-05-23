@@ -1,0 +1,15 @@
+<!doctype html>
+<html ng-app="ui.scrollease">
+<head>
+<link rel="stylesheet" href="clearstyle/blade.css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script src="scrollease.js"></script>
+</head>
+<body ng-controller="AppCtrl">
+  <div class="content" ui-scrollease>
+    <ul>
+      <li ng-repeat="i in items">{{i}}</li>
+    </ul>
+  </div>
+</body>
+</html>
