@@ -1,9 +1,17 @@
 <!doctype html>
 <html ng-app="ui.scrollease">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <link rel="stylesheet" href="clearstyle/blade.css"/>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
 <script src="scrollease.js"></script>
+<style>
+body {
+  overflow: hidden;
+  user-select: none;
+}
+</style>
 </head>
 <body ng-controller="AppCtrl">
   <div class="content" ui-scrollease>
