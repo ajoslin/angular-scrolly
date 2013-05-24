@@ -9,7 +9,7 @@ This is in an early and experiement stage.
 Usage
 -----
 
-See demo/index.html.  Guide portion coming to docs soon.
+See demo/index.html after building (see below to build).  Guide portion coming to docs soon.
 
 Development
 -----------
