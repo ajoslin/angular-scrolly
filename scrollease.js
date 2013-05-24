@@ -27,7 +27,7 @@ angular.module('ui.scrollease', [])
   //If we move our finger, then hold motionless on a spot for this many ms,
   //we need to not give momentum when they lift their finger. We just hold
   //still there.
-  var maxTimeMotionless = 300;
+  var _maxTimeMotionless = 300;
 
   this.minDistanceForDrag = function(newMinDistanceForDrag) {
     arguments.length && (_minDistanceForDrag = newMinDistanceForDrag);
@@ -35,8 +35,8 @@ angular.module('ui.scrollease', [])
   };
 
   this.maxTimeMotionless = function(newMaxTimeMotionless) {
-    arguments.length && (maxTimeMotionless = newMaxTimeMotionless);
-    return maxTimeMotionless;
+    arguments.length && (_maxTimeMotionless = newMaxTimeMotionless);
+    return _maxTimeMotionless;
   };
 
   this.$get = function($window) {
@@ -57,13 +57,10 @@ angular.module('ui.scrollease', [])
       var state = {
         //Starting
         startY: -1,
-        startX: -1,
         startTime: -1,
         //Moving
-        x: -1,
         y: -1,
-        deltaX: -1,
-        deltaY: -1,
+        delta: -1,
         previousMoveTime: -1,
         //End
         motionlessStop: false,
@@ -99,9 +96,8 @@ angular.module('ui.scrollease', [])
 
       //Restarts the drag : makes the start be x and y, and 
       //sets the startTime.
-      function restartDragState(x, y) {
-        state.startX = x;
-        state.startY = y;
+      function restartDragState(y) {
+        state.startPos = y;
         state.startTime = Date.now();
         state.dragging = true;
       }
@@ -122,10 +118,10 @@ angular.module('ui.scrollease', [])
 
         state.moved = false;
         state.motionlessStop = false;
-        state.deltaX = state.deltaY = 0;
-        state.x = state.y = 0;
+        state.delta = 0;
+        state.pos = 0;
 
-        restartDragState(point.pageX, point.pageY);
+        restartDragState(point.pageY);
 
         dispatchEvent('start', state);
       }
@@ -133,16 +129,10 @@ angular.module('ui.scrollease', [])
         e.preventDefault();
         if (state.dragging) {
           var point = e.touches ? e.touches[0] : e;
-          state.deltaX = point.pageX - state.x;
-          state.deltaY = point.pageY - state.y;
-          state.x = point.pageX;
-          state.y = point.pageY;
+          state.delta = point.pageY - state.pos;
+          state.pos = point.pageY;
 
-          if (state.x === 0 && state.y === 0) {
-            return;
-          }
-          if (Math.abs(state.y - state.startY) < _minDistanceForDrag &&
-              Math.abs(state.x - state.startX) < _minDistanceForDrag) {
+          if (Math.abs(state.pos - state.startPos) < _minDistanceForDrag) {
             return;
           }
 
@@ -151,10 +141,10 @@ angular.module('ui.scrollease', [])
           //If the user moves again after staying motionless for enough time,
           //the user 'stopped'.  If he starts dragging again after stopping,
           //we pseudo-restart his drag.
-          /*var timeSinceMove = state.previousMoveTime - state.startTime;
-            if (timeSinceMove > maxTimeMotionless) {
-            restartDragState(state.x, state.y);
-            }*/
+          var timeSinceMove = state.previousMoveTime - state.startTime;
+          if (timeSinceMove > _maxTimeMotionless) {
+            restartDragState(state.pos);
+          }
 
           dispatchEvent('move', state);
 
@@ -166,16 +156,13 @@ angular.module('ui.scrollease', [])
         if (state.dragging) {
           var point = e.touches ? e.touches[0] : e;
 
-          state.totalDeltaX = state.x < state.startX ?
-            state.x - state.startX :
-            state.startX - state.x;
-          state.totalDeltaY = state.y < state.startY ?
-            state.y - state.startY :
-            state.startY - state.y;
+          state.totalDelta = state.pos < state.startPos ?
+            state.pos - state.startPos :
+            state.startPos - state.pos;
 
           state.dragging = false;
           state.duration = Date.now() - state.startTime;
-          //state.motionlessStop = (state.duration > maxTimeMotionless);
+          state.motionlessStop = (state.duration > _maxTimeMotionless);
 
           dispatchEvent('end', state);
         }
@@ -216,28 +203,7 @@ angular.module('ui.scrollease', [])
     return window.requestAnimationFrame || 
       window.webkitRequestAnimationFrame || 
       window.mozRequestAnimationFrame || 
-      window.oRequestAnimationFrame || 
-      window.msRequestAnimationFrame || 
-      function(callback) { return setTimeout(callback, 17); };
-  })();
-
-  var cancelFrame = (function () {
-    return window.cancelRequestAnimationFrame || 
-      window.webkitCancelAnimationFrame || 
-      window.webkitCancelRequestAnimationFrame || 
-      window.mozCancelRequestAnimationFrame || 
-      window.oCancelRequestAnimationFrame || 
-      window.msCancelRequestAnimationFrame || 
-      clearTimeout;
-  })();
-  // shim layer with setTimeout fallback
-  var requestAnimFrame = (function(){
-    return  window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame ||
-      function(callback) {
-        window.setTimeout(callback, 1000 / 60);
-      };
+      function fallback(cb) { return setTimeout(cb, 17); };
   })();
 
   this.$get = function($window) {
@@ -247,17 +213,16 @@ angular.module('ui.scrollease', [])
       var self = {};
       var raw = elm[0];
 
-      self.updatePosition = function() {
-        var style = $window.getComputedStyle(raw);
-        var matrix = style[transformProp].replace(/[^0-9-.,]/g,'').split(',');
+      self.calcPosition = function() {
+        var matrix = window.getComputedStyle(raw)[transformProp]
+          .replace(/[^0-9-.,]/g,'').split(',');
         if (matrix.length > 1) {
-          self.x = parseInt(matrix[4], 10);
-          self.y = parseInt(matrix[5], 10);
+          return parseInt(matrix[5], 10);
         } else {
-          self.x = self.y = 0;
+          return 0;
         }
       };
-      self.updatePosition();
+      self.pos = self.calcPosition();
 
       var stopTimeout;
       self.stop = function() {
@@ -269,27 +234,26 @@ angular.module('ui.scrollease', [])
         //First we set our transform to what it already is (instead of changing
         //to something else) and then we remove our transform prop.
         raw.style[transitionProp] = 'none';
-        self.updatePosition();
+        self.pos = self.calcPosition();
         nextFrame(function() {
-          self.setTo(self.x, self.y);
+          self.setTo(self.pos);
         });
         self.changing = false;
       };
-      self.easeTo = function(x, y, time) {
+      self.easeTo = function(y, time) {
         raw.style[transitionProp] = transformPropDash + ' ' + time + 'ms ' +
           timingFunction;
-        self.x = x;
-        self.y = y;
-        self.time = time;
-        nextFrame(self.setTo);
+        self.pos = y;
+        nextFrame(function() {
+          self.setTo(y);
+        });
         stopTimeout = setTimeout(self.stop, self.time + 17);
       };
-      self.setTo = function(x, y) {
+      self.setTo = function(y) {
         self.changing = true;
-        self.x = x;
-        self.y = y;
+        self.pos = y;
 
-        raw.style[transformProp] = 'translate3d(' + x + 'px,' + y + 'px,0)';
+        raw.style[transformProp] = 'translate3d(0,' + y + 'px,0)';
       };
 
       return self;
@@ -302,21 +266,11 @@ angular.module('ui.scrollease', [])
 
 .provider('$scroller', function() {
 
-  var _disableVertical = false;
-  var _disableHorizontal = true;
   var _decelerationRate = 0.0006;
   //Number of pixels to allow past the top or bottom of scroll: the buffer we
   //allow to 'snap' past top/bototm
   var _snapBuffer = 40;
 
-  this.disableVertical = function(newDisableVertical) {
-    arguments.length && (_disableVertical = newDisableVertical);
-    return _disableVertical;
-  };
-  this.disableHorizontal = function(newDisableHorizontal) {
-    arguments.length && (_disableHorizontal = newDisableHorizontal);
-    return _disableHorizontal;
-  };
   this.decelerationRate = function(newDecelerationRate) {
     arguments.length && (_decelerationRate = newDecelerationRate);
     return _decelerationRate;
@@ -328,46 +282,17 @@ angular.module('ui.scrollease', [])
 
   //http://stackoverflow.com/questions/10787782/full-height-of-a-html-element-div-including-border-padding-and-margin
   //Gets the height & width of the container of our element
-  function getDimensions(elm) {
+  function getHeight(elm) {
     var style = window.getComputedStyle(elm);
-
-    var height = parseInt(style.height, 10) + 
+    return parseInt(style.height, 10) + 
       parseInt(style['margin-bottom'], 10) +
       parseInt(style['margin-top'], 10);
-    var width = parseInt(style.width, 10) +
-      parseInt(style['margin-left'], 10) + 
-      parseInt(style['margin-right'], 10);
-
-    return {
-      width: width,
-      height: height
-    };
   }
 
   //Quicker than Math.floor
   //http://jsperf.com/math-floor-vs-math-round-vs-parseint/69
   function floor(n) { return n | 0; }
-
   function clamp(a, b, c) { return a < b ? (b < c ? b : c) : a; }
-
-
-  var momentum = window.m = function momentum(options) {
-    var dragDistance = options.dragDistance;
-    var dragDuration = options.dragDuration;
-    var maxScroll = options.maxScroll;
-    var position = options.position;
-
-    var speed = Math.abs(dragDistance) / dragDuration;
-    var momentumDelta = (speed * speed) / (2 * _decelerationRate);
-    var newPosition = position + (dragDistance < 0 ? -1 : 1) * momentumDelta;
-
-    newPosition = clamp(-(maxScroll + _snapBuffer), newPosition, _snapBuffer);
-    speed = floor(speed / _decelerationRate);
-    return {
-      position: newPosition,
-      speed: speed
-    };
-  };
 
   this.$get = function($dragger, $translator) {
     function scroller(elm) {
@@ -377,9 +302,9 @@ angular.module('ui.scrollease', [])
       var translator = new $translator(elm);
       var dragger = new $dragger(elm);
 
-      var containerBounds;
-      function calculateBounds() {
-        containerBounds = getDimensions(raw);
+      var scrollHeight;
+      function calculateHeight() {
+        scrollHeight = getHeight(raw);
       }
 
       function dragListener(eventType, data) {
@@ -387,58 +312,49 @@ angular.module('ui.scrollease', [])
           if (translator.changing) {
             translator.stop();
           }
-          calculateBounds();
+          calculateHeight();
 
         } else if (eventType == 'move') {
-          var dx = _disableHorizontal ? 0 : data.deltaX;
-          var dy = _disableVertical ? 0 : data.deltaY;
+          var newPos = translator.pos + data.delta;
+          if (newPos > 0 || newPos < -scrollHeight) {
+            newPos = translator.pos + floor(data.delta * 0.6);
+          }
 
-          var newX = translator.x + dx;
-          var newY = translator.y + dy;
-          /*
-             if (newX > 0 || newX < -containerBounds.width) {
-             newX = translator.x + floor(dx * 0.6);
-             }
-             if (newY > 0 || newY < -containerBounds.height) {
-             newY = translator.y + floor(dy * 0.6);
-             }*/
-
-          translator.setTo(newX, newY);
+          translator.setTo(newPos);
 
         } else if (eventType == 'end') {
           dragEnd(data);
         }
       }
       function dragEnd(data) {
-        //TODO if we didn't actually move, see if we need to fake a click
-        //like iscroll does. http://git.io/ezT2ig
-        //Really dunno why iscroll does that, but there must be a reason
 
-        calculateBounds();
+        function calcMomentum() {
+          var speed = Math.abs(data.totalDelta) / data.duration;
+          var momentum = (speed * speed) / (2 * _decelerationRate);
+          var newPosition = translator.pos + 
+            (data.totalDelta < 0 ? -1 : 1) * momentum;
+
+          newPosition = clamp(
+            -(scrollHeight + _snapBuffer),
+            newPosition,
+            _snapBuffer
+          );
+          speed = floor(speed / _decelerationRate);
+          return {
+            position: newPosition,
+            speed: speed
+          };
+        }
+
+        calculateHeight();
+        
         //If we stop on a spot, hold for a sec, then let go, then
         //it's a "motionless stop", and no momentum
-        if (true) {
-          var momentumX = { position: translator.x, speed: 0 };
-          var momentumY = { position: translator.y, speed: 0 };
-          if (!_disableHorizontal) {
-          }
-          if (!_disableVertical) {
-            momentumY = momentum({
-              dragDistance: data.totalDeltaY,
-              dragDuration: data.duration,
-              top: 0,
-              bottom: containerBounds.height,
-              position: translator.y
-            });
-          }
+        if (!data.motionlessStop && data.moved) {
+          var momentum = calcMomentum();
 
-          if (momentumX.position != translator.x || 
-              momentumY.position != translator.y) {
-            translator.easeTo(
-              floor(momentumX.position), 
-            floor(momentumY.position),
-            Math.max(momentumX.speed, momentumY.speed)
-            );
+          if (momentum.position != translator.pos) {
+            translator.easeTo(momentum.position, momentum.speed);
           }
         }
       }
@@ -446,7 +362,6 @@ angular.module('ui.scrollease', [])
       elm.bind('$destroy', function() {
         dragger.removeListener(dragListener);
       });
-
 
       return self;
     }
