@@ -1,0 +1,50 @@
+<!doctype html>
+<html ng-app="scrolly">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script src="../dist/angular-scrolly.js"></script>
+<style>
+* {
+  -webkit-user-select: none;
+  background: #BBB;
+  margin: 0;
+  padding: 0;
+}
+.content {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+ul li {
+  width: 100%;
+  position: relative;
+  line-height: 42px;
+  font-weight: bold;
+  font-family: Arial;
+  background: #EFEFEF;
+  border: 1px solid black;
+  border-bottom: none;
+  list-style: none;
+}
+ul li:last-child {
+  border-bottom: 1px solid #EEE;
+}
+</style>
+</head>
+<body ng-controller="AppCtrl">
+<script>
+function AppCtrl($scope) {
+  $scope.items = [];
+  for (var i=0; i<50; i++) $scope.items.push(i);
+}
+</script>
+  <div class="content" scrolly-scroll>
+    <ul>
+      <li>Get out your phone and scroll a bit :-)</li>
+      <li ng-repeat="i in items">{{i}}</li>
+    </ul>
+  </div>
+</body>
+<html>

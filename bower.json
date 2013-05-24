@@ -1,0 +1,11 @@
+{
+  "name": "angular-scrolly",
+  "version": "0.0.1",
+  "homepage": "http://github.com/ajoslin/",
+  "author": "Andy Joslin",
+  "devDependencies": {},
+  "dependencies": {
+    "angular": "~1.0.7",
+    "angular-mocks": "~1.0.7"
+  }
+}
