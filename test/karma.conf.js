@@ -14,7 +14,7 @@ files = [
   'test/helpers.js',
   'bower_components/jquery/jquery.js',
   'bower_components/angular/angular.js',
-  'bower_components/angular-mocks/angular-mocks.js',
+  'test/angular-mocks-1.1.5.js',
   'src/**/*.js'
 ];
 
