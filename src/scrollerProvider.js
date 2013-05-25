@@ -1,4 +1,3 @@
-
 /**
  * @ngdoc object
  * @name scrolly.$scrollerProvider
@@ -39,8 +38,6 @@ angular.module('scrolly').provider('$scroller', function() {
    * @returns {number} bounceBuffer The current bounce buffer.
    */
 
-  //Number of pixels to allow past the top or bottom of scroll: the buffer we
-  //allow to 'bounce' past top/bototm
   var _bounceBuffer = 40;
   this.bounceBuffer = function(newBounceBuffer) {
     arguments.length && (_bounceBuffer = newBounceBuffer);
@@ -112,7 +109,7 @@ angular.module('scrolly').provider('$scroller', function() {
       _bounceBackMinTime;
   }
 
-  this.$get = function($dragger, $transformer) {
+  this.$get = function($dragger, $transformer, $window) {
 
     /**
      * @ngdoc object
@@ -134,14 +131,14 @@ angular.module('scrolly').provider('$scroller', function() {
       var dragger = new $dragger(elm);
 
       function calculateHeight() {
-        contentHeight = 0;
+        var contentHeight = 0;
         for (var i=0; i < raw.children.length; i++) {
           contentHeight += getHeight(raw.children[i]);
         }
         if (contentHeight < raw.offsetHeight) {
           self.scrollHeight = 0;
         } else {
-          self.scrollHeight = raw.offsetHeight - window.innerHeight;
+          self.scrollHeight = raw.offsetHeight - $window.innerHeight;
         }
       }
       calculateHeight();
