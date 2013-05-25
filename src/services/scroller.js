@@ -6,7 +6,8 @@
  * Used for configuring scroll options.
  */
 
-angular.module('scrolly').provider('$scroller', function() {
+angular.module('scrolly')
+.provider('$scroller', function() {
 
   /**
    * @ngdoc method
@@ -149,26 +150,45 @@ angular.module('scrolly').provider('$scroller', function() {
         return false;
       }
 
-      function dragListener(eventType, data) {
-        if (eventType === 'start') {
-          if (transformer.changing) {
-            transformer.stop();
-          }
-          calculateHeight();
+      function dragListener(dragData) {
+        switch(dragData.type) {
+          case 'start':
+            if (transformer.changing) {
+              transformer.stop();
+            }
+            calculateHeight();
+            break;
 
-        } else if (eventType === 'move') {
-          var newPos = transformer.pos + data.delta;
-          //If going past boundaries, scroll at half speed.
-          if ( outOfBounds(newPos) ) {
-            newPos = transformer.pos + floor(data.delta * 0.5);
-          }
-          transformer.setTo(newPos);
+          case 'move':
+            var newPos = transformer.pos + dragData.delta;
+            //If going past boundaries, scroll at half speed
+            //TODO make the 0.5 a provider option
+            if ( outOfBounds(newPos) ) {
+              newPos = transformer.pos + floor(dragData.delta * 0.5);
+            }
+            transformer.setTo(newPos);
+            break;
 
-        } else if (eventType === 'end') {
-          dragEnd(data);
+          case 'end':
+            //If we're out of bounds, or held on to our spot for too long,
+            //or didn't move.. no momentum.  Just check boundaries
+            if (outOfBounds(transformer.pos) || dragData.inactiveDrag || !dragData.moved) {
+              onScrollDone();
+            } else {
+              calculateHeight();
+              var momentum = calcMomentum(dragData);
+              if (momentum.position !== transformer.pos) {
+                transformer.easeTo(
+                  momentum.position,
+                  momentum.time,
+                  checkBoundaries
+                );
+              }
+            }
+            break;
         }
       }
-      function onScrollDone() {
+      function checkBoundaries() {
         calculateHeight();
 
         var howMuchOut = outOfBounds(transformer.pos);
@@ -177,48 +197,30 @@ angular.module('scrolly').provider('$scroller', function() {
           transformer.easeTo(newPosition, bounceTime(howMuchOut));
         } 
       }
-      function dragEnd(data) {
-        //If we're out of bounds, or held on to our spot for too long,
-        //or didn't move.. no momentum.  
-        if (outOfBounds(transformer.pos) || data.inactiveDrag || !data.moved) {
-          onScrollDone();
-        } else {
-          calculateHeight();
-          var momentum = calcMomentum();
-          if (momentum.position !== transformer.pos) {
-            transformer.easeTo(
-              momentum.position,
-              momentum.time,
-              onScrollDone
-            );
+      function calcMomentum(dragData) {
+        var time = Math.abs(dragData.distance) / dragData.duration;
+        var momentum = (time * time) / (2 * _decelerationRate);
+        var newPosition = transformer.pos + 
+          (dragData.distance < 0 ? -1 : 1) * momentum;
+
+        var howMuchOver = outOfBounds(newPosition);
+        if (howMuchOver) {
+          //If we're past our boundaries, speed up our time by how much 
+          //percent of our momentum distance is over the boundary
+          time *= Math.abs(howMuchOver / momentum);
+          if (howMuchOver > 0) {
+            newPosition = Math.min(newPosition, _bounceBuffer);
+          } else if (howMuchOver < 0) {
+            newPosition = Math.max(newPosition, 
+              -(self.scrollHeight + _bounceBuffer));
           }
         }
-
-        function calcMomentum() {
-          var time = Math.abs(data.totalDelta) / data.duration;
-          var momentum = (time * time) / (2 * _decelerationRate);
-          var newPosition = transformer.pos + 
-            (data.totalDelta < 0 ? -1 : 1) * momentum;
-
-          var howMuchOver = outOfBounds(newPosition);
-          if (howMuchOver) {
-            //If we're past our boundaries, speed up our time by how much 
-            //percent of our momentum distance is over the boundary
-            time *= Math.abs(howMuchOver / momentum);
-            if (howMuchOver > 0) {
-              newPosition = Math.min(newPosition, _bounceBuffer);
-            } else if (howMuchOver < 0) {
-              newPosition = Math.max(newPosition, 
-                -(self.scrollHeight + _bounceBuffer));
-            }
-          }
-          return {
-            position: newPosition,
-            time: floor(time / _decelerationRate)
-          };
-        }
-
+        return {
+          position: newPosition,
+          time: floor(time / _decelerationRate)
+        };
       }
+
       dragger.addListener(dragListener);
       elm.bind('$destroy', function() {
         dragger.removeListener(dragListener);

@@ -8,22 +8,8 @@
  *
  */
 
-angular.module('scrolly').provider('$dragger', function() {
-
-  //Returns any parent element that has an attribute, or null
-  //The main way we use this is to look if any parent of the 
-  //touched element has a 'data-dragger-ignore' attribute,
-  //and if so ignore it
-  //Idea taken from snap.js http://github.com/jakiestfu/snap.js
-  function parentWithAttr(el, attr) {
-    while (el.parentNode) {
-      if (el.getAttribute && el.getAttribute(attr)) {
-        return el;
-      }
-      el = el.parentNode;
-    }
-    return null;
-  }
+angular.module('scrolly.dragger', [])
+.provider('$dragger', function() {
 
   /**
    * @ngdoc method
@@ -61,6 +47,18 @@ angular.module('scrolly').provider('$dragger', function() {
     return _maxTimeMotionless;
   };
 
+  //Returns any parent element that has an attribute, or null
+  //Taken from snap.js http://github.com/jakiestfu/snap.js
+  function parentWithAttr(el, attr) {
+    while (el.parentNode) {
+      if (el.getAttribute && el.getAttribute(attr)) {
+        return el;
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+
   this.$get = function($window) {
 
     /**
@@ -89,7 +87,7 @@ angular.module('scrolly').provider('$dragger', function() {
      *   - `{number}` `startTime` - The timestamp of when the drag started.
      *   - `{number}` `pos` - The current position of the drag on the page.
      *   - `{number}` `delta` - The change in position since the last `move` event.
-     *   - `{number}` `previousMoveTime` - The timestamp of the previous `move` event.
+     *   - `{number}` `lastMoveTime` - The timestamp of the previous `move` event.
      *   - `{boolean}` `inactiveDrag` - Whether the user held his finger still for longer than the {@link scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
      *   - `{boolean}` `dragging` - Whether the user is currently dragging or not.
      *
@@ -119,24 +117,25 @@ angular.module('scrolly').provider('$dragger', function() {
      */
 
     var hasTouch = 'ontouchstart' in $window;
-    var event = {
+    var events = {
       start: hasTouch ? 'touchstart' : 'mousedown',
       move: hasTouch ? 'touchmove' : 'mousemove',
       end: hasTouch ? 'touchend' : 'mouseup',
-      cancel: hasTouch ? 'touchcancel' : 'mouseup'
+      cancel: hasTouch ? 'touchcancel' : ''
     };
 
     //Creates a dragger for an element
-    function dragger(elm) {
+    function $dragger(elm) {
       var self = {};
       var raw = elm[0];
 
       var state = {
-        startPos: -1,
-        startTime: -1,
-        pos: -1,
-        delta: -1,
-        previousMoveTime: -1,
+        startPos: 0,
+        startTime: 0,
+        pos: 0,
+        delta: 0,
+        distance: 0,
+        lastMoveTime: 0,
         inactiveDrag: false,
         dragging: false
       };
@@ -148,11 +147,13 @@ angular.module('scrolly').provider('$dragger', function() {
         });
       }
 
-      elm.bind(event.start, dragStart);
-      elm.bind(event.move, dragMove);
-      elm.bind(event.end, dragEnd);
-      elm.bind(event.cancel, dragEnd);
+      elm.bind(events.start, dragStart);
+      elm.bind(events.move, dragMove);
+      elm.bind(events.end, dragEnd);
+      //Mouse doesn't have cancel event
+      events.cancel && elm.bind(events.cancel, dragEnd);
       if (!hasTouch) {
+        //Hack taken from iscroll for mouse events, really for testing only
         elm.bind('mouseout', function mouseout(e) {
           var t = e.relatedTarget;
           if (!t) { 
@@ -166,9 +167,7 @@ angular.module('scrolly').provider('$dragger', function() {
         });
       }
 
-
-      //Restarts the drag : makes the start be x and y, and 
-      //sets the startTime.
+      //Restarts the drag at the given position
       function restartDragState(y) {
         state.startPos = state.pos = y;
         state.startTime = Date.now();
@@ -176,8 +175,8 @@ angular.module('scrolly').provider('$dragger', function() {
       }
 
       function dragStart(e) {
-        //Only left click drag for scroll
-        if (!hasTouch && e.button !== 0) return;
+        //If we're on mouse, only let left clicks drag
+        if (!hasTouch && e.button) return;
 
         var dragEl = e.target || e.srcElement;
         var point = e.touches ? e.touches[0] : e;
@@ -190,13 +189,18 @@ angular.module('scrolly').provider('$dragger', function() {
         }
 
         state.moved = false;
-        state.motionlessStop = false;
+        state.inactiveDrag = false;
         state.delta = 0;
         state.pos = 0;
+        state.distance = 0;
 
         restartDragState(point.pageY);
 
-        dispatchEvent('start', state);
+        dispatchEvent({
+          type: 'start',
+          startPos: state.startPos,
+          startTime: state.startTime
+        });
       }
       function dragMove(e) {
         e.preventDefault();
@@ -206,46 +210,65 @@ angular.module('scrolly').provider('$dragger', function() {
 
           state.delta = delta;
           state.pos = point.pageY;
+          state.distance = state.pos - state.startPos;
 
           if (Math.abs(state.pos - state.startPos) < _minDistanceForDrag) {
             return;
           }
-
           state.moved = true;
 
-          //If the user moves again after staying motionless for enough time,
+          //If the user moves and then stays motionless for enough time,
           //the user 'stopped'.  If he starts dragging again after stopping,
           //we pseudo-restart his drag.
-          var timeSinceMove = state.previousMoveTime - state.startTime;
+          var timeSinceMove = state.lastMoveTime - state.startTime;
           if (timeSinceMove > _maxTimeMotionless) {
             restartDragState(state.pos);
           }
+          state.lastMoveTime = e.timeStamp || Date.now();
 
-          dispatchEvent('move', state);
-
-          //Set the 'previous move timestamp' after we dispatch the event
-          state.previousMoveTime = e.timeStamp || Date.now();
+          dispatchEvent({
+            type: 'move',
+            startPos: state.startPos,
+            startTime: state.startTime,
+            pos: state.pos,
+            delta: state.delta,
+            distance: state.distance
+          });
         }
       }
       function dragEnd(e) {
         if (state.dragging) {
-          var point = e.touches ? e.touches[0] : e;
-
-          state.totalDelta = state.pos - state.startPos;
-
           state.dragging = false;
-          state.duration = Date.now() - state.startTime;
 
-          state.inactiveDrag = (state.duration > _maxTimeMotionless);
+          var duration = Date.now() - state.startTime;
+          var inactiveDrag = (duration > _maxTimeMotionless);
 
-          dispatchEvent('end', state);
+          dispatchEvent({
+            type: 'end',
+            startPos: state.startPos,
+            startTime: state.startTime,
+            pos: state.pos,
+            delta: state.delta,
+            distance: state.distance,
+            duration: duration,
+            inactiveDrag: inactiveDrag
+          });
         }
       }
 
       self.addListener = function(callback) {
+        if ( !angular.isFunction(callback) ) {
+          throw new Error("Expected callback to be a function, instead got '" +
+            typeof callback + '".');
+        }
+
         listeners.push(callback);
       };
       self.removeListener = function(callback) {
+        if ( !angular.isFunction(callback) ) {
+          throw new Error("Expected callback to be a function, instead got '" +
+            typeof callback + '".');
+        }
         var index = listeners.indexOf(callback);
         if (index > -1) {
           listeners.splice(index, 1);
@@ -255,7 +278,26 @@ angular.module('scrolly').provider('$dragger', function() {
       return self;
     }
 
-    return dragger;
+    /**
+     * @ngdoc method
+     * @name scrolly.dragger#events
+     * @methodOf scrolly.dragger
+     *
+     * @description 
+     * Returns the events used for dragging.
+     *
+     * @returns {object} events object, with the following format:
+     * 
+     *  - `{string}` `start` - The start event, eg 'touchstart'
+     *  - `{string}` `move` - The move event, eg 'touchmove'
+     *  - `{string}` `end` - The end event, eg 'touchend'
+     *  - `{string}` `cancel` - The cancel event, eg 'touchcancel'
+     */
+    $dragger.events = function() {
+      return events;
+    };
+
+    return $dragger;
 
   };
 });

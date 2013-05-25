@@ -5,6 +5,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngdocs');
   grunt.loadNpmTasks('grunt-ngmin');
@@ -22,12 +23,12 @@ module.exports = function(grunt) {
     },
     karma: {
       watch: {
-        configFile: 'test/karma.conf.js',
-        background: true
+        background: true,
+        configFile: 'test/karma.conf.js'
       },
       continuous: {
-        configFile: 'test/karma.conf.js',
-        singleRun: true
+        singleRun: true,
+        configFile: 'test/karma.conf.js'
       }
     },
     
@@ -74,7 +75,7 @@ module.exports = function(grunt) {
     ngdocs: {
       options: {
         scripts: [
-          'bower_components/angular/angular.js',
+          'bower_components/angular-unstable/angular.js',
           'dist/angular-scrolly.js'
         ]
       },
@@ -82,9 +83,17 @@ module.exports = function(grunt) {
         src: ['src/**/*.js'],
         title: 'API Documentation'
       }
+    },
+
+    delta: {
+      files: ['src/**/*.js'],
+      tasks: ['jshint', 'karma:watch:run']
     }
   });
 
   //TODO fix ngmin and uglify
   grunt.registerTask('default', ['jshint', 'karma:continuous', 'concat', 'ngdocs']);
+
+  grunt.renameTask('watch', 'delta');
+  grunt.registerTask('watch', ['karma:watch', 'delta']);
 };

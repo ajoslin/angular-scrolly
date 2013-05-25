@@ -10,9 +10,11 @@ basePath = '../';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
+  //Use jQuery in tests for easier event mocking
+  'test/helpers.js',
+  'bower_components/jquery/jquery.js',
   'bower_components/angular/angular.js',
   'bower_components/angular-mocks/angular-mocks.js',
-  'test/unit/**/*.js',
   'src/**/*.js'
 ];
 

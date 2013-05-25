@@ -6,7 +6,8 @@
  * @description
  * Used for configuring transformer options.  
  */
-angular.module('scrolly').provider('$transformer', function() {
+angular.module('scrolly.transformer', [])
+.provider('$transformer', function() {
   //TODO support other vendors
   var transformProp = 'webkitTransform';
   var transformPropDash = '-webkit-transform';

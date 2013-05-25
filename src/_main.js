@@ -1,2 +1,2 @@
 
-angular.module('scrolly', []);
+angular.module('scrolly', ['scrolly.dragger', 'scrolly.transformer']);
