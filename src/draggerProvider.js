@@ -1,5 +1,4 @@
 
-
 /**
  * @ngdoc object
  * @name scrolly.$draggerProvider
@@ -11,8 +10,11 @@
 
 angular.module('scrolly').provider('$dragger', function() {
 
-  //Taken from bounce.js http://github.com/jakiestfu/bounce.js
   //Returns any parent element that has an attribute, or null
+  //The main way we use this is to look if any parent of the 
+  //touched element has a 'data-dragger-ignore' attribute,
+  //and if so ignore it
+  //Idea taken from snap.js http://github.com/jakiestfu/snap.js
   function parentWithAttr(el, attr) {
     while (el.parentNode) {
       if (el.getAttribute && el.getAttribute(attr)) {
