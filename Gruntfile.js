@@ -74,8 +74,8 @@ module.exports = function(grunt) {
     ngdocs: {
       options: {
         scripts: [
-          'js/angular.min.js',
-          '../dist/angular-scrolly.js'
+          'bower_components/angular/angular.js',
+          'dist/angular-scrolly.js'
         ]
       },
       api: {
