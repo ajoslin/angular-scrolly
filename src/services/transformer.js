@@ -10,18 +10,18 @@ angular.module('scrolly.transformer', [])
 
 /**
  * @ngdoc object
- * @name scrolly.$requestAnimationFrame
+ * @name scrolly.$nextFrame
  * 
  * @description 
- * Uses {@link https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame requestAnimationFrame}, or a fallback if it is not available.
+ * A service to wrap {@link https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame window.requestAnimationFrame}, or a fallback if it is not available.
  *
- * The main reason we put this into a factory is for ease of mocking it during tests.
+ * The main reason this is in a service is for ease of mocking it during tests.
  *
- * @param {function} callback Callback to call when the DOM has redrawn - when the next farme is ready.
- * @returns {number} requestId Unique id identifying this request, to be passed to {@link https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame scrolly.cancelAnimationFrame}. (cancelAnimationFrame not implemented currently, because it is not used).
+ * @param {function} callback Callback to call when the DOM has redrawn - when the next frame is ready.
+ * @returns {number} `requestId` Unique id identifying this request, to be passed to {@link https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame cancelAnimationFrame}.
  */
 
-.factory('$requestAnimationFrame', function($window) {
+.factory('$nextFrame', function($window) {
   //Polyfill for requestAnimationFrame
   return $window.requestAnimationFrame || 
     $window.webkitRequestAnimationFrame || 
@@ -32,15 +32,11 @@ angular.module('scrolly.transformer', [])
 })
 
 .provider('$transformer', function() {
-  //TODO support other vendors
-  var transformProp = 'webkitTransform';
-  var transformPropDash = '-webkit-transform';
-  var transitionProp = 'webkitTransition';
 
   /**
    * @ngdoc method
    * @name scrolly.$transformerProvider#timingFunction
-   * @methodOf scrolly.$draggerProvider
+   * @methodOf scrolly.$transformerProvider
    * 
    * @description
    * Sets/gets the CSS timing function used for transform-transitions. For example "ease-in-out".
@@ -54,7 +50,11 @@ angular.module('scrolly.transformer', [])
     return timingFunction;
   };
 
-  this.$get = function($window, $requestAnimationFrame) {
+  this.$get = function($window, $nextFrame) {
+    //TODO support other vendors
+    var transformProp = 'webkitTransform';
+    var transformPropDash = '-webkit-transform';
+    var transitionProp = 'webkitTransition';
 
     /**
      * @ngdoc object
@@ -69,9 +69,13 @@ angular.module('scrolly.transformer', [])
      *   - `{number}` `pos` - The current vertical transform, in pixels, of the element.
      *   - `{void}` `setTo({number} y)` - Sets the current transform to the given y value.
      *   - `{void}` `easeTo({number} y, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends.
-     *   - `{void}` `stop()` - Stops any current animation.
+     *   - `{void}` `stop({function=} done)` - Stops any current animation. If given, the `done` function will be called when the stop is done (after the next frame).
      *
      */
+
+    function transitionString(transitionTime) {
+      return transformPropDash + ' ' + transitionTime + 'ms ' + timingFunction;
+    }
 
     //Creates a transformer for an element
     function $transformer(elm) {
@@ -79,6 +83,7 @@ angular.module('scrolly.transformer', [])
       var raw = elm[0];
 
       //This method is only exposed for testing purposes
+      //Gets the current y transform of the element
       self.$$calcPosition = function() {
         var matrix = $window.getComputedStyle(raw)[transformProp]
           .replace(/[^0-9-.,]/g,'').split(',');
@@ -90,49 +95,53 @@ angular.module('scrolly.transformer', [])
       };
       self.pos = self.$$calcPosition();
 
-      var stopTimeout;
-      //If we are moving and we stop, we may have a transition in progress.
-      //First we set our transform to what it already is (instead of changing
-      //to something else) and then we remove our transform prop.
+      var transitionEndTimeout;
       self.stop = function(done) {
-        if (stopTimeout) {
-          $window.clearTimeout(stopTimeout);
-          stopTimeout = null;
+        //If an easeTo is currently waiting for its transition to end, stop the
+        //listen. Because we are ending now with this stop() call.
+        if (transitionEndTimeout) {
+          $window.clearTimeout(transitionEndTimeout);
+          transitionEndTimeout = null;
         }
 
+        //Stop transitions, and set self.pos to wherever we were.
         raw.style[transitionProp] = 'none';
         self.pos = self.$$calcPosition();
         self.changing = false;
 
-        //On next frame, set our position - this is so the transition style
-        //on the element has time to 'remove' itself
-        $requestAnimationFrame(function() {
+        //On next frame, set our element's position - this wait is so the
+        //transition style on the element has time to 'remove' itself
+        $nextFrame(function() {
           self.setTo(self.pos);
           done && done();
         });
       };
-      self.easeTo = function(y, time, done) {
-        if (!angular.isNumber(time) || time < 0) {
-          throw new Error("Expected a positive number for time, got '" + time + "'.");
+
+      self.easeTo = function(y, transitionTime, done) {
+        if (!angular.isNumber(transitionTime) || transitionTime < 0) {
+          throw new Error("Expected a positive number for time, got '" +
+            transitionTime + "'.");
         }
+        //If we're currently animating, we need to stop before we try to 
+        //animate differently.
         if (self.changing) {
-          self.stop(afterStop);
+          self.stop(doTransition);
         } else {
-          afterStop();
+          doTransition();
         }
-        function afterStop() {
-          raw.style[transitionProp] = transformPropDash + ' ' + time + 'ms ' +
-            timingFunction;
+        function doTransition() {
+          raw.style[transitionProp] = transitionString(transitionTime);
           self.changing = true;
 
-          //On next frame, start transition - this is so the transition style
-          //on the element has time to 'apply' itself
-          $requestAnimationFrame(function() {
+          //On next frame, start transition - this wait is so the transition
+          //style on the element has time to 'apply' itself before the elm's
+          //position is set
+          $nextFrame(function() {
             self.setTo(y);
-            stopTimeout = $window.setTimeout(function() {
+            transitionEndTimeout = $window.setTimeout(function() {
               self.stop();
               done && done();
-            }, time);
+            }, transitionTime);
           });
         }
       };
@@ -144,8 +153,31 @@ angular.module('scrolly.transformer', [])
       return self;
     }
 
+    /**
+     * @ngdoc property
+     * @name scrolly.$transformer#transformProp
+     * @propertyOf scrolly.$transformer
+     *
+     * @description {string} The property used for element transformations.  For example "webkitTransform".
+     */
     $transformer.transformProp = transformProp;
+
+    /**
+     * @ngdoc property
+     * @name scrolly.$transformer#transformPropDash
+     * @propertyOf scrolly.$transformer
+     *
+     * @description {string} The property used for element transformations, "dashed version". For example "-webkit-transform". 
+     */
+
     $transformer.transformPropDash = transformPropDash;
+    /**
+     * @ngdoc property
+     * @name scrolly.$transformer#transitionprop
+     * @propertyOf scrolly.$transformer
+     *
+     * @description {string} The property used for element transitions.  For example "webkitTransition".
+     */
     $transformer.transitionProp = transitionProp;
 
     return $transformer;

@@ -15,7 +15,9 @@ angular.module('scrolly')
    * @methodOf scrolly.$scrollerProvider
    *
    * @description
-   * Sets/gets the decelerationRate used in the 'momentum' effect after the user lets go from scrolling.  A higher deceleration rate means faster deceleration.  Defaults to 0.001.
+   * Sets/gets the decelerationRate used in the 'momentum' effect after 
+   * the user lets go from scrolling.  A higher deceleration rate means 
+   * faster deceleration.  Defaults to 0.001.
    *
    * @param {number=} newRate The new decelerationRate to set.
    * @returns {number} decelerationRate The current deceleration rate.
@@ -51,16 +53,7 @@ angular.module('scrolly')
    * @methodOf scrolly.$scrollerProvider
    *
    * @description
-   * When the user scrolls past the content area into the bounce buffer, we need to bounce back.  To decide how long the bounce back animation will take, there are two factors: a minimum time, in milliseconds, and a distance multiplier.  
-   *
-   * The equation for deciding how much time the animation to bounce back to the main content area should take, we do the following:
-   * <pre>
-   * function getBounceTime(distancePastContent) {
-   *   return bounceBackMinTime + distancePastContent * bounceBackDistanceMulti;
-   * }
-   * </pre>
-   *
-   * This makes it so the farther away the user has scrolled from the content area, the longer the animation to bring the content back into view will take. The minimum time exists so short distances still take a little bit of time.
+   * See {@link scrolly.$scrollerProvider#bounceBackDistanceMulti bounceBackDistanceMulti}.
    *
    * @param {number=} newTime The new bounce back minimum time to set.
    * @returns {number} bounceBackMinTime The current bounce back minimum time.
@@ -72,10 +65,27 @@ angular.module('scrolly')
    * @methodOf scrolly.$scrollerProvider
    *
    * @description
-   * See {@link scrolly.$scrollerProvider#bounceBackMinTime $scrollerProvider.bounceBackMinTime} for a description of what this does.
+   * When the user scrolls past the content area into the bounce buffer, 
+   * we need to bounce back.  To decide how long the bounce back animation will
+   * take, there are two factors: a minimum time, in milliseconds, and a 
+   * distance multiplier.  
+   *
+   * The equation for deciding how much time the animation to bounce back to
+   * the main content area should take, we do the following:
+   *
+   * <pre>
+   * function getBounceTime(distancePastContent) {
+   *   return bounceBackMinTime + distancePastContent * bounceBackDistanceMulti;
+   * }
+   * </pre>
+   *
+   * This makes it so the farther away the user has scrolled from the content
+   * area, the longer the animation to bring the content back into view will
+   * take. The minimum time exists so even short distances still take a little 
+   * bit of time.
    *
    * @param {number=} newDistanceMulti The new bounce back distance multiplier.
-   * @returns {number} bounceBackDistanceMulti The current bounce back distancem multiplier.
+   * @returns {number} bounceBackDistanceMulti The current bounce back distance multiplier.
    */
 
   var _bounceBackMinTime = 200;
@@ -117,7 +127,10 @@ angular.module('scrolly')
      * @name scrolly.$scroller
      *
      * @description
-     * A factory for creating a scroll-manipulator on an element. Once called on an element, it will listen to drag events and use those to change the element's transform appropriately to simulate scrolling.  Intended to look as close as possible to native iOS scrolling.
+     * A factory for creating a scroll-manipulator on an element. Once called
+     * on an element, it will listen to drag events and use those to change
+     * the element's transform appropriately to simulate scrolling. 
+     * Intended to look as close as possible to native iOS scrolling.
      *
      * @param {element} element Element to attach scroller to.
      * @returns {object} Newly created scroller object.

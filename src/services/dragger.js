@@ -66,30 +66,48 @@ angular.module('scrolly.dragger', [])
      * @name scrolly.$dragger
      *
      * @description
-     * A factory for creating drag-listeners on elements. It only cares about vertical drag, usually used for scrolling.
+     * A factory for creating drag-listeners on elements. It only cares about
+     * vertical drag, usually used for scrolling.
      *
      * @param {element} element Element to attach drag listeners to.
      * @returns {object} Newly created dragger object with the following methods:
      *
-     *   - `{void}` `addListener({function} callback)` - Adds a new drag listener with the specified callback. 
-     *   - `{void}` `removeListener({function} callback)` Removes the given callback from the list of listeners.
+     *   - `{void}` `addListener({function} callback)` - Adds a new drag 
+     *   listener with the specified callback. 
+     *   - `{void}` `removeListener({function} callback)` Removes the given
+     *   callback from the list of listeners.
      *
-     * The `callback` given to addListener is called whenever a `start`, `move`, or `end` drag event happens.  It takes the following parameters:
+     * The `callback` given to addListener is called whenever a `start`, 
+     * `move`, or `end` drag event happens.  It takes the following parameter:
      *
-     *   - **`eventType`** - {string} - The drag eventType.  It will be `start`, `move`, or `end`.
-     *   - **`dragData`** - {object} - Data having to do with the drag, abstracted to be more useful data than plain DOM events. See below for the format of the data.
+     *   - **`dragData`** - {object} - Data having to do with the drag, 
+     *   abstracted to be more useful data than plain DOM events. See below 
+     *   for the format of the data.
      *    
      * ### Drag Data
      *
-     * The callbacks given to `addListener` take a `dragData` parameter, with the following format:
+     * The callbacks given to `addListener` take a `dragData` parameter, with
+     * the following properties for each event:
+     *
+     *   - `{string}` `type` - The type of drag event being emitted.  This will
+     *   be "start", "move", or "end".
+     *
+     * **Given for `start`, `move`, and `end` events:**
      *
      *   - `{number}` `startPos` - The position on the page where the drag started.
      *   - `{number}` `startTime` - The timestamp of when the drag started.
+     *
+     * **Given for only `move` and `end` events:**
+     *
      *   - `{number}` `pos` - The current position of the drag on the page.
      *   - `{number}` `delta` - The change in position since the last `move` event.
-     *   - `{number}` `lastMoveTime` - The timestamp of the previous `move` event.
-     *   - `{boolean}` `inactiveDrag` - Whether the user held his finger still for longer than the {@link scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
-     *   - `{boolean}` `dragging` - Whether the user is currently dragging or not.
+     *   - `{number}` `distance` - The total distance the drag has moved.
+     *
+     * **Given for only `end` events:**
+     * 
+     *   - `{boolean}` `inactiveDrag` - Whether the user held his finger still 
+     *   for longer than the {@link scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
+     *   - `{number}` `duration` - The total time the drag lasted.
      *
      * ### Ignoring Drag
      *
@@ -104,13 +122,16 @@ angular.module('scrolly.dragger', [])
      *  <pre>
      *  var dragger = new $dragger(element);
      *
-     *  dragger.addListener(function(eventType, dragData) {
-     *    if (eventType == "start") {
-     *      alert("We just started at " + dragData.startPos);
-     *    } else if (eventType == "move") {
-     *      alert("We just moved " + dragData.delta + " more pixels.");
-     *    } else if (eventType == "end") {
-     *      alert("drag is over!");
+     *  dragger.addListener(function(dragData) {
+     *    switch(dragData.type) {
+     *      case 'start':
+     *        alert("We just started a drag at " + dragData.startPos + "px");
+     *        break;
+     *      case 'move':
+     *        alert("We have moved " + dragData.delta + " since the last move.");
+     *        break;
+     *      case 'end':
+     *        alert("We just finished a drag, moving a total of " + dragData.distance + "px");
      *    }
      *  });
      *  </pre>
@@ -280,8 +301,8 @@ angular.module('scrolly.dragger', [])
 
     /**
      * @ngdoc method
-     * @name scrolly.dragger#events
-     * @methodOf scrolly.dragger
+     * @name scrolly.$dragger#events
+     * @methodOf scrolly.$dragger
      *
      * @description 
      * Returns the events used for dragging.
