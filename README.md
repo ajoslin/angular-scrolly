@@ -9,18 +9,14 @@ This is in an early and experiement stage.
 Usage
 -----
 
-See demo/index.html after building (see below to build).  Guide portion coming to docs soon.
+See the [getting started page in the guide](http://ajoslin.github.io/angular-scrolly/#/guide/getting-started).
 
 Development
 -----------
 
-- `npm install`
-- `bower install`
-- To build, `grunt`
-- The docs use `grunt-ngdocs`, a rip of the angular docs generator. 
-- To view the docs, right now you have to start a static server in the project root, then navigate to docs folder.  Example:
+(TODO update this :-))
 
-```sh
-$ python -m SimpleHTTPServer &; open http://localhost:8000/docs/
-```
-
+- `npm install` (npm comes with [node.js](http://nodejs.org))
+- `bower install` (bower is installed on npm; `npm install -g bower`)
+- To build, `grunt` (grunt is installed on npm; `npm install -g grunt-cli`)
+- The tests require karma as well: `npm install -g karma`
