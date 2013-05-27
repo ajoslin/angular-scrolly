@@ -2,6 +2,7 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -12,6 +13,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     dist: 'dist',
+    docs: 'docs',
     pkg: grunt.file.readJSON('bower.json'),
     meta: {
       banner: 
@@ -31,6 +33,8 @@ module.exports = function(grunt) {
         configFile: 'test/karma.conf.js'
       }
     },
+
+    clean: ['<%= dist %>', '<%= docs %>'],
     
     jshint: {
       all: ['Gruntfile.js', 'src/**/*.js'],
@@ -44,8 +48,10 @@ module.exports = function(grunt) {
     },
 
     ngmin: {
-      files: {
-        '<%= dist %>/<%= pkg.name %>.js': '<%= dist %>/<%= pkg.name %>.js'
+      dist: {
+       files: {
+        '<%= dist %>/<%= pkg.name %>.js': ['src/**/*.js', '!src/**/*.spec.js']
+        }
       }
     },
 
@@ -56,7 +62,7 @@ module.exports = function(grunt) {
           banner: '<%= meta.banner %>'
         },
         files: {
-          '<%= dist %>/<%= pkg.name %>.js': ['src/**/*.js']
+          '<%= dist %>/<%= pkg.name %>.js': '<%= dist %>/<%= pkg.name %>.js'
         }
       }
     },
@@ -74,14 +80,36 @@ module.exports = function(grunt) {
 
     ngdocs: {
       options: {
+        dest: '<%= docs %>',
+        title: 'angular-scrolly',
+        navTemplate: 'misc/docs/nav-template.html',
         scripts: [
-          '../bower_components/angular-unstable/angular.js',
-          '../dist/angular-scrolly.js'
-        ]
+          'misc/docs/angular-1.1.4.js',
+          'dist/angular-scrolly.js'
+        ],
+        styles: [
+          'misc/docs/style.css'
+        ],
+        html5Mode: false
       },
       api: {
         src: ['src/**/*.js'],
         title: 'API Documentation'
+      },
+      guide: {
+        src: ['guide/**/*.ngdoc'],
+        title: 'Guide'
+      }
+    },
+
+    copy: {
+      demo: { 
+        files: [{
+          src: ['**/*'],
+          cwd: 'demo/',
+          dest: 'docs/demo/',
+          expand: true
+        }]
       }
     },
 
@@ -92,7 +120,10 @@ module.exports = function(grunt) {
   });
 
   //TODO fix ngmin and uglify
-  grunt.registerTask('default', ['jshint', 'karma:continuous', 'concat', 'ngdocs']);
+  grunt.registerTask('default', ['clean', 'jshint', 'karma:continuous', 'build', 'docs']);
+
+  grunt.registerTask('build', ['ngmin', 'concat', 'uglify']);
+  grunt.registerTask('docs', ['ngdocs', 'copy']);
 
   grunt.renameTask('watch', 'delta');
   grunt.registerTask('watch', ['karma:watch', 'delta']);

@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "homepage": "http://github.com/ajoslin/angular-scrolly",
   "author": "Andy Joslin",
+  "license": "Public Domain",
   "devDependencies": {
     "angular-mocks": "~1.0.7",
-    "angular-unstable": "~1.1.5",
+    "angular-unstable": "~1.1.4",
     "jquery": "~2.0.1"
   },
   "dependencies": {

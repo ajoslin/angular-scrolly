@@ -4,15 +4,99 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-<script src="../dist/angular-scrolly.js"></script>
+<script src="../grunt-scripts/angular-scrolly.js"></script>
+</head>
+<body ng-controller="AppCtrl">
+<script>
+function AppCtrl($scope) {
+  $scope.items = [];
+  for (var i=0; i<150; i++) $scope.items.push(i);
+
+  if (("ontouchstart" in window)) {
+    document.getElementById('desktop-tips').style.display = "none";
+  }
+}
+</script>
+  <div class="toolbar">
+    <a class="button" href="/">&laquo; docs</a>
+    <h1>angular-scrolly</h1>
+    <a class="button right" href="http://github.com/ajoslin/angular-scrolly">
+      &raquo; code
+    </a>
+  </div>
+  <div class="content" scrolly-scroll>
+    <ul>
+      <div id="desktop-tips">
+        <li>Get out your phone and scroll a bit :-)</li>
+        <li>Here's an easy shortcut url to this demo for your phone:</li>
+        <li>http://tiny.cc/ng-scrolly</li>
+      </div>
+      <li ng-repeat="i in items">{{i}}</li>
+    </ul>
+  </div>
 <style>
+html,body {
+  background: #7f8c8d;
+}
 * {
+  -webkit-backface-visibility: hidden; /* flicker fix */
   -webkit-user-select: none;
-  background: #BBB;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.toolbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  background: #3498db;
+  border-bottom: 1px solid black;
+  height: 45px;
+  z-index: 10;
+}
+.toolbar h1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  margin: -1px 0 0;
+  padding-top: 10px;
+  height: 45px;
+  font-family: Arial;
+  font-size: 22px;
+  text-align: center;
+  color: #ecf0f1;
+}
+.toolbar .button {
+  z-index: 15;
+  display: inline-block;
+  padding: 0 6px;
+  margin-top: 5px;
+  margin-left: 6px;
+  font-size: 16.5px;
+  line-height: 32px;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #2980b9;
+  color: #ecf0f1;
+  font-size: 15px;
+  font-family: Arial;
+  position: absolute;
+  text-decoration: none;
+}
+.toolbar .button.right {
+  right: 6px;
+}
+.button:active {
+  background: #2980b9
 }
 .content {
+  padding-top: 45px;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -23,28 +107,15 @@ ul li {
   line-height: 42px;
   font-weight: bold;
   font-family: Arial;
-  background: #EFEFEF;
-  border: 1px solid black;
+  background: #E9E9E9;
+  border: 1px solid #34495e;
   border-bottom: none;
+  padding-left: 10px;
   list-style: none;
 }
 ul li:last-child {
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #E9E9E9;
 }
 </style>
-</head>
-<body ng-controller="AppCtrl">
-<script>
-function AppCtrl($scope) {
-  $scope.items = [];
-  for (var i=0; i<50; i++) $scope.items.push(i);
-}
-</script>
-  <div class="content" scrolly-scroll>
-    <ul>
-      <li>Get out your phone and scroll a bit :-)</li>
-      <li ng-repeat="i in items">{{i}}</li>
-    </ul>
-  </div>
 </body>
 <html>
