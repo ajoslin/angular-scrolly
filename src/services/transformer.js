@@ -6,7 +6,7 @@
  * @description
  * Used for configuring transformer options.  
  */
-angular.module('scrolly.transformer', [])
+angular.module('ajoslin.scrolly.transformer', [])
 
 /**
  * @ngdoc object
@@ -18,7 +18,7 @@ angular.module('scrolly.transformer', [])
  * The main reason this is in a service is for ease of mocking it during tests.
  *
  * @param {function} callback Callback to call when the DOM has redrawn - when the next frame is ready.
- * @returns {number} `requestId` Unique id identifying this request, to be passed to {@link https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame cancelAnimationFrame}.
+ * @returns {number} `requestId` Unique id identifying this request, to be passed to {@link https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame window.cancelAnimationFrame}.
  */
 
 .factory('$nextFrame', function($window) {
@@ -44,7 +44,7 @@ angular.module('scrolly.transformer', [])
    * @param {string=} newTimingFunction The CSS timing function to be used.
    * @returns {string} timingFunction The current CSS timing function.
    */
-  var timingFunction = 'cubic-bezier(0.33,0.66,0.66,1)';
+  var timingFunction = 'cubic-bezier(0.25, 0.46, 0.45, 0.94)';
   this.timingFunction = function(newTimingFunction) {
     arguments.length && (timingFunction = newTimingFunction);
     return timingFunction;

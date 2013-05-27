@@ -4,7 +4,7 @@
  * @name scrolly.directive:scrollyScroll
  *
  * @description
- * Attaches a {@link scrolly.$scroller $scroller} to the given element.
+ * Attaches a {@link #/scrolly.$scroller $scroller} to the given element.
  *
  * ## Example
  * <pre>
@@ -14,7 +14,7 @@
  * </pre>
  */
 
-angular.module('scrolly')
+angular.module('ajoslin.scrolly.directives', ['ajoslin.scrolly.scroller'])
 .directive('scrollyScroll', function($scroller, $document) {
   angular.element(document.body).bind('touchmove', function(e) {
     e.preventDefault();

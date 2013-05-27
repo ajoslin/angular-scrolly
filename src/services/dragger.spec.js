@@ -1,7 +1,7 @@
 
 describe('scrolly.dragger', function() {
   
-  beforeEach(module('scrolly'));
+  beforeEach(module('ajoslin.scrolly.dragger'));
 
   var elm, dragger, $dragger;
   beforeEach(inject(function(_$dragger_) {

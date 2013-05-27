@@ -8,7 +8,7 @@
  *
  */
 
-angular.module('scrolly.dragger', [])
+angular.module('ajoslin.scrolly.dragger', [])
 .provider('$dragger', function() {
 
   /**

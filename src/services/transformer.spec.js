@@ -1,7 +1,7 @@
 
 describe('scrolly.transformer', function() {
 
-  beforeEach(module('scrolly.transformer'));
+  beforeEach(module('ajoslin.scrolly.transformer'));
   beforeEach(module(function($provide) {
     $provide.value('$window', angular.mock.createMockWindow());
     $provide.factory('$nextFrame', function($window) {

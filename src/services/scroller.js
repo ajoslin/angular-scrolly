@@ -6,7 +6,10 @@
  * Used for configuring scroll options.
  */
 
-angular.module('scrolly')
+angular.module('ajoslin.scrolly.scroller', [
+  'ajoslin.scrolly.dragger',
+  'ajoslin.scrolly.scroller'
+])
 .provider('$scroller', function() {
 
   /**
@@ -17,7 +20,7 @@ angular.module('scrolly')
    * @description
    * Sets/gets the decelerationRate used in the 'momentum' effect after 
    * the user lets go from scrolling.  A higher deceleration rate means 
-   * faster deceleration.  Defaults to 0.001.
+   * less momentum.
    *
    * @param {number=} newRate The new decelerationRate to set.
    * @returns {number} decelerationRate The current deceleration rate.
@@ -100,15 +103,18 @@ angular.module('scrolly')
     return _bounceBackDistanceMulti;
   };
 
-  //http://stackoverflow.com/questions/10787782/full-height-of-a-html-element-div-including-border-padding-and-margin
-  //Gets the height & width of the container of our element
-  function getHeight(elm) {
+  function getRect(elm) {
     var style = window.getComputedStyle(elm);
-    return parseInt(style.height, 10) + 
-      parseInt(style['margin-bottom'], 10) +
-      parseInt(style['margin-top'], 10) + 
-      parseInt(style['padding-top'], 10) +
-      parseInt(style['padding-bottom'], 10);
+    var offTop = parseInt(style['margin-top'], 10) + 
+        parseInt(style['padding-top'], 10);
+    var offBottom = parseInt(style['margin-bottom'], 10) + 
+        parseInt(style['padding-bottom'], 10);
+    var height = parseInt(style.height, 10);
+    return {
+      top: offTop,
+      bottom: offBottom,
+      height: height
+    };
   }
 
   //Quicker than Math.floor
@@ -145,16 +151,20 @@ angular.module('scrolly')
       var dragger = new $dragger(elm);
 
       function calculateHeight() {
-        var contentHeight = 0;
-        for (var i=0; i < raw.children.length; i++) {
-          contentHeight += getHeight(raw.children[i]);
-        }
-        if (contentHeight < raw.offsetHeight) {
+        var rect = getRect(raw);
+        //TODO find a better way to get the height of the wrapper/screen
+        var screenHeight = $window.innerHeight;
+        //If our content doesn't fill the whole area, just act like it's
+        //exactly one screen tall for scrolling purposes
+        console.log(rect, screenHeight);
+        if (rect.height < screenHeight) {
           self.scrollHeight = 0;
         } else {
-          self.scrollHeight = raw.offsetHeight - $window.innerHeight;
+          self.scrollHeight = rect.height - screenHeight + rect.top + rect.bottom;
         }
+        return self.scrollHeight;
       }
+      window.s = self;
       calculateHeight();
 
       function outOfBounds(pos) {
@@ -184,9 +194,9 @@ angular.module('scrolly')
 
           case 'end':
             //If we're out of bounds, or held on to our spot for too long,
-            //or didn't move.. no momentum.  Just check boundaries
-            if (outOfBounds(transformer.pos) || dragData.inactiveDrag || !dragData.moved) {
-              onScrollDone();
+            //no momentum.  Just check that we're in bounds.
+            if (outOfBounds(transformer.pos) || dragData.inactiveDrag) {
+              checkBoundaries();
             } else {
               calculateHeight();
               var momentum = calcMomentum(dragData);
@@ -211,26 +221,29 @@ angular.module('scrolly')
         } 
       }
       function calcMomentum(dragData) {
-        var time = Math.abs(dragData.distance) / dragData.duration;
-        var momentum = (time * time) / (2 * _decelerationRate);
-        var newPosition = transformer.pos + 
-          (dragData.distance < 0 ? -1 : 1) * momentum;
+        var speed = Math.abs(dragData.distance) / dragData.duration;
+        var newPos = transformer.pos + (speed * speed) /
+          (2 * _decelerationRate) *
+          (dragData.distance < 0 ? -1 : 1);
+        var time = speed / _decelerationRate;
 
-        var howMuchOver = outOfBounds(newPosition);
+        var howMuchOver = outOfBounds(newPos);
+        var distance;
         if (howMuchOver) {
-          //If we're past our boundaries, speed up our time by how much 
-          //percent of our momentum distance is over the boundary
-          time *= Math.abs(howMuchOver / momentum);
           if (howMuchOver > 0) {
-            newPosition = Math.min(newPosition, _bounceBuffer);
+            newPos = Math.min(howMuchOver, _bounceBuffer);
+            distance = Math.abs(newPos - transformer.pos);
+            time = distance / speed;
+
           } else if (howMuchOver < 0) {
-            newPosition = Math.max(newPosition, 
-              -(self.scrollHeight + _bounceBuffer));
+            newPos = Math.max(newPos, -(self.scrollHeight + _bounceBuffer));
+            distance = Math.abs(newPos - transformer.pos);
+            time = distance / speed;
           }
         }
         return {
-          position: newPosition,
-          time: floor(time / _decelerationRate)
+          position: newPos,
+          time: floor(time)
         };
       }
 
