@@ -1,0 +1,26 @@
+<h1><code ng:non-bindable=""></code>
+<span class="hint"></span>
+</h1>
+<div><h1 id="gotchas">Gotchas</h2>
+
+<h4 id="css">CSS</h5>
+
+<p>To make your CSS look better with angular-scrolly, and in general, add this
+selector to your stylesheet:</p>
+
+<pre><code class="css">* {
+  -webkit-backface-visibility-hidden;
+  -webkit-user-select: none;
+}
+</code></pre>
+
+<h4 id="nowwhyshouldidothat">Now why should I do that?</h5>
+
+<p>The <code>-webkit-backface-visibility: hidden;</code> will fix a known problem when trying
+to animate an element that is bigger than its viewport.  In other words, it will
+fix a flickering problem that happens sometimes.</p>
+
+<p>The <code>-webkit-user-select: none;</code> will stop the copy/paste dialog from coming up
+on items the user is scrolling.  If you <em>do</em> want some things copy/paste-able in
+your app, I would advise making a <code>.selectable</code> class, which allows the user to 
+select, and then placing that only where it's needed.</p></div>

@@ -1,0 +1,36 @@
+<h1><code ng:non-bindable=""></code>
+<span class="hint"></span>
+</h1>
+<div><h1 id="overview">Overview</h2>
+
+<p>angular-scrolly is a small angular add-on for mobile applications.</p>
+
+<p>It is a simple javascript implementation of 'fake' scrolling using touch events
+with CSS transforms and transitions. </p>
+
+<h4 id="someofthereasonsibuiltthis">Some of the reasons I built this:</h5>
+
+<ul>
+<li>Android 2.x webkit has problems with scrolling: the 'overflow' CSS property is
+not even implemented in it!  Using fake scrolling, we can avoid this problem completely.</li>
+<li>We would like to be able to implement pull to refresh, but it is not possible 
+to do nicely with normal webkit scrolling on iOS.  It is almost trivial, however, 
+if we have a javascript-based scrolling solution.</li>
+<li>The biggest problem with web-based mobile applications currently that I have not 
+seen solved is that of navigating big lists of data (100+ items) on a mobile device.
+In a native application, "virtual scrolling" is implemented: no matter how
+many items are in a list, only {{number of items that fit on screen}} are ever
+actually rendered.  With a javascript scrolling solution, we are able to detect
+the scrolling events we need to be able to implement virtual scrolling.</li>
+</ul>
+
+<h4 id="whycoupleitwithangularjs">Why couple it with AngularJS?</h5>
+
+<p>I have had lots of success building nice mobile AngularJS applications. 
+I think its approach is great for them. </p>
+
+<p>Additionally, with Angular easy seperation of concerns and directives, we can make
+a scrolling solution that will work with almost any css layout, with small amounts of code.</p>
+
+<p>We can have easy directives to attach fake-scrolling to an element, and for
+pull-to-do-something and virtual scrolling.</p></div>

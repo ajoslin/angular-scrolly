@@ -1,0 +1,19 @@
+<h1><code ng:non-bindable="">$nextFrame</code>
+<span class="hint">(service in module <code ng:non-bindable="">scrolly</code>
+)</span>
+</h1>
+<div><h2 id="Description">Description</h2>
+<div class="description"><p>A service to wrap <a href="https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame">window.requestAnimationFrame</a>, or a fallback if it is not available.</p>
+
+<p>The main reason this is in a service is for ease of mocking it during tests.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">$nextFrame(callback);</pre>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">callback – {function} – </code>
+<p>Callback to call when the DOM has redrawn - when the next frame is ready.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p><code>requestId</code> Unique id identifying this request, to be passed to <a href="https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame">window.cancelAnimationFrame</a>.</p></div>
+</div>
+</div>

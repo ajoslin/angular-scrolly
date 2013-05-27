@@ -1,0 +1,69 @@
+<h1><code ng:non-bindable="">$scrollerProvider</code>
+<span class="hint">(service in module <code ng:non-bindable="">scrolly</code>
+)</span>
+</h1>
+<div><h2 id="Description">Description</h2>
+<div class="description"><p>Used for configuring scroll options.</p></div>
+<div class="member method"><h2 id="Methods">Methods</h2>
+<ul class="methods"><li><h3 id="bounceBackDistanceMulti">bounceBackDistanceMulti(newDistanceMulti)</h3>
+<div class="bouncebackdistancemulti"><p>When the user scrolls past the content area into the bounce buffer, 
+we need to bounce back.  To decide how long the bounce back animation will
+take, there are two factors: a minimum time, in milliseconds, and a 
+distance multiplier.  </p>
+
+<p>The equation for deciding how much time the animation to bounce back to
+the main content area should take, we do the following:</p>
+
+<pre class="prettyprint linenums">
+function getBounceTime(distancePastContent) {
+  return bounceBackMinTime + distancePastContent * bounceBackDistanceMulti;
+}
+</pre>
+
+<p>This makes it so the farther away the user has scrolled from the content
+area, the longer the animation to bring the content back into view will
+take. The minimum time exists so even short distances still take a little 
+bit of time.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newDistanceMulti<i>(optional)</i> – {number=} – </code>
+<p>The new bounce back distance multiplier.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>bounceBackDistanceMulti The current bounce back distance multiplier.</p></div>
+</div>
+</li>
+<li><h3 id="bounceBackMinTime">bounceBackMinTime(newTime)</h3>
+<div class="bouncebackmintime"><p>See <a href="#/api/scrolly.$scrollerProvider#bounceBackDistanceMulti">bounceBackDistanceMulti</a>.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newTime<i>(optional)</i> – {number=} – </code>
+<p>The new bounce back minimum time to set.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>bounceBackMinTime The current bounce back minimum time.</p></div>
+</div>
+</li>
+<li><h3 id="bounceBuffer">bounceBuffer(newBounceBuffer)</h3>
+<div class="bouncebuffer"><p>Sets/gets the buffer allowed for the scroll to 'bounce' past the actual content area.  Set this to 0 to effectively disable bouncing.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newBounceBuffer<i>(optional)</i> – {number=} – </code>
+<p>The new bounce buffer to set.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>bounceBuffer The current bounce buffer.</p></div>
+</div>
+</li>
+<li><h3 id="decelerationRate">decelerationRate(newRate)</h3>
+<div class="decelerationrate"><p>Sets/gets the decelerationRate used in the 'momentum' effect after 
+the user lets go from scrolling.  A higher deceleration rate means 
+less momentum.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newRate<i>(optional)</i> – {number=} – </code>
+<p>The new decelerationRate to set.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>decelerationRate The current deceleration rate.</p></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
