@@ -116,22 +116,18 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      docs: {
-        command: [
-          'git stash',
-          'git checkout gh-pages',
-          'cp -Rf dist/docs/* .',
-          'git add -A',
-          'git commit -am "chore(): Update docs and demo"',
-          'git push origin gh-pages',
-          'git checkout master',
-          'git stash pop'
-        ]
-      },
-      release: {
-        command: [
-        ]
-      }
+      docs: [ 
+        'git stash',
+        'git checkout gh-pages',
+        'cp -Rf dist/docs/* .',
+        'git add -A',
+        'git commit -am "chore(): Update docs and demo"',
+        'git push origin gh-pages',
+        'git checkout master',
+        'git stash pop'
+      ],
+      release: [
+      ]
     },
 
     delta: {
@@ -150,7 +146,7 @@ module.exports = function(grunt) {
   grunt.registerTask('watch', ['karma:watch', 'delta']);
 
   grunt.registerMultiTask('shell', 'run shell commands', function() {
-    var cmd = this.data.command;
+    var cmd = this.data;
     for (var i=0; i<cmd.length; i++) {
       var result = sh.exec(cmd[i], {silent:true});
       if (result.code !== 0) {
