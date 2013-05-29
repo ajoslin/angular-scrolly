@@ -9,6 +9,8 @@
 
 <pre><code class="css">* {
   -webkit-backface-visibility-hidden;
+}
+html, body {
   -webkit-user-select: none;
 }
 </code></pre>
@@ -21,5 +23,5 @@ fix a flickering problem that happens sometimes.</p>
 
 <p>The <code>-webkit-user-select: none;</code> will stop the copy/paste dialog from coming up
 on items the user is scrolling.  If you <em>do</em> want some things copy/paste-able in
-your app, I would advise making a <code>.selectable</code> class, which allows the user to 
+your app (eg <code>&lt;p&gt;</code> tags), I would advise making a <code>.selectable</code> class, which allows the user to 
 select, and then placing that only where it's needed.</p></div>

@@ -23,6 +23,11 @@ angular.module('ajoslin.scrolly', [
     };
   }
 ]);angular.module('ajoslin.scrolly.dragger', []).provider('$dragger', function () {
+  var _shouldBlurOnDrag = true;
+  this.shouldBlurOnDrag = function (shouldBlur) {
+    arguments.length && (_shouldBlurOnDrag = !!shouldBlur);
+    return _shouldBlurOnDrag;
+  };
   var _minDistanceForDrag = 6;
   this.minDistanceForDrag = function (newMinDistanceForDrag) {
     arguments.length && (_minDistanceForDrag = newMinDistanceForDrag);
@@ -44,7 +49,8 @@ angular.module('ajoslin.scrolly', [
   }
   this.$get = [
     '$window',
-    function ($window) {
+    '$document',
+    function ($window, $document) {
       var hasTouch = 'ontouchstart' in $window;
       var events = {
           start: hasTouch ? 'touchstart' : 'mousedown',
@@ -94,13 +100,19 @@ angular.module('ajoslin.scrolly', [
           state.startTime = Date.now();
           state.dragging = true;
         }
+        function isInput(raw) {
+          return raw && raw.tagName === 'INPUT' || raw.tagName === 'SELECT' || raw.tagName === 'TEXTAREA';
+        }
         function dragStart(e) {
           if (!hasTouch && e.button)
             return;
-          var dragEl = e.target || e.srcElement;
+          var target = e.target || e.srcElement;
           var point = e.touches ? e.touches[0] : e;
-          if (parentWithAttr(dragEl, 'data-dragger-ignore')) {
+          if (parentWithAttr(target, 'data-dragger-ignore')) {
             return;
+          }
+          if (_shouldBlurOnDrag && target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') {
+            document.activeElement && document.activeElement.blur();
           }
           state.moved = false;
           state.inactiveDrag = false;
@@ -235,7 +247,6 @@ angular.module('ajoslin.scrolly', [
         function calculateHeight() {
           var rect = getRect(raw);
           var screenHeight = $window.innerHeight;
-          console.log(rect, screenHeight);
           if (rect.height < screenHeight) {
             self.scrollHeight = 0;
           } else {

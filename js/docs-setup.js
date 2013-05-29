@@ -23,7 +23,7 @@ NG_DOCS={
       "id": "scrolly.$draggerProvider",
       "shortName": "$draggerProvider",
       "type": "object",
-      "keywords": "$draggerprovider actively anymore api as be before can configuring counted current distance drag dragging finger for his in is it maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move needs newdistance newtime not object options scrolly sets the time to used user value"
+      "keywords": "$draggerprovider active actively an and any anymore api as be before blur blurred can configuring counted current cursor defaults distance does drag dragging element finger for his if in is it major maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move needs newdistance newshouldblur newtime not object occur of on options position problems scrolly sets should shouldblurondrag shouldblurontouch some starts the then there time to touch touches true used user value visual when whether with"
     },
     {
       "section": "api",
@@ -93,7 +93,7 @@ NG_DOCS={
       "id": "gotchas",
       "shortName": "Gotchas",
       "type": "overview",
-      "keywords": "add advise allows an and animate app bigger class coming copy css dialog do element few fix flickering from gotchas guide happens hidden if in is it items its known making needed none on only other overview placing problem problems scrolling select selectable should some sometimes stop stylesheet than that the then things this to trying up user viewport want when where which why will words would you your"
+      "keywords": "add advise allows an and animate app bigger body class coming copy css dialog do element few fix flickering from gotchas guide happens hidden html if in is it items its known making needed none on only other overview placing problem problems scrolling select selectable should some sometimes stop stylesheet tags than that the then things this to trying up user viewport want when where which why will words would you your"
     }
   ],
   "scripts": [
