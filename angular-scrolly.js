@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.2 - 2013-05-29
+ * angular-scrolly - v0.0.1 - 2013-05-29
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
