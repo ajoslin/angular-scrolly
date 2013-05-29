@@ -12,6 +12,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngdocs');
   grunt.loadNpmTasks('grunt-ngmin');
+  grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-conventional-changelog');
 
   grunt.initConfig({
     dist: 'dist',
@@ -117,16 +119,22 @@ module.exports = function(grunt) {
 
     shell: {
       docs: [ 
-        'git stash',
+        'grunt build docs',
         'git checkout gh-pages',
         'cp -Rf dist/docs/* .',
         'git add -A',
-        'git commit -am "chore(): Update docs and demo"',
+        'git commit -am "chore(): Update docs for v<%= pkg.version %>"',
         'git push origin gh-pages',
-        'git checkout master',
-        'git stash pop'
+        'git checkout master'
       ],
       release: [
+        'grunt build',
+        'mv dist/angular-scrolly.js dist/angular-scrolly.min.js .',
+        //'grunt changelog',
+        'git add angular-scrolly.js angular-scrolly.min.js',
+        'git commit -am "chore(release): v<%= pkg.version %>"',
+        'git tag v<%= pkg.version %>',
+        'git push --tags origin master'
       ]
     },
 
@@ -154,5 +162,12 @@ module.exports = function(grunt) {
         return;
       }
     }
+  });
+
+  grunt.registerTask('release', 'Send out a release', function() {
+    sh.exec('grunt bump:' + (this.args[0] || 'patch'));
+    grunt.config('pkg', grunt.file.readJSON('bower.json')); //Refresh package
+    grunt.task.run('shell:release');
+    //grunt.task.run('shell:docs');
   });
 };
