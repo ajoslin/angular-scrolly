@@ -10,7 +10,7 @@ http://ajoslin.github.io/angular-scrolly/demo
 http://ajoslin.github.io/angular-scrolly/#/guide/getting-started
 
 #### API Documentation
-http://ajoslin.github.io/docs/
+http://ajoslin.github.io/
 
 
 Development
