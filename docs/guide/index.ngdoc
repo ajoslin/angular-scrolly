@@ -1,0 +1,10 @@
+
+@ngdoc overview
+@name Guide
+@description
+
+Welcome to the angular-scrolly guide.  This will take you through the reasons
+angular-scrolly was built, and how to get started with it.
+
+* {@link overview Overview}
+* {@link getting-started Getting Started}
