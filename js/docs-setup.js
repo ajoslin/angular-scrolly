@@ -6,6 +6,13 @@ NG_DOCS={
   "pages": [
     {
       "section": "api",
+      "id": "index",
+      "shortName": "API Documentation",
+      "type": "overview",
+      "keywords": "an angular-scrolly api are click documentation for get how if item left looking navbar on or overview search simply started the to try use welcome what you"
+    },
+    {
+      "section": "api",
       "id": "scrolly.$dragger",
       "shortName": "$dragger",
       "type": "object",
@@ -62,6 +69,13 @@ NG_DOCS={
     },
     {
       "section": "guide",
+      "id": "index",
+      "shortName": "Guide",
+      "type": "overview",
+      "keywords": "and angular-scrolly built get getting getting-started guide how it overview reasons started take the this through to was welcome will with you"
+    },
+    {
+      "section": "guide",
       "id": "overview",
       "shortName": "Overview",
       "type": "overview",
@@ -79,7 +93,7 @@ NG_DOCS={
       "id": "gotchas",
       "shortName": "Gotchas",
       "type": "overview",
-      "keywords": "add advise allows an and angular-scrolly animate app better bigger class coming copy css dialog do element fix flickering from general gotchas guide happens hidden if in is it items its known look make making needed none now on only other overview placing problem scrolling select selectable selector should some sometimes stop stylesheet than that the then things this to trying up user viewport want when where which why will with words would you your"
+      "keywords": "add advise allows an and animate app bigger class coming copy css dialog do element few fix flickering from gotchas guide happens hidden if in is it items its known making needed none on only other overview placing problem problems scrolling select selectable should some sometimes stop stylesheet than that the then things this to trying up user viewport want when where which why will words would you your"
     }
   ],
   "scripts": [
