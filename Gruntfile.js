@@ -1,4 +1,6 @@
 
+var sh = require('shelljs');
+
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -13,7 +15,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     dist: 'dist',
-    docs: 'docs',
+    docs: 'dist/docs',
     pkg: grunt.file.readJSON('bower.json'),
     meta: {
       banner: 
@@ -93,11 +95,11 @@ module.exports = function(grunt) {
         html5Mode: false
       },
       api: {
-        src: ['src/**/*.js'],
+        src: ['src/**/*.js', 'docs/api/**/*.ngdoc'],
         title: 'API Documentation'
       },
       guide: {
-        src: ['guide/**/*.ngdoc'],
+        src: ['docs/guide/**/*.ngdoc'],
         title: 'Guide'
       }
     },
@@ -107,9 +109,28 @@ module.exports = function(grunt) {
         files: [{
           src: ['**/*'],
           cwd: 'demo/',
-          dest: 'docs/demo/',
+          dest: '<%= docs %>/demo/',
           expand: true
         }]
+      }
+    },
+
+    shell: {
+      docs: {
+        command: [
+          'git stash',
+          'git checkout gh-pages',
+          'cp -Rf dist/docs/* .',
+          'git add -A',
+          'git commit -am "chore(): Update docs and demo"',
+          'git push origin gh-pages',
+          'git checkout master',
+          'git stash pop'
+        ]
+      },
+      release: {
+        command: [
+        ]
       }
     },
 
@@ -127,4 +148,15 @@ module.exports = function(grunt) {
 
   grunt.renameTask('watch', 'delta');
   grunt.registerTask('watch', ['karma:watch', 'delta']);
+
+  grunt.registerMultiTask('shell', 'run shell commands', function() {
+    var cmd = this.data.command;
+    for (var i=0; i<cmd.length; i++) {
+      var result = sh.exec(cmd[i], {silent:true});
+      if (result.code !== 0) {
+        grunt.fatal("Release task failed on '" + cmd[i] + "' with error '" + result.output + "'.");
+        return;
+      }
+    }
+  });
 };
