@@ -123,7 +123,7 @@ module.exports = function(grunt) {
         'git checkout gh-pages',
         'cp -Rf dist/docs/* .',
         'git add -A',
-        'git commit -am "chore(): Update docs for v<%= pkg.version %>"',
+        'git commit -am "chore(): Update docs"',
         'git push origin gh-pages',
         'git checkout master'
       ],

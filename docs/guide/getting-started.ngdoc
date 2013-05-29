@@ -13,26 +13,34 @@ You have a few options.
 
 * You can install it on bower (TODO):
 
-      $ bower install ajoslin/angular-scrolly
+```
+bower install ajoslin/angular-scrolly
+```
 
 * You can simply download it from github (TODO):
 
-      http://raw.github.com/ajoslin/angular-scrolly/master/angular-scrolly.js
+[http://raw.github.com/ajoslin/angular-scrolly/master/angular-scrolly.js](http://raw.github.com/ajoslin/angular-scrolly/master/angular-scrolly.js)
 
-* You can clone the repository and build it. See the [project README](http://github.com/ajoslin/angular-scrolly). (This works)
+* You can clone the repository and build it. See the [project README](http://github.com/ajoslin/angular-scrolly).
 
 #### 2. Include the javascript file in your HTML and as an angular dependency.
 
-    <script src="angular-scrolly.js"></script>
+<pre>
+<script src="angular-scrolly.js"></script>
+</pre>
+<pre>
+angular.module('myAwesomeApp', ['ajoslin.angular-scrolly']);
+</pre>
 
-    angular.module('myAwesomeApp', ['ajoslin.angular-scrolly']);
+#### 3. Throw in a `scrolly-scroll` directive
 
-#### 3. Throw a `scrolly-scroll` directive on the elements you desire scrolling,
-and you're done!
+<pre>
+<div class="content" scrolly-scroll>
+  Hello, content!
+</div>
+</pre>
 
-    <div class="content" scrolly-scroll>
-      Hello, content!
-    </div>
+..And you're done!
 
 Check out {@link gotchas gotchas} for a few more tips to make sure things look
 the best they can.
