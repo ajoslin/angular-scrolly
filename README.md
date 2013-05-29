@@ -4,8 +4,6 @@ angular-scrolly
 
 Angular fake-scroller for mobile.  Lightweight and webkit-friendly.
 
-This is in an early and experiement stage. 
-
 Usage
 -----
 
@@ -14,9 +12,31 @@ See the [getting started page in the guide](http://ajoslin.github.io/angular-scr
 Development
 -----------
 
-(TODO update this :-))
+- Install [node.js and npm](http://nodejs.org)
 
-- `npm install` (npm comes with [node.js](http://nodejs.org))
-- `bower install` (bower is installed on npm; `npm install -g bower`)
-- To build, `grunt` (grunt is installed on npm; `npm install -g grunt-cli`)
-- The tests require karma as well: `npm install -g karma`
+- Use npm to to get bower, grunt, and karma for building and testing.
+
+```
+npm install -g bower grunt-cli karma
+```
+
+- Clone the repository, cd to it, and run download all dependencies.
+
+```
+git clone https://github.com/ajoslin/angular-scrolly
+cd angular-scrolly
+npm install
+bower install
+```
+
+- Run grunt to test & build & create docs
+
+```
+grunt
+```
+
+### Contributing
+
+Please feel free to open a Pull Request!
+
+If you add a feature, be sure to add unit tests for it.

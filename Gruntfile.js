@@ -130,7 +130,7 @@ module.exports = function(grunt) {
       release: [
         'grunt build',
         'mv dist/angular-scrolly.js dist/angular-scrolly.min.js .',
-        //'grunt changelog',
+        'grunt changelog',
         'git add angular-scrolly.js angular-scrolly.min.js',
         'git commit -am "chore(release): v<%= pkg.version %>"',
         'git tag v<%= pkg.version %>',
@@ -147,7 +147,13 @@ module.exports = function(grunt) {
   //TODO fix ngmin and uglify
   grunt.registerTask('default', ['clean', 'jshint', 'karma:continuous', 'build', 'docs']);
 
-  grunt.registerTask('build', ['ngmin', 'concat', 'uglify']);
+  grunt.registerTask('build', function() {
+    if (!grunt.file.exists('.git/hooks/commit-msg')) {
+      sh.cp('misc/validate-commit-msg.js', '.git/hooks/commit-msg');
+      require('fs').chmodSync('.git/hooks/commit-msg', '0755');
+    }
+    grunt.task.run(['ngmin', 'concat', 'uglify']);
+  });
   grunt.registerTask('docs', ['ngdocs', 'copy']);
 
   grunt.renameTask('watch', 'delta');
@@ -158,7 +164,7 @@ module.exports = function(grunt) {
     for (var i=0; i<cmd.length; i++) {
       var result = sh.exec(cmd[i], {silent:true});
       if (result.code !== 0) {
-        grunt.fatal("Release task failed on '" + cmd[i] + "' with error '" + result.output + "'.");
+        grunt.fatal("Shell task failed on '" + cmd[i] + "' with error '" + result.output + "'.");
         return;
       }
     }
