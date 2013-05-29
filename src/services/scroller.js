@@ -50,6 +50,7 @@ angular.module('ajoslin.scrolly.scroller', [
     return _bounceBuffer;
   };
 
+
   /**
    * @ngdoc method
    * @name scrolly.$scrollerProvider#bounceBackMinTime
@@ -156,7 +157,6 @@ angular.module('ajoslin.scrolly.scroller', [
         var screenHeight = $window.innerHeight;
         //If our content doesn't fill the whole area, just act like it's
         //exactly one screen tall for scrolling purposes
-        console.log(rect, screenHeight);
         if (rect.height < screenHeight) {
           self.scrollHeight = 0;
         } else {

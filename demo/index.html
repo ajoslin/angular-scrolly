@@ -31,19 +31,19 @@ function AppCtrl($scope) {
         <li>Here's an easy shortcut url to this demo for your phone:</li>
         <li>http://tiny.cc/ng-scrolly</li>
       </div>
+      <li><input type="text"></li>
       <li ng-repeat="i in items">{{i}}</li>
     </ul>
   </div>
 <style>
-html,body {
-  background: #7f8c8d;
-}
 * {
-  -webkit-backface-visibility: hidden; /* flicker fix */
-  -webkit-user-select: none;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-backface-visibility: hidden;
+}
+html,body {
+  -webkit-user-select: none;
+  background: #7f8c8d;
 }
 .toolbar {
   position: absolute;

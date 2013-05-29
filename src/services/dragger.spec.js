@@ -60,13 +60,13 @@ describe('scrolly.dragger', function() {
       events = $dragger.events();
     });
 
-    function triggerDrag(type, data) {
+    function triggerDrag(type, data, element) {
       var e = $.Event(events[type]);
       $.extend(e, { 
         target: elm,
         timeStamp: Date.now()
       }, data);
-      elm.trigger(e);
+      (element || elm).trigger(e);
     }
 
     it('should remove the listener', function() {

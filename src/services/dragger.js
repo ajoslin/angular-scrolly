@@ -13,6 +13,27 @@ angular.module('ajoslin.scrolly.dragger', [])
 
   /**
    * @ngdoc method
+   * @name scrolly.$draggerProvider#shouldBlurOnTouch
+   * @methodOf scrolly.$draggerProvider
+   * 
+   * @description
+   * Sets/gets whether any active element should be blurred when the user touches and starts dragging.
+   * If there is an active element and then the user does dragging, some
+   * major visual problems with the position of the cursor occur. 
+   *
+   * Defaults to true.
+   *
+   * @param {boolean=} newShouldBlur Sets whether the active element should blur on touch.
+   * @returns {boolean} shouldBlurOnDrag Current should blur value.
+   */
+  var _shouldBlurOnDrag = true;
+  this.shouldBlurOnDrag = function(shouldBlur) {
+    arguments.length && (_shouldBlurOnDrag = !!shouldBlur);
+    return _shouldBlurOnDrag;
+  };
+
+  /**
+   * @ngdoc method
    * @name scrolly.$draggerProvider#minDistanceForDrag
    * @methodOf scrolly.$draggerProvider
    *
@@ -59,7 +80,7 @@ angular.module('ajoslin.scrolly.dragger', [])
     return null;
   }
 
-  this.$get = function($window) {
+  this.$get = function($window, $document) {
 
     /**
      * @ngdoc object
@@ -195,18 +216,32 @@ angular.module('ajoslin.scrolly.dragger', [])
         state.dragging = true;
       }
 
+      function isInput(raw) {
+        return raw && raw.tagName === "INPUT" ||
+          raw.tagName === "SELECT" || 
+          raw.tagName === "TEXTAREA";
+      }
+
       function dragStart(e) {
         //If we're on mouse, only let left clicks drag
         if (!hasTouch && e.button) return;
 
-        var dragEl = e.target || e.srcElement;
+        var target = e.target || e.srcElement;
         var point = e.touches ? e.touches[0] : e;
 
         //No drag on ignored elements
         //This way of doing it is taken straight from snap.js
         //Ignore this element if it's within a 'data-dragger-ignore' element
-        if ( parentWithAttr(dragEl, 'data-dragger-ignore') ) {
+        if ( parentWithAttr(target, 'data-dragger-ignore') ) {
           return;
+        }
+
+        //Initiate a click to blur all inputs if we start scrolling
+        if (_shouldBlurOnDrag &&
+              target.tagName !== "INPUT" &&
+              target.tagName !== "TEXTAREA" &&
+              target.tagName !== "SELECT") {
+          document.activeElement && document.activeElement.blur();
         }
 
         state.moved = false;
