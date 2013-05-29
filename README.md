@@ -1,13 +1,17 @@
-
 angular-scrolly
 ===============
 
 Angular fake-scroller for mobile.  Lightweight and webkit-friendly.
 
-Usage
------
+#### Demo
+http://ajoslin.github.io/angular-scrolly/demo
 
-See the [getting started page in the guide](http://ajoslin.github.io/angular-scrolly/#/guide/getting-started).
+#### Getting Started
+http://ajoslin.github.io/angular-scrolly/#/guide/getting-started
+
+#### API Documentation
+http://ajoslin.github.io/docs/
+
 
 Development
 -----------
