@@ -86,7 +86,7 @@ NG_DOCS={
       "id": "getting-started",
       "shortName": "Getting Started",
       "type": "overview",
-      "keywords": "ajoslin an and angular angular-scrolly as best bower build can check class clone com content dependency desire directive done download elements few file follow for from get getting github gotchas guide have hello html http in include install it javascript js look make module more myawesomeapp on options out overview re readme repository scrolling scrolly-scroll see simply src started steps sure the these they things throw tips to with works you your"
+      "keywords": "ajoslin an and angular angular-scrolly as best bower build can check class clone com content dependency directive done download few file follow for from get getting github gotchas guide have hello html in include install it javascript js look make module more myawesomeapp on options out overview re readme repository scrolly-scroll see simply src started steps sure the these they things throw tips to with you your"
     },
     {
       "section": "guide",
