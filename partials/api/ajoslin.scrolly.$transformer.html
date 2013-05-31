@@ -1,0 +1,36 @@
+<h1><code ng:non-bindable="">$transformer</code>
+<span class="hint">(service in module <code ng:non-bindable="">ajoslin.scrolly</code>
+)</span>
+</h1>
+<div><h2 id="Description">Description</h2>
+<div class="description"><p>A factory for creating a transformation-manipulator on an element.  It manipulates the transform of an element vertically, allowing you to set, get, and animate the given element's transform.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">$transformer(element);</pre>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">element – {element} – </code>
+<p>Element to manipulate the transformation of.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{object}</code>
+– <p>Newly created transformer object with the following properties:</p>
+
+<ul>
+<li><code>{number}</code> <code>pos</code> - The current vertical transform, in pixels, of the element.</li>
+<li><code>{void}</code> <code>setTo({number} y)</code> - Sets the current transform to the given y value.</li>
+<li><code>{void}</code> <code>easeTo({number} y, {number} time, {function=} done)</code> - Eases to the given position in <code>time</code> milliseconds. If given, the <code>done</code> callback will be called when the transition ends.</li>
+<li><code>{void}</code> <code>stop({function=} done)</code> - Stops any current animation. If given, the <code>done</code> function will be called when the stop is done (after the next frame).</li>
+</ul></div>
+</div>
+<div class="member property"><h2 id="Properties">Properties</h2>
+<ul class="properties"><li><h3 id="transformProp">transformProp</h3>
+<div class="transformprop"><p>{string} The property used for element transformations.  For example "webkitTransform".</p></div>
+</li>
+<li><h3 id="transformPropDash">transformPropDash</h3>
+<div class="transformpropdash"><p>{string} The property used for element transformations, "dashed version". For example "-webkit-transform". </p></div>
+</li>
+<li><h3 id="transitionprop">transitionprop</h3>
+<div class="transitionprop"><p>{string} The property used for element transitions.  For example "webkitTransition".</p></div>
+</li>
+</ul>
+</div>
+</div>

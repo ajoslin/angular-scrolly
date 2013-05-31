@@ -13,59 +13,59 @@ NG_DOCS={
     },
     {
       "section": "api",
-      "id": "scrolly.$dragger",
+      "id": "ajoslin.scrolly.$dragger",
       "shortName": "$dragger",
       "type": "object",
-      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds alert all allowed an and api at attach attribute be being below break callback callbacks called cancel cares case change children count created creating current data data-dragger-ignore delta distance do dom drag drag-listeners dragdata dragger dragging duration each eg element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me method methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes returns scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total touchcancel touchend touchmove touchstart type used useful user usually var vertical we when whenever where whether will with won"
+      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds ajoslin alert all allowed an and api at attach attribute be being below break callback callbacks called cancel cares case change children count created creating current data data-dragger-ignore delta distance do dom drag drag-listeners dragdata dragger dragging duration each eg element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me method methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes returns scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total touchcancel touchend touchmove touchstart type used useful user usually var vertical we when whenever where whether will with won"
     },
     {
       "section": "api",
-      "id": "scrolly.$draggerProvider",
+      "id": "ajoslin.scrolly.$draggerProvider",
       "shortName": "$draggerProvider",
       "type": "object",
-      "keywords": "$draggerprovider active actively an and any anymore api as be before blur blurred can configuring counted current cursor defaults distance does drag dragging element finger for his if in is it major maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move needs newdistance newshouldblur newtime not object occur of on options position problems scrolly sets should shouldblurondrag shouldblurontouch some starts the then there time to touch touches true used user value visual when whether with"
+      "keywords": "$draggerprovider active actively ajoslin an and any anymore api as be before blur blurred can configuring counted current cursor defaults distance does drag dragging element finger for his if in is it major maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move needs newdistance newshouldblur newtime not object occur of on options position problems scrolly sets should shouldblurondrag shouldblurontouch some starts the then there time to touch touches true used user value visual when whether with"
     },
     {
       "section": "api",
-      "id": "scrolly.$nextFrame",
+      "id": "ajoslin.scrolly.$nextFrame",
       "shortName": "$nextFrame",
       "type": "object",
-      "keywords": "$nextframe api available be call callback cancelanimationframe dom during ease fallback for frame has https id identifying if in is it main mocking mozilla next not object of or org passed ready reason redrawn request requestanimationframe requestid scrolly service tests the this to unique when window wrap"
+      "keywords": "$nextframe ajoslin api available be call callback cancelanimationframe dom during ease fallback for frame has https id identifying if in is it main mocking mozilla next not object of or org passed ready reason redrawn request requestanimationframe requestid scrolly service tests the this to unique when window wrap"
     },
     {
       "section": "api",
-      "id": "scrolly.$scroller",
+      "id": "ajoslin.scrolly.$scroller",
       "shortName": "$scroller",
       "type": "object",
-      "keywords": "$scroller an and api appropriately as attach called change close created creating drag element events factory for intended ios it listen look native newly object on once possible scroll-manipulator scroller scrolling scrolly simulate the those to transform use will"
+      "keywords": "$scroller ajoslin an and api appropriately as attach called change close created creating drag element events factory for intended ios it listen look native newly object on once possible scroll-manipulator scroller scrolling scrolly simulate the those to transform use will"
     },
     {
       "section": "api",
-      "id": "scrolly.$scrollerProvider",
+      "id": "ajoslin.scrolly.$scrollerProvider",
       "shortName": "$scrollerProvider",
       "type": "object",
-      "keywords": "$scrollerprovider actual after allowed and animation api are area away back bit bounce bouncebackdistancemulti bouncebackmintime bouncebuffer bouncing bring buffer configuring content current deceleration decelerationrate decide deciding disable distance distancepastcontent distances do effect effectively equation even exists factors farther following for from function getbouncetime go has higher how in into it less lets little long longer main makes means method milliseconds minimum momentum much multiplier need new newbouncebuffer newdistancemulti newrate newtime object of options past rate return scorlly scroll scrolled scrolling scrolls scrolly see set sets short should so still take the there this time to two used user view we when will"
+      "keywords": "$scrollerprovider able actual ajoslin allowed and animation api are area at away back be bit bounce bouncebackdistancemulti bouncebackmintime bouncebuffer bouncing boundary bring buffer change configuring content current decide deciding disable distance distancepastcontent distances do effectively else equation even example exists factors farther following for from function getbouncetime go goes half has he how if in into is it list little long longer main makes method milliseconds minimum more much multiplier need new newbouncebuffer newdistancemulti newrate newtime object of only option options past pastboundaryscrollrate rate return scroll scrolled scrolling scrolls scrolly see set sets short should so some something still take the there this time to top tries two up used user view we when will"
     },
     {
       "section": "api",
-      "id": "scrolly.$transformer",
+      "id": "ajoslin.scrolly.$transformer",
       "shortName": "$transformer",
       "type": "object",
-      "keywords": "$transformer allowing an and animate animation any api be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given if in is it manipulate manipulates milliseconds newly next object of on pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions used value version vertical vertically webkittransform webkittransition when will with you"
+      "keywords": "$transformer ajoslin allowing an and animate animation any api be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given if in is it manipulate manipulates milliseconds newly next object of on pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions used value version vertical vertically webkittransform webkittransition when will with you"
     },
     {
       "section": "api",
-      "id": "scrolly.$transformerProvider",
+      "id": "ajoslin.scrolly.$transformerProvider",
       "shortName": "$transformerProvider",
       "type": "object",
-      "keywords": "$transformerprovider api be configuring css current ease-in-out example for function method newtimingfunction object options scrolly sets the timing timingfunction to transform-transitions transformer used"
+      "keywords": "$transformerprovider ajoslin api be configuring css current ease-in-out example for function method newtimingfunction object options scrolly sets the timing timingfunction to transform-transitions transformer used"
     },
     {
       "section": "api",
-      "id": "scrolly.directive:scrollyScroll",
+      "id": "ajoslin.scrolly.directive:scrollyScroll",
       "shortName": "scrollyScroll",
       "type": "directive",
-      "keywords": "$scroller api attaches directive element example given in items me ng-repeat scrolly scrolly-scroll the to"
+      "keywords": "$scroller ajoslin api attaches directive element example given in items me ng-repeat scrolly scrolly-scroll the to"
     },
     {
       "section": "guide",
@@ -86,7 +86,7 @@ NG_DOCS={
       "id": "getting-started",
       "shortName": "Getting Started",
       "type": "overview",
-      "keywords": "ajoslin an and angular angular-scrolly as best bower build can check class clone com content dependency directive done download few file follow for from get getting github gotchas guide have hello html in include install it javascript js look make module more myawesomeapp on options out overview re readme repository scrolly-scroll see simply src started steps sure the these they things throw tips to with you your"
+      "keywords": "ajoslin an and angular angular-scrolly as best bower build can check class clone com content dependency directive done download few file follow for from get getting github gotchas guide have hello html in include install it javascript js look make module more myawesomeapp need options out overview re readme repository scrolly scrolly-scroll see simply src started steps sure the these they things throw tips to with you your"
     },
     {
       "section": "guide",
@@ -96,9 +96,9 @@ NG_DOCS={
       "keywords": "add advise allows an and animate app bigger body class coming copy css dialog do element few fix flickering from gotchas guide happens hidden html if in is it items its known making needed none on only other overview placing problem problems scrolling select selectable should some sometimes stop stylesheet tags than that the then things this to trying up user viewport want when where which why will words would you your"
     }
   ],
+  "html5Mode": false,
   "scripts": [
     "angular-1.1.4.js",
     "angular-scrolly.js"
-  ],
-  "html5Mode": false
+  ]
 };

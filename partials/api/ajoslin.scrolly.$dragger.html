@@ -1,0 +1,111 @@
+<h1><code ng:non-bindable="">$dragger</code>
+<span class="hint">(service in module <code ng:non-bindable="">ajoslin.scrolly</code>
+)</span>
+</h1>
+<div><h2 id="Description">Description</h2>
+<div class="description"><p>A factory for creating drag-listeners on elements. It only cares about
+vertical drag, usually used for scrolling.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">$dragger(element);</pre>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">element – {element} – </code>
+<p>Element to attach drag listeners to.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{object}</code>
+– <p>Newly created dragger object with the following methods:</p>
+
+<ul>
+<li><code>{void}</code> <code>addListener({function} callback)</code> - Adds a new drag 
+listener with the specified callback. </li>
+<li><code>{void}</code> <code>removeListener({function} callback)</code> Removes the given
+callback from the list of listeners.</li>
+</ul>
+
+<p>The <code>callback</code> given to addListener is called whenever a <code>start</code>, 
+<code>move</code>, or <code>end</code> drag event happens.  It takes the following parameter:</p>
+
+<ul>
+<li><strong><code>dragData</code></strong> - {object} - Data having to do with the drag, 
+abstracted to be more useful data than plain DOM events. See below 
+for the format of the data.</li>
+</ul>
+
+<h3 id="dragdata">Drag Data</h6>
+
+<p>The callbacks given to <code>addListener</code> take a <code>dragData</code> parameter, with
+the following properties for each event:</p>
+
+<ul>
+<li><code>{string}</code> <code>type</code> - The type of drag event being emitted.  This will
+be "start", "move", or "end".</li>
+</ul>
+
+<p><strong>Given for <code>start</code>, <code>move</code>, and <code>end</code> events:</strong></p>
+
+<ul>
+<li><code>{number}</code> <code>startPos</code> - The position on the page where the drag started.</li>
+<li><code>{number}</code> <code>startTime</code> - The timestamp of when the drag started.</li>
+</ul>
+
+<p><strong>Given for only <code>move</code> and <code>end</code> events:</strong></p>
+
+<ul>
+<li><code>{number}</code> <code>pos</code> - The current position of the drag on the page.</li>
+<li><code>{number}</code> <code>delta</code> - The change in position since the last <code>move</code> event.</li>
+<li><code>{number}</code> <code>distance</code> - The total distance the drag has moved.</li>
+</ul>
+
+<p><strong>Given for only <code>end</code> events:</strong></p>
+
+<ul>
+<li><code>{boolean}</code> <code>inactiveDrag</code> - Whether the user held his finger still 
+for longer than the <a href="#/api/ajoslin.scrolly.$draggerProvider#maxTimeMotionless">maximum allowed time</a>.</li>
+<li><code>{number}</code> <code>duration</code> - The total time the drag lasted.</li>
+</ul>
+
+<h3 id="ignoringdrag">Ignoring Drag</h6>
+
+<p>To make an element and all its children ignore dragging, add the <code>data-dragger-ignore</code> attribute to the element, like so:
+<pre class="prettyprint linenums">
+  &lt;div data-dragger-ignore&gt;
+    &lt;button&gt;Drag on me, it won't count!&lt;/button&gt;
+  &lt;/div&gt;
+</pre>
+
+<h2 id="example">Example</h5>
+
+<pre class="prettyprint linenums">
+ var dragger = new $dragger(element);
+
+ dragger.addListener(function(dragData) {
+   switch(dragData.type) {
+     case 'start':
+       alert("We just started a drag at " + dragData.startPos + "px");
+       break;
+     case 'move':
+       alert("We have moved " + dragData.delta + " since the last move.");
+       break;
+     case 'end':
+       alert("We just finished a drag, moving a total of " + dragData.distance + "px");
+   }
+ });
+ </pre></div>
+</div>
+<div class="member method"><h2 id="Methods">Methods</h2>
+<ul class="methods"><li><h3 id="events">events()</h3>
+<div class="events"><p>Returns the events used for dragging.</p><h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{object}</code>
+– <p>events object, with the following format:</p>
+
+<ul>
+<li><code>{string}</code> <code>start</code> - The start event, eg 'touchstart'</li>
+<li><code>{string}</code> <code>move</code> - The move event, eg 'touchmove'</li>
+<li><code>{string}</code> <code>end</code> - The end event, eg 'touchend'</li>
+<li><code>{string}</code> <code>cancel</code> - The cancel event, eg 'touchcancel'</li>
+</ul></div>
+</div>
+</li>
+</ul>
+</div>
+</div>

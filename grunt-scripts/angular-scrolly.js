@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.1 - 2013-05-29
+ * angular-scrolly - v0.0.1 - 2013-05-31
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -202,6 +202,11 @@ angular.module('ajoslin.scrolly', [
     arguments.length && (_decelerationRate = newDecelerationRate);
     return _decelerationRate;
   };
+  var _pastBoundaryScrollRate = 0.5;
+  this.pastBoundaryScrollRate = function (newRate) {
+    arguments.length && (_pastBoundaryScrollRate = newRate);
+    return _pastBoundaryScrollRate;
+  };
   var _bounceBuffer = 40;
   this.bounceBuffer = function (newBounceBuffer) {
     arguments.length && (_bounceBuffer = newBounceBuffer);
@@ -217,8 +222,8 @@ angular.module('ajoslin.scrolly', [
     arguments.length && (_bounceBackDistanceMulti = newBounceBackDistanceMult);
     return _bounceBackDistanceMulti;
   };
-  function getRect(elm) {
-    var style = window.getComputedStyle(elm);
+  function getRect(raw) {
+    var style = window.getComputedStyle(raw);
     var offTop = parseInt(style['margin-top'], 10) + parseInt(style['padding-top'], 10);
     var offBottom = parseInt(style['margin-bottom'], 10) + parseInt(style['padding-bottom'], 10);
     var height = parseInt(style.height, 10);
@@ -254,7 +259,6 @@ angular.module('ajoslin.scrolly', [
           }
           return self.scrollHeight;
         }
-        window.s = self;
         calculateHeight();
         function outOfBounds(pos) {
           if (pos > 0)
@@ -308,13 +312,11 @@ angular.module('ajoslin.scrolly', [
           if (howMuchOver) {
             if (howMuchOver > 0) {
               newPos = Math.min(howMuchOver, _bounceBuffer);
-              distance = Math.abs(newPos - transformer.pos);
-              time = distance / speed;
             } else if (howMuchOver < 0) {
               newPos = Math.max(newPos, -(self.scrollHeight + _bounceBuffer));
-              distance = Math.abs(newPos - transformer.pos);
-              time = distance / speed;
             }
+            distance = Math.abs(newPos - transformer.pos);
+            time = distance / speed;
           }
           return {
             position: newPos,
