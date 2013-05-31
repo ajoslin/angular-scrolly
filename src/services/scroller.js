@@ -1,6 +1,6 @@
 /**
  * @ngdoc object
- * @name scrolly.$scrollerProvider
+ * @name ajoslin.scrolly.$scrollerProvider
  * 
  * @description
  * Used for configuring scroll options.
@@ -12,20 +12,6 @@ angular.module('ajoslin.scrolly.scroller', [
 ])
 .provider('$scroller', function() {
 
-  /**
-   * @ngdoc method
-   * @name scrolly.$scrollerProvider#decelerationRate
-   * @methodOf scrolly.$scrollerProvider
-   *
-   * @description
-   * Sets/gets the decelerationRate used in the 'momentum' effect after 
-   * the user lets go from scrolling.  A higher deceleration rate means 
-   * less momentum.
-   *
-   * @param {number=} newRate The new decelerationRate to set.
-   * @returns {number} decelerationRate The current deceleration rate.
-   */
-
   var _decelerationRate = 0.001;
   this.decelerationRate = function(newDecelerationRate) {
     arguments.length && (_decelerationRate = newDecelerationRate);
@@ -34,16 +20,36 @@ angular.module('ajoslin.scrolly.scroller', [
 
   /**
    * @ngdoc method
-   * @name scrolly.$scrollerProvider#bounceBuffer
-   * @methodOf scrolly.$scrollerProvider
+   * @name ajoslin.scrolly.$scrollerProvider#pastBoundaryScrollRate
+   * @methodOf ajoslin.scrolly.$scrollerProvider
    *
    * @description
-   * Sets/gets the buffer allowed for the scroll to 'bounce' past the actual content area.  Set this to 0 to effectively disable bouncing.
+   * Sets/gets the rate scrolling should go when the user goes past the boundary.
+   * For example, if the user is at the top of the list and tries to scroll up
+   * some more, he will only be able to scroll at half the rate.  
+   * Change this option to change 'half' to something else.
+   *
+   * @param {number=} newRate The new pastBoundaryScrollRate to set.
+   * @returns {number} pastBoundaryScrollRate The current scroll rate.
+   */
+  var _pastBoundaryScrollRate = 0.5;
+  this.pastBoundaryScrollRate = function(newRate) {
+    arguments.length && (_pastBoundaryScrollRate = newRate);
+    return _pastBoundaryScrollRate;
+  };
+
+  /**
+   * @ngdoc method
+   * @name ajoslin.scrolly.$scrollerProvider#bounceBuffer
+   * @methodOf ajoslin.scrolly.$scrollerProvider
+   *
+   * @description
+   * Sets/gets the buffer allowed for the scroll to 'bounce' past the actual
+   * content area.  Set this to 0 to effectively disable bouncing.
    *
    * @param {number=} newBounceBuffer The new bounce buffer to set.
    * @returns {number} bounceBuffer The current bounce buffer.
    */
-
   var _bounceBuffer = 40;
   this.bounceBuffer = function(newBounceBuffer) {
     arguments.length && (_bounceBuffer = newBounceBuffer);
@@ -53,11 +59,11 @@ angular.module('ajoslin.scrolly.scroller', [
 
   /**
    * @ngdoc method
-   * @name scrolly.$scrollerProvider#bounceBackMinTime
-   * @methodOf scrolly.$scrollerProvider
+   * @name ajoslin.scrolly.$scrollerProvider#bounceBackMinTime
+   * @methodOf ajoslin.scrolly.$scrollerProvider
    *
    * @description
-   * See {@link scrolly.$scrollerProvider#bounceBackDistanceMulti bounceBackDistanceMulti}.
+   * See {@link ajoslin.scrolly.$scrollerProvider#bounceBackDistanceMulti bounceBackDistanceMulti}.
    *
    * @param {number=} newTime The new bounce back minimum time to set.
    * @returns {number} bounceBackMinTime The current bounce back minimum time.
@@ -65,8 +71,8 @@ angular.module('ajoslin.scrolly.scroller', [
 
   /**
    * @ngdoc method
-   * @name scorlly.$scrollerProvider#bounceBackDistanceMulti
-   * @methodOf scrolly.$scrollerProvider
+   * @name ajoslin.scrolly.$scrollerProvider#bounceBackDistanceMulti
+   * @methodOf ajoslin.scrolly.$scrollerProvider
    *
    * @description
    * When the user scrolls past the content area into the bounce buffer, 
@@ -104,8 +110,8 @@ angular.module('ajoslin.scrolly.scroller', [
     return _bounceBackDistanceMulti;
   };
 
-  function getRect(elm) {
-    var style = window.getComputedStyle(elm);
+  function getRect(raw) {
+    var style = window.getComputedStyle(raw);
     var offTop = parseInt(style['margin-top'], 10) + 
         parseInt(style['padding-top'], 10);
     var offBottom = parseInt(style['margin-bottom'], 10) + 
@@ -131,7 +137,7 @@ angular.module('ajoslin.scrolly.scroller', [
 
     /**
      * @ngdoc object
-     * @name scrolly.$scroller
+     * @name ajoslin.scrolly.$scroller
      *
      * @description
      * A factory for creating a scroll-manipulator on an element. Once called
@@ -164,7 +170,6 @@ angular.module('ajoslin.scrolly.scroller', [
         }
         return self.scrollHeight;
       }
-      window.s = self;
       calculateHeight();
 
       function outOfBounds(pos) {
@@ -232,14 +237,11 @@ angular.module('ajoslin.scrolly.scroller', [
         if (howMuchOver) {
           if (howMuchOver > 0) {
             newPos = Math.min(howMuchOver, _bounceBuffer);
-            distance = Math.abs(newPos - transformer.pos);
-            time = distance / speed;
-
           } else if (howMuchOver < 0) {
             newPos = Math.max(newPos, -(self.scrollHeight + _bounceBuffer));
-            distance = Math.abs(newPos - transformer.pos);
-            time = distance / speed;
           }
+          distance = Math.abs(newPos - transformer.pos);
+          time = distance / speed;
         }
         return {
           position: newPos,

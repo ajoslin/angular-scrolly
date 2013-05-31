@@ -86,22 +86,22 @@ module.exports = function(grunt) {
       options: {
         dest: '<%= docs %>',
         title: 'angular-scrolly',
-        navTemplate: 'misc/docs/nav-template.html',
+        navTemplate: 'docs/html/nav.html',
         scripts: [
-          'misc/docs/angular-1.1.4.js',
+          'docs/js/angular-1.1.4.js',
           'dist/angular-scrolly.js'
         ],
         styles: [
-          'misc/docs/style.css'
+          'docs/css/style.css'
         ],
         html5Mode: false
       },
       api: {
-        src: ['src/**/*.js', 'docs/api/**/*.ngdoc'],
+        src: ['src/**/*.js', 'docs/content/api/**/*.ngdoc'],
         title: 'API Documentation'
       },
       guide: {
-        src: ['docs/guide/**/*.ngdoc'],
+        src: ['docs/content/guide/**/*.ngdoc'],
         title: 'Guide'
       }
     },
@@ -120,12 +120,14 @@ module.exports = function(grunt) {
     shell: {
       docs: [ 
         'grunt build docs',
+        'git stash',
         'git checkout gh-pages',
         'cp -Rf dist/docs/* .',
         'git add -A',
         'git commit -am "chore(): Update docs"',
         'git push origin gh-pages',
-        'git checkout master'
+        'git checkout master',
+        'git stash pop'
       ],
       release: [
         'grunt build',
@@ -149,7 +151,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', function() {
     if (!grunt.file.exists('.git/hooks/commit-msg')) {
-      sh.cp('misc/validate-commit-msg.js', '.git/hooks/commit-msg');
+      sh.cp('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
       require('fs').chmodSync('.git/hooks/commit-msg', '0755');
     }
     grunt.task.run(['ngmin', 'concat', 'uglify']);
@@ -162,9 +164,10 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('shell', 'run shell commands', function() {
     var cmd = this.data;
     for (var i=0; i<cmd.length; i++) {
+      grunt.log.ok(cmd[i]);
       var result = sh.exec(cmd[i], {silent:true});
       if (result.code !== 0) {
-        grunt.fatal("Shell task failed on '" + cmd[i] + "' with error '" + result.output + "'.");
+        grunt.fatal(result.output);
         return;
       }
     }
@@ -174,6 +177,6 @@ module.exports = function(grunt) {
     sh.exec('grunt bump:' + (this.args[0] || 'patch'));
     grunt.config('pkg', grunt.file.readJSON('bower.json')); //Refresh package
     grunt.task.run('shell:release');
-    //grunt.task.run('shell:docs');
+    grunt.task.run('shell:docs');
   });
 };

@@ -1,10 +1,10 @@
 
 /**
  * @ngdoc object
- * @name scrolly.$draggerProvider
+ * @name ajoslin.scrolly.$draggerProvider
  *
  * @description
- * Used for configuring drag options. 
+  Used for configuring drag options. 
  *
  */
 
@@ -13,8 +13,8 @@ angular.module('ajoslin.scrolly.dragger', [])
 
   /**
    * @ngdoc method
-   * @name scrolly.$draggerProvider#shouldBlurOnTouch
-   * @methodOf scrolly.$draggerProvider
+   * @name ajoslin.scrolly.$draggerProvider#shouldBlurOnTouch
+   * @methodOf ajoslin.scrolly.$draggerProvider
    * 
    * @description
    * Sets/gets whether any active element should be blurred when the user touches and starts dragging.
@@ -34,8 +34,8 @@ angular.module('ajoslin.scrolly.dragger', [])
 
   /**
    * @ngdoc method
-   * @name scrolly.$draggerProvider#minDistanceForDrag
-   * @methodOf scrolly.$draggerProvider
+   * @name ajoslin.scrolly.$draggerProvider#minDistanceForDrag
+   * @methodOf ajoslin.scrolly.$draggerProvider
    *
    * @description
    * Sets/gets the minimum distance the user needs to move his finger before
@@ -52,8 +52,8 @@ angular.module('ajoslin.scrolly.dragger', [])
 
   /**
    * @ngdoc method
-   * @name scrolly.$draggerProvider#maxTimeMotionless
-   * @methodOf scrolly.$draggerProvider
+   * @name ajoslin.scrolly.$draggerProvider#maxTimeMotionless
+   * @methodOf ajoslin.scrolly.$draggerProvider
    *
    * @description
    * Sets/gets the maximum time a user can be motionless, in milliseconds, before 
@@ -84,7 +84,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
     /**
      * @ngdoc object
-     * @name scrolly.$dragger
+     * @name ajoslin.scrolly.$dragger
      *
      * @description
      * A factory for creating drag-listeners on elements. It only cares about
@@ -127,7 +127,7 @@ angular.module('ajoslin.scrolly.dragger', [])
      * **Given for only `end` events:**
      * 
      *   - `{boolean}` `inactiveDrag` - Whether the user held his finger still 
-     *   for longer than the {@link scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
+     *   for longer than the {@link ajoslin.scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
      *   - `{number}` `duration` - The total time the drag lasted.
      *
      * ### Ignoring Drag
@@ -336,8 +336,8 @@ angular.module('ajoslin.scrolly.dragger', [])
 
     /**
      * @ngdoc method
-     * @name scrolly.$dragger#events
-     * @methodOf scrolly.$dragger
+     * @name ajoslin.scrolly.$dragger#events
+     * @methodOf ajoslin.scrolly.$dragger
      *
      * @description 
      * Returns the events used for dragging.

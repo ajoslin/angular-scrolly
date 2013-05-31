@@ -11,9 +11,9 @@
     "grunt-ngmin": "0.0.2",
     "grunt-contrib-watch": "~0.4.3",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-conventional-changelog": "git://github.com/btford/grunt-conventional-changelog",
-    "grunt-ngdocs": "git://github.com/ajoslin/grunt-ngdocs",
+    "grunt-ngdocs": "git://github.com/m7r/grunt-ngdocs",
     "shelljs": "~0.1.4",
-    "grunt-bump": "git://github.com/ajoslin/grunt-bump"
+    "grunt-bump": "git://github.com/ajoslin/grunt-bump",
+    "grunt-conventional-changelog": "~0.1.0"
   }
 }

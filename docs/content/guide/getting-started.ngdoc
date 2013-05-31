@@ -9,19 +9,19 @@ To get started with angular-scrolly, follow these steps:
 
 #### 1. Get the Javascript file. 
 
-You have a few options.
+You have a few options for getting the javascript you need.
 
-* You can install it on bower (TODO):
+* a. You can install it from bower (TODO):
 
 ```
 bower install ajoslin/angular-scrolly
 ```
 
-* You can simply download it from github (TODO):
+* b. You can simply download it from github:
 
 [http://raw.github.com/ajoslin/angular-scrolly/master/angular-scrolly.js](http://raw.github.com/ajoslin/angular-scrolly/master/angular-scrolly.js)
 
-* You can clone the repository and build it. See the [project README](http://github.com/ajoslin/angular-scrolly).
+* c. You can clone the repository and build it. See the [project README](http://github.com/ajoslin/angular-scrolly).
 
 #### 2. Include the javascript file in your HTML and as an angular dependency.
 
@@ -29,7 +29,7 @@ bower install ajoslin/angular-scrolly
 <script src="angular-scrolly.js"></script>
 </pre>
 <pre>
-angular.module('myAwesomeApp', ['ajoslin.angular-scrolly']);
+angular.module('myAwesomeApp', ['ajoslin.scrolly']);
 </pre>
 
 #### 3. Throw in a `scrolly-scroll` directive

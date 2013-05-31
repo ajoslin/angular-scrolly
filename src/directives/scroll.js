@@ -1,7 +1,8 @@
 
 /**
  * @ngdoc directive
- * @name scrolly.directive:scrollyScroll
+ * @name ajoslin.scrolly.directive:scrollyScroll
+ * @restrict A
  *
  * @description
  * Attaches a {@link #/scrolly.$scroller $scroller} to the given element.

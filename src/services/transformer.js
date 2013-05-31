@@ -1,7 +1,7 @@
 
 /**
  * @ngdoc object
- * @name scrolly.$transformerProvider
+ * @name ajoslin.scrolly.$transformerProvider
  * 
  * @description
  * Used for configuring transformer options.  
@@ -10,7 +10,7 @@ angular.module('ajoslin.scrolly.transformer', [])
 
 /**
  * @ngdoc object
- * @name scrolly.$nextFrame
+ * @name ajoslin.scrolly.$nextFrame
  * 
  * @description 
  * A service to wrap {@link https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame window.requestAnimationFrame}, or a fallback if it is not available.
@@ -35,8 +35,8 @@ angular.module('ajoslin.scrolly.transformer', [])
 
   /**
    * @ngdoc method
-   * @name scrolly.$transformerProvider#timingFunction
-   * @methodOf scrolly.$transformerProvider
+   * @name ajoslin.scrolly.$transformerProvider#timingFunction
+   * @methodOf ajoslin.scrolly.$transformerProvider
    * 
    * @description
    * Sets/gets the CSS timing function used for transform-transitions. For example "ease-in-out".
@@ -58,7 +58,7 @@ angular.module('ajoslin.scrolly.transformer', [])
 
     /**
      * @ngdoc object
-     * @name scrolly.$transformer
+     * @name ajoslin.scrolly.$transformer
      *
      * @description
      * A factory for creating a transformation-manipulator on an element.  It manipulates the transform of an element vertically, allowing you to set, get, and animate the given element's transform.
@@ -155,8 +155,8 @@ angular.module('ajoslin.scrolly.transformer', [])
 
     /**
      * @ngdoc property
-     * @name scrolly.$transformer#transformProp
-     * @propertyOf scrolly.$transformer
+     * @name ajoslin.scrolly.$transformer#transformProp
+     * @propertyOf ajoslin.scrolly.$transformer
      *
      * @description {string} The property used for element transformations.  For example "webkitTransform".
      */
@@ -164,8 +164,8 @@ angular.module('ajoslin.scrolly.transformer', [])
 
     /**
      * @ngdoc property
-     * @name scrolly.$transformer#transformPropDash
-     * @propertyOf scrolly.$transformer
+     * @name ajoslin.scrolly.$transformer#transformPropDash
+     * @propertyOf ajoslin.scrolly.$transformer
      *
      * @description {string} The property used for element transformations, "dashed version". For example "-webkit-transform". 
      */
@@ -173,8 +173,8 @@ angular.module('ajoslin.scrolly.transformer', [])
     $transformer.transformPropDash = transformPropDash;
     /**
      * @ngdoc property
-     * @name scrolly.$transformer#transitionprop
-     * @propertyOf scrolly.$transformer
+     * @name ajoslin.scrolly.$transformer#transitionprop
+     * @propertyOf ajoslin.scrolly.$transformer
      *
      * @description {string} The property used for element transitions.  For example "webkitTransition".
      */
