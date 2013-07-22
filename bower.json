@@ -4,20 +4,6 @@
   "homepage": "http://github.com/ajoslin/angular-scrolly",
   "author": "Andy Joslin",
   "license": "Public Domain",
-  "main": [
-    "./angular-scrolly.js"
-  ],
-  "ignore": [
-    "Gruntfile.js",
-    "README.md",
-    "bower.json",
-    "demo",
-    "docs",
-    "misc",
-    "package.json",
-    "src",
-    "test"
-  ],
   "devDependencies": {
     "angular-mocks": "~1.0.7",
     "angular-unstable": "~1.1.4",
