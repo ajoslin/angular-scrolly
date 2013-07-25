@@ -265,7 +265,7 @@ docsApp.serviceFactory.sections = function serviceFactory() {
     if (page.id == 'angular.Module') {
       page.partialUrl = 'partials/api/angular.IModule.html';
     } else {
-      page.partialUrl = 'partials/' + url + '.html';
+      page.partialUrl = 'partials/' + url.replace(':', '.') + '.html';
     }
     page.url = (NG_DOCS.html5Mode ? '' : '#/') + url;
     if (!sections[page.section]) { sections[page.section] = []; }
@@ -284,6 +284,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
       MODULE_DIRECTIVE = /^(.+)\.directive:([^\.]+)$/,
       MODULE_DIRECTIVE_INPUT = /^(.+)\.directive:input\.([^\.]+)$/,
       MODULE_FILTER = /^(.+)\.filter:([^\.]+)$/,
+      MODULE_CUSTOM = /^(.+)\.([^\.]+):([^\.]+)$/,
       MODULE_SERVICE = /^(.+)\.([^\.]+?)(Provider)?$/,
       MODULE_TYPE = /^([^\.]+)\..+\.([A-Z][^\.]+)$/;
 
@@ -307,7 +308,10 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
   };
 
   $scope.submitForm = function() {
-    $scope.bestMatch && $location.path($scope.bestMatch.page.url);
+    if ($scope.bestMatch) {
+      var url =  $scope.bestMatch.page.url;
+      $location.path(NG_DOCS.html5Mode ? url : url.substring(1));
+    }
   };
 
   $scope.afterPartialLoaded = function() {
@@ -347,7 +351,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
       match, sectionPath = (NG_DOCS.html5Mode ? '' : '#/') +  sectionId;
 
     if (partialId) {
-      breadcrumb.push({ name: sectionName, url: sectionPath });
+      breadcrumb.push({ name: NG_DOCS.sections[sectionName], url: sectionPath });
       if (partialId == 'angular.Module') {
         breadcrumb.push({ name: 'angular.Module' });
       } else if (match = partialId.match(GLOBALS)) {
@@ -364,19 +368,27 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
         breadcrumb.push({ name: match[1], url: sectionPath + '/' + match[1] });
         breadcrumb.push({ name: 'input' });
         breadcrumb.push({ name: match[2] });
+      } else if (match = partialId.match(MODULE_CUSTOM)) {
+        breadcrumb.push({ name: match[1], url: sectionPath + '/' + match[1] });
+        breadcrumb.push({ name: match[3] });
       } else if (match = partialId.match(MODULE_TYPE)) {
         breadcrumb.push({ name: match[1], url: sectionPath + '/' + match[1] });
         breadcrumb.push({ name: match[2] });
       }  else if (match = partialId.match(MODULE_SERVICE)) {
-        breadcrumb.push({ name: match[1], url: sectionPath + '/' + match[1] });
-        breadcrumb.push({ name: match[2] + (match[3] || '') });
+        if ( page.type === 'overview') {
+          // module name with dots looks like a service
+          breadcrumb.push({ name: partialId });
+        } else {
+          breadcrumb.push({ name: match[1], url: sectionPath + '/' + match[1] });
+          breadcrumb.push({ name: match[2] + (match[3] || '') });
+        }
       } else if (match = partialId.match(MODULE_MOCK)) {
         breadcrumb.push({ name: 'angular.mock.' + match[1] });
       } else {
         breadcrumb.push({ name: page.shortName });
       }
     } else {
-      breadcrumb.push({ name: sectionName });
+      breadcrumb.push({ name: NG_DOCS.sections[sectionName] });
     }
   });
 
@@ -395,7 +407,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
   $scope.loading = 0;
 
   if (!$location.path() || INDEX_PATH.test($location.path())) {
-    $location.path('/api').replace();
+    $location.path(NG_DOCS.startPage).replace();
   }
   // bind escape to hash reset callback
   angular.element(window).bind('keydown', function(e) {
@@ -420,7 +432,8 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
 
     angular.forEach(pages, function(page) {
       var match,
-        id = page.id;
+        id = page.id,
+        section = page.section;
 
       if (!(match = rank(page, search))) return;
 
@@ -430,26 +443,32 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
 
       if (page.id == 'index') {
         //skip
-      } else if (page.section != 'api') {
+      } else if (!NG_DOCS.apis[section]) {
         otherPages.push(page);
       } else if (id == 'angular.Module') {
-        module('ng').types.push(page);
+        module('ng', section).types.push(page);
       } else if (match = id.match(GLOBALS)) {
-        module('ng').globals.push(page);
+        module('ng', section).globals.push(page);
       } else if (match = id.match(MODULE)) {
-        module(match[1]);
+        module(match[1], section);
       } else if (match = id.match(MODULE_FILTER)) {
-        module(match[1]).filters.push(page);
+        module(match[1], section).filters.push(page);
       } else if (match = id.match(MODULE_DIRECTIVE)) {
-        module(match[1]).directives.push(page);
+        module(match[1], section).directives.push(page);
       } else if (match = id.match(MODULE_DIRECTIVE_INPUT)) {
-        module(match[1]).directives.push(page);
+        module(match[1], section).directives.push(page);
+      } else if (match = id.match(MODULE_CUSTOM)) {
+        module(match[1], section).others.push(page);
       } else if (match = id.match(MODULE_TYPE)) {
-        module(match[1]).types.push(page);
+        module(match[1], section).types.push(page);
       } else if (match = id.match(MODULE_SERVICE)) {
-        module(match[1]).service(match[2])[match[3] ? 'provider' : 'instance'] = page;
+        if (page.type === 'overview') {
+          module(id, section);
+        } else {
+          module(match[1], section).service(match[2])[match[3] ? 'provider' : 'instance'] = page;
+        }
       } else if (match = id.match(MODULE_MOCK)) {
-        module('ngMock').globals.push(page);
+        module('ngMock', section).globals.push(page);
       }
 
     });
@@ -458,15 +477,16 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
 
     /*************/
 
-    function module(name) {
+    function module(name, section) {
       var module = cache[name];
       if (!module) {
         module = cache[name] = {
           name: name,
-          url: (NG_DOCS.html5Mode ? '' : '#/') + 'api/' + name,
+          url: (NG_DOCS.html5Mode ? '' : '#/') + section + '/' + name,
           globals: [],
           directives: [],
           services: [],
+          others: [],
           service: function(name) {
             var service =  cache[this.name + ':' + name];
             if (!service) {

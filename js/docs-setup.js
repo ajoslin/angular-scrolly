@@ -16,7 +16,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$dragger",
       "shortName": "$dragger",
       "type": "object",
-      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds ajoslin alert all allowed an and api at attach attribute be being below break callback callbacks called cancel cares case change children count created creating current data data-dragger-ignore delta distance do dom drag drag-listeners dragdata dragger dragging duration each eg element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me method methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes returns scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total touchcancel touchend touchmove touchstart type used useful user usually var vertical we when whenever where whether will with won"
+      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds ajoslin alert all allowed an and api at attach attribute be being below break callback callbacks called cares case change children count created creating current data data-dragger-ignore delta distance do dom drag drag-listeners dragdata dragger dragging duration each element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total type used useful user usually var vertical we when whenever where whether will with won"
     },
     {
       "section": "api",
@@ -51,7 +51,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$transformer",
       "shortName": "$transformer",
       "type": "object",
-      "keywords": "$transformer ajoslin allowing an and animate animation any api be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given if in is it manipulate manipulates milliseconds newly next object of on pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions used value version vertical vertically webkittransform webkittransition when will with you"
+      "keywords": "$transformer ajoslin allowing an and animate animation any api as be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given if in instead is it key manipulate manipulates milliseconds newly next object of on operate options pass pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions translatex true used value version vertical vertically webkittransform webkittransition when will wish with you"
     },
     {
       "section": "api",
@@ -96,9 +96,14 @@ NG_DOCS={
       "keywords": "add advise allows an and animate app bigger body class coming copy css dialog do element few fix flickering from gotchas guide happens hidden html if in is it items its known making needed none on only other overview placing problem problems scrolling select selectable should some sometimes stop stylesheet tags than that the then things this to trying up user viewport want when where which why will words would you your"
     }
   ],
+  "apis": {
+    "api": true,
+    "guide": false
+  },
   "html5Mode": false,
+  "startPage": "/api",
   "scripts": [
-    "angular-1.1.4.js",
+    "angular.js",
     "angular-scrolly.js"
   ]
 };

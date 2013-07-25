@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.1 - 2013-05-31
+ * angular-scrolly - v0.0.1 - 2013-07-25
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -52,12 +52,6 @@ angular.module('ajoslin.scrolly', [
     '$document',
     function ($window, $document) {
       var hasTouch = 'ontouchstart' in $window;
-      var events = {
-          start: hasTouch ? 'touchstart' : 'mousedown',
-          move: hasTouch ? 'touchmove' : 'mousemove',
-          end: hasTouch ? 'touchend' : 'mouseup',
-          cancel: hasTouch ? 'touchcancel' : ''
-        };
       function $dragger(elm) {
         var self = {};
         var raw = elm[0];
@@ -77,24 +71,22 @@ angular.module('ajoslin.scrolly', [
             cb(eventType, arg);
           });
         }
-        elm.bind(events.start, dragStart);
-        elm.bind(events.move, dragMove);
-        elm.bind(events.end, dragEnd);
-        events.cancel && elm.bind(events.cancel, dragEnd);
-        if (!hasTouch) {
-          elm.bind('mouseout', function mouseout(e) {
-            var t = e.relatedTarget;
-            if (!t) {
-              dragEnd(e);
-            } else {
-              while (t = t.parentNode) {
-                if (t === elm)
-                  return;
-              }
-              dragEnd(e);
+        elm.bind('touchstart', dragStart);
+        elm.bind('touchmove', dragMove);
+        elm.bind('touchend touchcancel', dragEnd);
+        elm.bind('mouseout', function mouseout(e) {
+          e = e.originalEvent || e;
+          var t = e.relatedTarget;
+          if (!t) {
+            dragEnd(e);
+          } else {
+            while (t = t.parentNode) {
+              if (t === elm)
+                return;
             }
-          });
-        }
+            dragEnd(e);
+          }
+        });
         function restartDragState(y) {
           state.startPos = state.pos = y;
           state.startTime = Date.now();
@@ -104,14 +96,13 @@ angular.module('ajoslin.scrolly', [
           return raw && raw.tagName === 'INPUT' || raw.tagName === 'SELECT' || raw.tagName === 'TEXTAREA';
         }
         function dragStart(e) {
-          if (!hasTouch && e.button)
-            return;
+          e = e.originalEvent || e;
           var target = e.target || e.srcElement;
           var point = e.touches ? e.touches[0] : e;
           if (parentWithAttr(target, 'data-dragger-ignore')) {
             return;
           }
-          if (_shouldBlurOnDrag && target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && target.tagName !== 'SELECT') {
+          if (_shouldBlurOnDrag && isInput(target)) {
             document.activeElement && document.activeElement.blur();
           }
           state.moved = false;
@@ -127,6 +118,7 @@ angular.module('ajoslin.scrolly', [
           });
         }
         function dragMove(e) {
+          e = e.originalEvent || e;
           e.preventDefault();
           if (state.dragging) {
             var point = e.touches ? e.touches[0] : e;
@@ -154,6 +146,7 @@ angular.module('ajoslin.scrolly', [
           }
         }
         function dragEnd(e) {
+          e = e.originalEvent || e;
           if (state.dragging) {
             state.dragging = false;
             var duration = Date.now() - state.startTime;
@@ -187,9 +180,6 @@ angular.module('ajoslin.scrolly', [
         };
         return self;
       }
-      $dragger.events = function () {
-        return events;
-      };
       return $dragger;
     }
   ];
@@ -243,12 +233,31 @@ angular.module('ajoslin.scrolly', [
     '$dragger',
     '$transformer',
     '$window',
-    function ($dragger, $transformer, $window) {
+    '$document',
+    function ($dragger, $transformer, $window, $document) {
       function scroller(elm) {
         var self = {};
         var raw = elm[0];
         var transformer = new $transformer(elm);
         var dragger = new $dragger(elm);
+        var SCROLL_OFFSET = 200;
+        setTimeout(function () {
+          document.body.scrollTop = SCROLL_OFFSET;
+          document.body.style[$transformer.transformProp] = 'translate3d(0, ' + SCROLL_OFFSET + 'px, 0)';
+        });
+        angular.element($window).bind('scroll', function () {
+          var scroll = document.body.scrollTop - SCROLL_OFFSET;
+          var newPos = transformer.pos - scroll;
+          calculateHeight();
+          if (newPos >= 0) {
+            transformer.setTo(0);
+          } else if (newPos <= -self.scrollHeight) {
+            transformer.setTo(-self.scrollHeight);
+          } else {
+            transformer.setTo(newPos);
+          }
+          document.body.scrollTop = SCROLL_OFFSET;
+        });
         function calculateHeight() {
           var rect = getRect(raw);
           var screenHeight = $window.innerHeight;
@@ -348,20 +357,38 @@ angular.module('ajoslin.scrolly', [
   this.$get = [
     '$window',
     '$nextFrame',
-    function ($window, $nextFrame) {
-      var transformProp = 'webkitTransform';
-      var transformPropDash = '-webkit-transform';
-      var transitionProp = 'webkitTransition';
+    '$sniffer',
+    function ($window, $nextFrame, $sniffer) {
+      var prefix = ($sniffer.vendorPrefix || '').toLowerCase();
+      var transformProp = prefix ? prefix + 'Transform' : 'transform';
+      var transformPropDash = prefix ? '-' + prefix + '-transform' : 'transform';
+      var transitionProp = prefix ? prefix + 'Transition' : 'transition';
       function transitionString(transitionTime) {
         return transformPropDash + ' ' + transitionTime + 'ms ' + timingFunction;
       }
-      function $transformer(elm) {
+      function transformGetterX(n) {
+        return 'translate3d(' + n + 'px,0,0)';
+      }
+      function transformGetterY(n) {
+        return 'translate3d(0,' + n + 'px,0)';
+      }
+      function $transformer(elm, options) {
         var self = {};
         var raw = elm[0];
+        var _transformGetter;
+        var _matrixIndex;
+        options = options || {};
+        if (options.translateX) {
+          _transformGetter = transformGetterX;
+          _matrixIndex = 4;
+        } else {
+          _transformGetter = transformGetterY;
+          _matrixIndex = 5;
+        }
         self.$$calcPosition = function () {
           var matrix = $window.getComputedStyle(raw)[transformProp].replace(/[^0-9-.,]/g, '').split(',');
           if (matrix.length > 1) {
-            return parseInt(matrix[5], 10);
+            return parseInt(matrix[_matrixIndex], 10);
           } else {
             return 0;
           }
@@ -381,7 +408,7 @@ angular.module('ajoslin.scrolly', [
             done && done();
           });
         };
-        self.easeTo = function (y, transitionTime, done) {
+        self.easeTo = function (n, transitionTime, done) {
           if (!angular.isNumber(transitionTime) || transitionTime < 0) {
             throw new Error('Expected a positive number for time, got \'' + transitionTime + '\'.');
           }
@@ -394,7 +421,7 @@ angular.module('ajoslin.scrolly', [
             raw.style[transitionProp] = transitionString(transitionTime);
             self.changing = true;
             $nextFrame(function () {
-              self.setTo(y);
+              self.setTo(n);
               transitionEndTimeout = $window.setTimeout(function () {
                 self.stop();
                 done && done();
@@ -402,9 +429,9 @@ angular.module('ajoslin.scrolly', [
             });
           }
         };
-        self.setTo = function (y) {
-          self.pos = y;
-          raw.style[transformProp] = 'translate3d(0,' + y + 'px,0)';
+        self.setTo = function (n) {
+          self.pos = n;
+          raw.style[transformProp] = _transformGetter(n);
         };
         return self;
       }

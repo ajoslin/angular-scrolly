@@ -32,7 +32,7 @@
          addTag('link', {rel: 'stylesheet', href: 'css/style.css', type: 'text/css'}, sync);
       
       
-        addTag('script', {src: 'grunt-scripts/angular-1.1.4.js'}, sync);
+        addTag('script', {src: 'grunt-scripts/angular.js'}, sync);
       
         addTag('script', {src: 'grunt-scripts/angular-scrolly.js'}, sync);
       
@@ -153,24 +153,28 @@
               <a class="code" href="{{module.url}}">{{module.name}}</a>
             </li>
 
+            <li ng-repeat="page in module.others" ng-class="navClass(page)" class="api-list-item">
+              <a href="{{page.url}}" tabindex="2">{{page.shortName}}</a>
+            </li>
+
             <li class="nav-header section" ng-show="module.directives">
               <a class="guide">directive</a>
             </li>
-            <li ng-repeat="page in module.directives" ng-class="navClass(page)" ng-animate="'expand'" class="api-list-item">
+            <li ng-repeat="page in module.directives" ng-class="navClass(page)" class="api-list-item">
               <a href="{{page.url}}" tabindex="2">{{page.shortName}}</a>
             </li>
 
             <li class="nav-header section" ng-show="module.filters">
               <a class="guide">filter</a>
             </li>
-            <li ng-repeat="page in module.filters" ng-class="navClass(page)" ng-animate="'expand'" class="api-list-item">
+            <li ng-repeat="page in module.filters" ng-class="navClass(page)" class="api-list-item">
               <a href="{{page.url}}" tabindex="2">{{page.shortName}}</a>
             </li>
 
             <li class="nav-header section" ng-show="module.services">
               <a class="guide">service</a>
             </li>
-            <li ng-repeat="service in module.services" ng-animate="'expand'" ng-class="navClass(service.instance, service.provider)" class="api-list-item">
+            <li ng-repeat="service in module.services" ng-class="navClass(service.instance, service.provider)" class="api-list-item">
               <a ng-show="service.provider" class="pull-right" href="{{service.provider.url}}" tabindex="2"><i class="icon-cog"></i></a>
               <a href="{{service.instance.url}}" tabindex="2">{{service.name}}</a>
             </li>
@@ -178,7 +182,7 @@
             <li class="nav-header section" ng-show="module.types">
               <a class="guide">Types</a>
             </li>
-            <li ng-repeat="page in module.types" ng-class="navClass(page)" ng-animate="'expand'" class="api-list-item">
+            <li ng-repeat="page in module.types" ng-class="navClass(page)" class="api-list-item">
               <a href="{{page.url}}" tabindex="2">{{page.shortName}}</a>
             </li>
 
