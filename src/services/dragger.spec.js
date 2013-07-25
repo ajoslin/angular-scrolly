@@ -38,14 +38,8 @@ describe('scrolly.dragger', function() {
     dragger.removeListener(function(){});
   });
 
-  it('should expost events getter', function() {
-    expect(typeof $dragger.events).toBe('function');
-    expect(typeof $dragger.events()).toBe('object');
-  });
-
   describe('added listener', function() {
     var dragSpy;
-    var events;
     var dragData;
     var nowTime;
     beforeEach(function() {
@@ -57,11 +51,10 @@ describe('scrolly.dragger', function() {
         return nowTime;
       });
       dragger.addListener(dragSpy);
-      events = $dragger.events();
     });
 
     function triggerDrag(type, data, element) {
-      var e = $.Event(events[type]);
+      var e = $.Event(type);
       $.extend(e, { 
         target: elm,
         timeStamp: Date.now()
@@ -70,15 +63,15 @@ describe('scrolly.dragger', function() {
     }
 
     it('should remove the listener', function() {
-      triggerDrag('start', {pageY:0});
+      triggerDrag('touchstart', {pageY:0});
       expect(dragSpy.callCount).toBe(1);
       dragger.removeListener(dragSpy);
-      triggerDrag('start', {pageY:0});
+      triggerDrag('touchstart', {pageY:0});
       expect(dragSpy.callCount).toBe(1);
     });
 
     it('should give start event with proper data', function() {
-      triggerDrag('start', { pageY: 0 });
+      triggerDrag('touchstart', { pageY: 0 });
       expect(dragSpy).toHaveBeenCalled();
       expect(dragData).toHaveValues({
         type: 'start',
@@ -88,19 +81,19 @@ describe('scrolly.dragger', function() {
     });
 
     it('should ignore move event if not dragging', function() {
-      triggerDrag('move');
+      triggerDrag('touchmove');
       expect(dragSpy).not.toHaveBeenCalled();
     });
 
     it('should ignore move event if distance is too small', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('move', { pageY: 1 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchmove', { pageY: 1 });
       expect(dragSpy.callCount).toBe(1);
     });
 
     it('should give move event for big enough distance', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('move', { pageY: 10 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchmove', { pageY: 10 });
       expect(dragData).toHaveValues({
         type: 'move',
         pos: 10,
@@ -109,31 +102,31 @@ describe('scrolly.dragger', function() {
     });
 
     it('should change delta when moving', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('move', { pageY: 10 });
-      triggerDrag('move', { pageY: 15 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchmove', { pageY: 10 });
+      triggerDrag('touchmove', { pageY: 15 });
       expect(dragData).toHaveValues({ delta: 5 , distance: 15 });
-      triggerDrag('move', { pageY: 9 });
+      triggerDrag('touchmove', { pageY: 9 });
       expect(dragData).toHaveValues({ delta: -6 , distance: 9 });
     });
 
     it('should ignore end event if not dragging', function() {
-      triggerDrag('end');
+      triggerDrag('touchend');
       expect(dragSpy).not.toHaveBeenCalled();
-      triggerDrag('move');
-      triggerDrag('end');
+      triggerDrag('touchmove');
+      triggerDrag('touchend');
     });
 
     it('should "reset" drag if you start, move at a later time, wait, then move again', function() {
       nowTime = 1000;
-      triggerDrag('start', { pageY: 0 });
+      triggerDrag('touchstart', { pageY: 0 });
       nowTime = 2000;
-      triggerDrag('move', { pageY: 10 });
+      triggerDrag('touchmove', { pageY: 10 });
       expect(dragData).toHaveValues({
         startPos: 0,
         pos: 10
       });
-      triggerDrag('move', { pageY: 10 });
+      triggerDrag('touchmove', { pageY: 10 });
       expect(dragData).toHaveValues({
         startPos: 10,
         pos: 10
@@ -141,18 +134,18 @@ describe('scrolly.dragger', function() {
     });
 
     it('should trigger end event', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('end', { pageY: 0 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchend', { pageY: 0 });
       expect(dragData).toHaveValues({
         type: 'end'
       });
     });
 
     it('should trigger end event with properties', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('move', { pageY: -100 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchmove', { pageY: -100 });
       nowTime = 99;
-      triggerDrag('end');
+      triggerDrag('touchend');
       expect(dragData).toHaveValues({
         type: 'end',
         distance: -100,
@@ -161,10 +154,10 @@ describe('scrolly.dragger', function() {
     });
 
     it('should count the drag as "inactive" if we end and haven\'t moved in awhile', function() {
-      triggerDrag('start', { pageY: 0 });
-      triggerDrag('move', { pageY: 50 });
+      triggerDrag('touchstart', { pageY: 0 });
+      triggerDrag('touchmove', { pageY: 50 });
       nowTime = 5000;
-      triggerDrag('end');
+      triggerDrag('touchend');
       expect(dragData).toHaveValues({
         inactiveDrag: true,
         duration: 5000

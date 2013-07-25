@@ -88,7 +88,7 @@ module.exports = function(grunt) {
         title: 'angular-scrolly',
         navTemplate: 'docs/html/nav.html',
         scripts: [
-          'docs/js/angular-1.1.4.js',
+          'lib/angular.js',
           'dist/angular-scrolly.js'
         ],
         styles: [

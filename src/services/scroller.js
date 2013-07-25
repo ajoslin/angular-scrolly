@@ -133,7 +133,7 @@ angular.module('ajoslin.scrolly.scroller', [
       _bounceBackMinTime;
   }
 
-  this.$get = function($dragger, $transformer, $window) {
+  this.$get = function($dragger, $transformer, $window, $document) {
 
     /**
      * @ngdoc object
@@ -156,6 +156,26 @@ angular.module('ajoslin.scrolly.scroller', [
 
       var transformer = new $transformer(elm);
       var dragger = new $dragger(elm);
+
+      var SCROLL_OFFSET = 200;
+      setTimeout(function() {
+        document.body.scrollTop = SCROLL_OFFSET;
+        document.body.style[$transformer.transformProp] = 'translate3d(0, '+SCROLL_OFFSET+'px, 0)';
+      });
+
+      angular.element($window).bind('scroll', function() {
+        var scroll = document.body.scrollTop - SCROLL_OFFSET;
+        var newPos = transformer.pos - scroll;
+        calculateHeight();
+        if (newPos >= 0) {
+          transformer.setTo(0);
+        } else if (newPos <= -self.scrollHeight) {
+          transformer.setTo(-self.scrollHeight);
+        } else {
+          transformer.setTo(newPos);
+        }
+        document.body.scrollTop = SCROLL_OFFSET;
+      });
 
       function calculateHeight() {
         var rect = getRect(raw);

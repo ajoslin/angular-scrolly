@@ -50,11 +50,11 @@ angular.module('ajoslin.scrolly.transformer', [])
     return timingFunction;
   };
 
-  this.$get = function($window, $nextFrame) {
-    //TODO support other vendors
-    var transformProp = 'webkitTransform';
-    var transformPropDash = '-webkit-transform';
-    var transitionProp = 'webkitTransition';
+  this.$get = function($window, $nextFrame, $sniffer) {
+    var prefix = ($sniffer.vendorPrefix || '').toLowerCase();
+    var transformProp = prefix ? (prefix + 'Transform') : 'transform';
+    var transformPropDash = prefix ? ('-' + prefix + '-transform') : 'transform';
+    var transitionProp = prefix ? (prefix + 'Transition') : 'transition';
 
     /**
      * @ngdoc object
@@ -64,6 +64,7 @@ angular.module('ajoslin.scrolly.transformer', [])
      * A factory for creating a transformation-manipulator on an element.  It manipulates the transform of an element vertically, allowing you to set, get, and animate the given element's transform.
      *
      * @param {element} element Element to manipulate the transformation of.
+     * @param {object=} options Options to pass to the transformer. Pass key "translateX" as true if you wish to operate on x instead of y.
      * @returns {object} Newly created transformer object with the following properties:
      *
      *   - `{number}` `pos` - The current vertical transform, in pixels, of the element.
@@ -77,10 +78,28 @@ angular.module('ajoslin.scrolly.transformer', [])
       return transformPropDash + ' ' + transitionTime + 'ms ' + timingFunction;
     }
 
+    function transformGetterX(n) {
+      return 'translate3d(' + n +'px,0,0)';
+    }
+    function transformGetterY(n) {
+      return 'translate3d(0,' + n + 'px,0)';
+    }
+
     //Creates a transformer for an element
-    function $transformer(elm) {
+    function $transformer(elm, options) {
       var self = {};
       var raw = elm[0];
+      var _transformGetter;
+      var _matrixIndex;
+
+      options = options || {};
+      if (options.translateX) {
+        _transformGetter = transformGetterX;
+        _matrixIndex = 4;
+      } else {
+        _transformGetter = transformGetterY;
+        _matrixIndex = 5;
+      }
 
       //This method is only exposed for testing purposes
       //Gets the current y transform of the element
@@ -88,7 +107,7 @@ angular.module('ajoslin.scrolly.transformer', [])
         var matrix = $window.getComputedStyle(raw)[transformProp]
           .replace(/[^0-9-.,]/g,'').split(',');
         if (matrix.length > 1) {
-          return parseInt(matrix[5], 10);
+          return parseInt(matrix[_matrixIndex], 10);
         } else {
           return 0;
         }
@@ -117,7 +136,7 @@ angular.module('ajoslin.scrolly.transformer', [])
         });
       };
 
-      self.easeTo = function(y, transitionTime, done) {
+      self.easeTo = function(n, transitionTime, done) {
         if (!angular.isNumber(transitionTime) || transitionTime < 0) {
           throw new Error("Expected a positive number for time, got '" +
             transitionTime + "'.");
@@ -137,7 +156,7 @@ angular.module('ajoslin.scrolly.transformer', [])
           //style on the element has time to 'apply' itself before the elm's
           //position is set
           $nextFrame(function() {
-            self.setTo(y);
+            self.setTo(n);
             transitionEndTimeout = $window.setTimeout(function() {
               self.stop();
               done && done();
@@ -145,9 +164,10 @@ angular.module('ajoslin.scrolly.transformer', [])
           });
         }
       };
-      self.setTo = function(y) {
-        self.pos = y;
-        raw.style[transformProp] = 'translate3d(0,' + y + 'px,0)';
+
+      self.setTo = function(n) {
+        self.pos = n;
+        raw.style[transformProp] = _transformGetter(n);
       };
 
       return self;

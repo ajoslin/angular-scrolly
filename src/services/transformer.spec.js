@@ -7,6 +7,10 @@ describe('scrolly.transformer', function() {
     $provide.factory('$nextFrame', function($window) {
       return angular.mock.createMockWindow().setTimeout;
     });
+    $provide.decorator('$sniffer', function($delegate) {
+      $delegate.vendorPrefix = 'webkit';
+      return $delegate;
+    });
   }));
 
   var $transformer, transformer, elm, $window, $nextFrame;
@@ -41,8 +45,14 @@ describe('scrolly.transformer', function() {
 
   it('should set pos and transform with setTo', function() {
     transformer.setTo(100);
-    expect(elm.css($transformer.transformProp)).toMatch('100px');
+    expect(elm.css($transformer.transformProp)).toMatch('(0, 100px, 0)');
     expect(transformer.pos).toBe(100);
+  });
+
+  it('should allow a transformer that does x instead of y', function() {
+    var t = new $transformer(elm, {translateX: true});
+    t.setTo(100);
+    expect(elm.css($transformer.transformProp)).toMatch('(100px, 0, 0)');
   });
 
   it('should error if not giving a positive number for easeTo', function() {

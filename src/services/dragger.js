@@ -159,18 +159,12 @@ angular.module('ajoslin.scrolly.dragger', [])
      */
 
     var hasTouch = 'ontouchstart' in $window;
-    var events = {
-      start: hasTouch ? 'touchstart' : 'mousedown',
-      move: hasTouch ? 'touchmove' : 'mousemove',
-      end: hasTouch ? 'touchend' : 'mouseup',
-      cancel: hasTouch ? 'touchcancel' : ''
-    };
 
     //Creates a dragger for an element
     function $dragger(elm) {
       var self = {};
       var raw = elm[0];
-
+ 
       var state = {
         startPos: 0,
         startTime: 0,
@@ -189,25 +183,23 @@ angular.module('ajoslin.scrolly.dragger', [])
         });
       }
 
-      elm.bind(events.start, dragStart);
-      elm.bind(events.move, dragMove);
-      elm.bind(events.end, dragEnd);
-      //Mouse doesn't have cancel event
-      events.cancel && elm.bind(events.cancel, dragEnd);
-      if (!hasTouch) {
-        //Hack taken from iscroll for mouse events, really for testing only
-        elm.bind('mouseout', function mouseout(e) {
-          var t = e.relatedTarget;
-          if (!t) { 
-            dragEnd(e);
-          } else {
-            while ( (t = t.parentNode) ) {
-              if (t === elm) return;
-            }
-            dragEnd(e);
+      elm.bind('touchstart', dragStart);
+      elm.bind('touchmove', dragMove);
+      elm.bind('touchend touchcancel', dragEnd);
+
+      //Hack taken from iscroll for mouse events
+      elm.bind('mouseout', function mouseout(e) {
+        e = e.originalEvent || e;
+        var t = e.relatedTarget;
+        if (!t) { 
+          dragEnd(e);
+        } else {
+          while ( (t = t.parentNode) ) {
+            if (t === elm) return;
           }
-        });
-      }
+          dragEnd(e);
+        }
+      });
 
       //Restarts the drag at the given position
       function restartDragState(y) {
@@ -223,8 +215,7 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
 
       function dragStart(e) {
-        //If we're on mouse, only let left clicks drag
-        if (!hasTouch && e.button) return;
+        e = e.originalEvent || e; //for jquery
 
         var target = e.target || e.srcElement;
         var point = e.touches ? e.touches[0] : e;
@@ -236,11 +227,8 @@ angular.module('ajoslin.scrolly.dragger', [])
           return;
         }
 
-        //Initiate a click to blur all inputs if we start scrolling
-        if (_shouldBlurOnDrag &&
-              target.tagName !== "INPUT" &&
-              target.tagName !== "TEXTAREA" &&
-              target.tagName !== "SELECT") {
+        //Blur stuff on scroll if the option says we should
+        if (_shouldBlurOnDrag && isInput(target)) {
           document.activeElement && document.activeElement.blur();
         }
 
@@ -259,6 +247,7 @@ angular.module('ajoslin.scrolly.dragger', [])
         });
       }
       function dragMove(e) {
+        e = e.originalEvent || e; //for jquery
         e.preventDefault();
         if (state.dragging) {
           var point = e.touches ? e.touches[0] : e;
@@ -293,6 +282,7 @@ angular.module('ajoslin.scrolly.dragger', [])
         }
       }
       function dragEnd(e) {
+        e = e.originalEvent || e; // for jquery
         if (state.dragging) {
           state.dragging = false;
 
@@ -333,25 +323,6 @@ angular.module('ajoslin.scrolly.dragger', [])
 
       return self;
     }
-
-    /**
-     * @ngdoc method
-     * @name ajoslin.scrolly.$dragger#events
-     * @methodOf ajoslin.scrolly.$dragger
-     *
-     * @description 
-     * Returns the events used for dragging.
-     *
-     * @returns {object} events object, with the following format:
-     * 
-     *  - `{string}` `start` - The start event, eg 'touchstart'
-     *  - `{string}` `move` - The move event, eg 'touchmove'
-     *  - `{string}` `end` - The end event, eg 'touchend'
-     *  - `{string}` `cancel` - The cancel event, eg 'touchcancel'
-     */
-    $dragger.events = function() {
-      return events;
-    };
 
     return $dragger;
 

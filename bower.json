@@ -17,11 +17,5 @@
     "package.json",
     "src",
     "test"
-  ],
-  "devDependencies": {
-    "angular-mocks": "~1.0.7",
-    "angular-unstable": "~1.1.4",
-    "jquery": "~2.0.1",
-    "angular": "~1.0.7"
-  }
+  ]
 }

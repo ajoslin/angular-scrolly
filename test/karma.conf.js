@@ -12,9 +12,9 @@ files = [
   JASMINE_ADAPTER,
   //Use jQuery in tests for easier event mocking
   'test/helpers.js',
-  'bower_components/jquery/jquery.js',
-  'bower_components/angular/angular.js',
-  'test/angular-mocks-1.1.5.js',
+  'lib/jquery.js',
+  'lib/angular.js',
+  'lib/angular-mocks.js',
   'src/**/*.js'
 ];
 
