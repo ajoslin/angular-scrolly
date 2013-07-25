@@ -117,9 +117,11 @@ angular.module('ajoslin.scrolly.scroller', [
     var offBottom = parseInt(style['margin-bottom'], 10) + 
         parseInt(style['padding-bottom'], 10);
     var height = parseInt(style.height, 10);
+    var top = parseInt(style.top, 10);
+    var bottom = parseInt(style.bottom, 10);
     return {
-      top: offTop,
-      bottom: offBottom,
+      top: offTop + (isNaN(top) ? 0 : top),
+      bottom: offBottom + (isNaN(bottom) ? 0 : bottom),
       height: height
     };
   }
