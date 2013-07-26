@@ -8,7 +8,7 @@
 
 angular.module('ajoslin.scrolly.scroller', [
   'ajoslin.scrolly.dragger',
-  'ajoslin.scrolly.scroller'
+  'ajoslin.scrolly.transformer'
 ])
 .provider('$scroller', function() {
 
@@ -110,32 +110,35 @@ angular.module('ajoslin.scrolly.scroller', [
     return _bounceBackDistanceMulti;
   };
 
-  function getRect(raw) {
-    var style = window.getComputedStyle(raw);
-    var offTop = parseInt(style['margin-top'], 10) + 
-        parseInt(style['padding-top'], 10);
-    var offBottom = parseInt(style['margin-bottom'], 10) + 
-        parseInt(style['padding-bottom'], 10);
-    var height = parseInt(style.height, 10);
-    var top = parseInt(style.top, 10);
-    var bottom = parseInt(style.bottom, 10);
-    return {
-      top: offTop + (isNaN(top) ? 0 : top),
-      bottom: offBottom + (isNaN(bottom) ? 0 : bottom),
-      height: height
-    };
-  }
-
   //Quicker than Math.floor
   //http://jsperf.com/math-floor-vs-math-round-vs-parseint/69
   function floor(n) { return n | 0; }
 
-  function bounceTime(howMuchOut) {
-    return Math.abs(howMuchOut) * _bounceBackDistanceMulti + 
-      _bounceBackMinTime;
-  }
-
   this.$get = function($dragger, $transformer, $window, $document) {
+
+    $scroller.getContentRect = function(raw) {
+      var top, bottom;
+      var style = window.getComputedStyle(raw);
+      var offTop = parseInt(style['margin-top'], 10) +
+	  parseInt(style['padding-top'], 10) +
+	  isNaN( (top = parseInt(style.top, 10)) ) ? 0 : top;
+
+      var offBottom = parseInt(style['margin-bottom'], 10) +
+	  parseInt(style['padding-bottom'], 10) +
+	  isNaN( (bottom = parseInt(style.bottom, 10)) ) ? 0 : bottom;
+
+      var height = parseInt(style.height, 10);
+      return {
+	top: offTop,
+	bottom: offBottom,
+	height: height
+      };
+    };
+
+    function bounceTime(howMuchOut) {
+      return Math.abs(howMuchOut) * _bounceBackDistanceMulti +
+	_bounceBackMinTime;
+    }
 
     /**
      * @ngdoc object
@@ -152,13 +155,14 @@ angular.module('ajoslin.scrolly.scroller', [
      *
      */
 
-    function scroller(elm) {
+    function $scroller(elm) {
       var self = {};
       var raw = elm[0];
 
-      var transformer = new $transformer(elm);
-      var dragger = new $dragger(elm);
+      var transformer = self.transformer = new $transformer(elm);
+      var dragger = self.dragger = new $dragger(elm);
 
+      /*
       var SCROLL_OFFSET = 200;
       setTimeout(function() {
         document.body.scrollTop = SCROLL_OFFSET;
@@ -178,9 +182,10 @@ angular.module('ajoslin.scrolly.scroller', [
         }
         document.body.scrollTop = SCROLL_OFFSET;
       });
+      */
 
-      function calculateHeight() {
-        var rect = getRect(raw);
+      self.calculateHeight = function() {
+	var rect = $scroller.getContentRect(raw);
         //TODO find a better way to get the height of the wrapper/screen
         var screenHeight = $window.innerHeight;
         //If our content doesn't fill the whole area, just act like it's
@@ -191,14 +196,14 @@ angular.module('ajoslin.scrolly.scroller', [
           self.scrollHeight = rect.height - screenHeight + rect.top + rect.bottom;
         }
         return self.scrollHeight;
-      }
-      calculateHeight();
+      };
+      self.calculateHeight();
 
-      function outOfBounds(pos) {
+      self.outOfBounds = function(pos) {
         if (pos > 0) return pos;
         if (pos < -self.scrollHeight) return pos + self.scrollHeight;
         return false;
-      }
+      };
 
       function dragListener(dragData) {
         switch(dragData.type) {
@@ -206,14 +211,14 @@ angular.module('ajoslin.scrolly.scroller', [
             if (transformer.changing) {
               transformer.stop();
             }
-            calculateHeight();
+	    self.calculateHeight();
             break;
 
           case 'move':
             var newPos = transformer.pos + dragData.delta;
             //If going past boundaries, scroll at half speed
             //TODO make the 0.5 a provider option
-            if ( outOfBounds(newPos) ) {
+	    if ( self.outOfBounds(newPos) ) {
               newPos = transformer.pos + floor(dragData.delta * 0.5);
             }
             transformer.setTo(newPos);
@@ -222,11 +227,10 @@ angular.module('ajoslin.scrolly.scroller', [
           case 'end':
             //If we're out of bounds, or held on to our spot for too long,
             //no momentum.  Just check that we're in bounds.
-            if (outOfBounds(transformer.pos) || dragData.inactiveDrag) {
+	    if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
               checkBoundaries();
             } else {
-              calculateHeight();
-              var momentum = calcMomentum(dragData);
+	      var momentum = self.momentum(dragData);
               if (momentum.position !== transformer.pos) {
                 transformer.easeTo(
                   momentum.position,
@@ -238,23 +242,25 @@ angular.module('ajoslin.scrolly.scroller', [
             break;
         }
       }
-      function checkBoundaries() {
-        calculateHeight();
+      self.checkBoundaries = function() {
+	self.calculateHeight();
 
-        var howMuchOut = outOfBounds(transformer.pos);
+	var howMuchOut = self.outOfBounds(transformer.pos);
         if (howMuchOut) {
           var newPosition = howMuchOut > 0 ? 0 : -self.scrollHeight;
           transformer.easeTo(newPosition, bounceTime(howMuchOut));
         } 
-      }
-      function calcMomentum(dragData) {
+      };
+      self.momentum = function(dragData) {
+	self.calculateHeight();
+
         var speed = Math.abs(dragData.distance) / dragData.duration;
         var newPos = transformer.pos + (speed * speed) /
           (2 * _decelerationRate) *
           (dragData.distance < 0 ? -1 : 1);
         var time = speed / _decelerationRate;
 
-        var howMuchOver = outOfBounds(newPos);
+	var howMuchOver = self.outOfBounds(newPos);
         var distance;
         if (howMuchOver) {
           if (howMuchOver > 0) {
@@ -269,7 +275,7 @@ angular.module('ajoslin.scrolly.scroller', [
           position: newPos,
           time: floor(time)
         };
-      }
+      };
 
       dragger.addListener(dragListener);
       elm.bind('$destroy', function() {
@@ -279,7 +285,7 @@ angular.module('ajoslin.scrolly.scroller', [
       return self;
     }
 
-    return scroller;
+    return $scroller;
   };
 
 });
