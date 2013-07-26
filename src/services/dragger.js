@@ -158,8 +158,6 @@ angular.module('ajoslin.scrolly.dragger', [])
      *  </pre>
      */
 
-    var hasTouch = 'ontouchstart' in $window;
-
     //Creates a dragger for an element
     function $dragger(elm) {
       var self = {};
@@ -186,20 +184,6 @@ angular.module('ajoslin.scrolly.dragger', [])
       elm.bind('touchstart', dragStart);
       elm.bind('touchmove', dragMove);
       elm.bind('touchend touchcancel', dragEnd);
-
-      //Hack taken from iscroll for mouse events
-      elm.bind('mouseout', function mouseout(e) {
-        e = e.originalEvent || e;
-        var t = e.relatedTarget;
-        if (!t) { 
-          dragEnd(e);
-        } else {
-          while ( (t = t.parentNode) ) {
-            if (t === elm) return;
-          }
-          dragEnd(e);
-        }
-      });
 
       //Restarts the drag at the given position
       function restartDragState(y) {

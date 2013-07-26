@@ -10,14 +10,6 @@ describe('scrolly.dragger', function() {
     dragger = new $dragger(elm);
   }));
 
-  it('should expose $dragger service as a function', function() {
-    expect(typeof $dragger).toBe('function');
-  });
-
-  it('should create a dragger object from the element', function() {
-    expect(typeof dragger).toBe('object');
-  });
-
   it('should error if passing a non-function to addListener', function() {
     expect(function() {
       dragger.addListener('not a function');

@@ -7,10 +7,6 @@ describe('scrolly.transformer', function() {
     $provide.factory('$nextFrame', function($window) {
       return angular.mock.createMockWindow().setTimeout;
     });
-    $provide.decorator('$sniffer', function($delegate) {
-      $delegate.vendorPrefix = 'webkit';
-      return $delegate;
-    });
   }));
 
   var $transformer, transformer, elm, $window, $nextFrame;
@@ -77,7 +73,7 @@ describe('scrolly.transformer', function() {
     expect(transformer.pos).toBe(100);
   });
 
-  it('should stop before easeing if already easing', function() {
+  it('should stop before easing if already easing', function() {
     spyOn(transformer, 'stop').andCallThrough();
     spyOn(transformer, 'easeTo').andCallThrough();
 
