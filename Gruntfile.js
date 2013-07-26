@@ -20,8 +20,8 @@ module.exports = function(grunt) {
     docs: 'dist/docs',
     pkg: grunt.file.readJSON('bower.json'),
     meta: {
-      banner: 
-        '/*\n'+ 
+      banner:
+        '/*\n'+
         ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
         ' * <%= pkg.homepage %>\n' +
         ' * Created by <%= pkg.author %>; Licensed under <%= pkg.license %>\n' +
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
     },
 
     clean: ['<%= dist %>', '<%= docs %>'],
-    
+
     jshint: {
       all: ['Gruntfile.js', 'src/**/*.js'],
       options: {
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      demo: { 
+      demo: {
         files: [{
           src: ['**/*'],
           cwd: 'demo/',
@@ -118,7 +118,7 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      docs: [ 
+      docs: [
         'grunt build docs',
         'git stash',
         'git checkout gh-pages',
@@ -151,7 +151,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', function() {
     if (!grunt.file.exists('.git/hooks/commit-msg')) {
-      sh.cp('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
+      grunt.file.copy('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
       require('fs').chmodSync('.git/hooks/commit-msg', '0755');
     }
     grunt.task.run(['ngmin', 'concat', 'uglify']);
