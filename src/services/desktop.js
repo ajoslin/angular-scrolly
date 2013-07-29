@@ -7,6 +7,7 @@ angular.module('ajoslin.scrolly.desktop', [])
 
     elm.bind('$destroy', function() {
       $document.unbind('mousewheel', onMousewheel);
+      $document.unbind('keydown', onKey);
     });
     $document.bind('mousewheel', onMousewheel);
     $document.bind('keydown', onKey);
