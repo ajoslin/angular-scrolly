@@ -206,7 +206,7 @@ angular.module('ajoslin.scrolly.scroller', [
             //If we're out of bounds, or held on to our spot for too long,
             //no momentum.  Just check that we're in bounds.
             if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
-              checkBoundaries();
+              self.checkBoundaries();
             } else {
               var momentum = self.momentum(dragData);
               if (momentum.position !== transformer.pos) {
