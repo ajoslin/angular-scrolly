@@ -8,7 +8,8 @@
 
 angular.module('ajoslin.scrolly.scroller', [
   'ajoslin.scrolly.dragger',
-  'ajoslin.scrolly.transformer'
+  'ajoslin.scrolly.transformer',
+  'ajoslin.scrolly.desktop'
 ])
 .provider('$scroller', function() {
 
@@ -16,6 +17,24 @@ angular.module('ajoslin.scrolly.scroller', [
   this.decelerationRate = function(newDecelerationRate) {
     arguments.length && (_decelerationRate = newDecelerationRate);
     return _decelerationRate;
+  };
+
+  /**
+   * @ngdoc method
+   * @name ajoslin.scrolly.$scrollerProvider#supportDesktop
+   * @methodOf ajoslin.scrolly.$scrollerProvider
+   *
+   * @description
+   * Sets/gets whether the scroller should support desktop events (mousewheel, 
+   * arrow keys, etc).  Default true.
+   *
+   * @param {boolean=} newSupport New value to set for desktop support.
+   * @returns {boolean} support Current desktop support.
+   */
+  var _supportDesktop = true;
+  this.supportDesktop = function(newSupport) {
+    _supportDesktop = !!newSupport;
+    return _supportDesktop;
   };
 
   /**
@@ -114,23 +133,22 @@ angular.module('ajoslin.scrolly.scroller', [
   //http://jsperf.com/math-floor-vs-math-round-vs-parseint/69
   function floor(n) { return n | 0; }
 
-  this.$get = function($dragger, $transformer, $window, $document) {
+  this.$get = function($dragger, $transformer, $window, $document, $desktopScroller) {
 
     $scroller.getContentRect = function(raw) {
-      var top, bottom;
       var style = window.getComputedStyle(raw);
       var offTop = parseInt(style['margin-top'], 10) + 
-          parseInt(style['padding-top'], 10) +
-          isNaN( (top = parseInt(style.top, 10)) ) ? 0 : top;
-
+          parseInt(style['padding-top'], 10);
       var offBottom = parseInt(style['margin-bottom'], 10) + 
-          parseInt(style['padding-bottom'], 10) +
-          isNaN( (bottom = parseInt(style.bottom, 10)) ) ? 0 : bottom;
+          parseInt(style['padding-bottom'], 10);
+
+      var top = parseInt(style.top, 10);
+      var bottom = parseInt(style.bottom, 10);
 
       var height = parseInt(style.height, 10);
       return {
-        top: offTop,
-        bottom: offBottom,
+        top: offTop + (isNaN(top) ? 0 : top),
+        bottom: offBottom + (isNaN(bottom) ? 0 : bottom),
         height: height
       };
     };
@@ -161,6 +179,9 @@ angular.module('ajoslin.scrolly.scroller', [
 
       var transformer = self.transformer = new $transformer(elm);
       var dragger = self.dragger = new $dragger(elm);
+      if (_supportDesktop) {
+        var desktopScroller = new $desktopScroller(elm, self);
+      }
 
       self.calculateHeight = function() {
         var rect = $scroller.getContentRect(raw);
@@ -208,12 +229,13 @@ angular.module('ajoslin.scrolly.scroller', [
             if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
               self.checkBoundaries();
             } else {
+              console.log('momentum');
               var momentum = self.momentum(dragData);
               if (momentum.position !== transformer.pos) {
                 transformer.easeTo(
                   momentum.position,
                   momentum.time,
-                  checkBoundaries
+                  self.checkBoundaries
                 );
               }
             }

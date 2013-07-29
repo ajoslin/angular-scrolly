@@ -151,7 +151,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', function() {
     if (!grunt.file.exists('.git/hooks/commit-msg')) {
-      sh.cp('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
+      grunt.file.copy('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
       require('fs').chmodSync('.git/hooks/commit-msg', '0755');
     }
     grunt.task.run(['ngmin', 'concat', 'uglify']);

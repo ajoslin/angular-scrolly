@@ -270,8 +270,9 @@ angular.module('ajoslin.scrolly.dragger', [])
         if (state.dragging) {
           state.dragging = false;
 
-          var duration = Date.now() - state.startTime;
-          var inactiveDrag = (duration > _maxTimeMotionless);
+          var now = Date.now();
+          var duration = now - state.startTime;
+          var inactiveDrag = ((now - state.lastMoveTime) > _maxTimeMotionless);
 
           dispatchEvent({
             type: 'end',
