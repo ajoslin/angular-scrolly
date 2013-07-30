@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     },
     karma: {
       options: {
-        configFile: 'test/karma.conf.js'
+        configFile: 'test/karma-shared.conf.js'
       },
       watch: {
         background: true
@@ -37,9 +37,16 @@ module.exports = function(grunt) {
       continuous: {
         singleRun: true
       },
-      travis: {
-        singleRun: true,
-        browsers: ['sauce_android', 'sauce_ie']
+      //We're only allowed two concurrent browsers on saucelabs
+      //We also have to run seperate grunt processes for each sauce
+      //Note: this takes several minutes
+      sauce1: {
+        configFile: 'test/karma-saucelabs.conf.js',
+        browsers: ['sauce_android', 'sauce_ie'],
+      },
+      sauce2: {
+        configFile: 'test/karma-saucelabs.conf.js',
+        browsers: ['sauce_ios', 'sauce_firefox'],
       }
     },
 
@@ -165,8 +172,6 @@ module.exports = function(grunt) {
 
   grunt.renameTask('watch', 'delta');
   grunt.registerTask('watch', ['karma:watch', 'delta']);
-
-  grunt.registerTask('travis', ['build', 'jshint', 'karma:travis']);
 
   grunt.registerMultiTask('shell', 'run shell commands', function() {
     var cmd = this.data;

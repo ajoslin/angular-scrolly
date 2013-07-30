@@ -4,18 +4,18 @@ language: node_js
 node_js: 
 - 0.8
 env:
-  global: 
-    - SAUCE_USERNAME=angular-scrolly
-    - SAUCE_ACCESS_KEY=0691f5ec-ddc3-4c42-a42e-b17e9cae9c9e
-    - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
 
 before_script:
 - export DISPLAY=:99.0
-- ./scripts/sauce_connect_setup.sh
 - sh -e /etc/init.d/xvfb start
 - npm link
 - npm install -g grunt-cli
-- ./scripts/sauce_connect_block.sh
 
+# We're only allowed two concurrent browsers on saucelabs
+# We also have to run seperate grunt processes for each sauce
+# Note: this takes several minutes
 script:
-- grunt travis
+- grunt jshint
+- grunt karma:sauce1
+- grunt karma:sauce2
+- grunt build docs

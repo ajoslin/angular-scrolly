@@ -11,7 +11,6 @@ module.exports = function(config) {
     // frameworks to use
     frameworks: ['jasmine'],
 
-
     // list of files / patterns to load in the browser
     files: [
       'test/helpers.js',
@@ -21,36 +20,6 @@ module.exports = function(config) {
       'src/**/*.js'
     ],
 
-    customLaunchers: {
-      'sauce_ios': {
-        base: 'SauceLabs',
-        platform: 'OS X 10.8',
-        browserName: 'iphone',
-        version: '6'
-      },
-      'sauce_android': {
-        base: 'SauceLabs',
-        platform: 'Linux',
-        browserName: 'android',
-        version: '4.0'
-      },
-     'sauce_chrome': {
-        base: 'SauceLabs',
-        platform: 'Linux',
-        browserName: 'chrome'
-      },
-     'sauce_firefox': {
-        base: 'SauceLabs',
-        platform: 'Linux',
-        browserName: 'firefox'
-      },
-      'sauce_ie': {
-        base: 'SauceLabs',
-        platform: 'Windows 8',
-        browserName: 'internet explorer',
-        version: '10'
-      }
-    },
 
     // list of files to exclude
     exclude: [
