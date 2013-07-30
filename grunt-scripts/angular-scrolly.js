@@ -382,10 +382,18 @@ angular.module('ajoslin.scrolly', [
     '$window',
     '$nextFrame',
     '$sniffer',
-    function ($window, $nextFrame, $sniffer) {
+    '$document',
+    function ($window, $nextFrame, $sniffer, $document) {
+      if (!$sniffer.vendorPrefix) {
+        if (angular.isString($document[0].body.style.webkitTransition)) {
+          $sniffer.vendorPrefix = 'webkit';
+        }
+      }
       var prefix = $sniffer.vendorPrefix;
+      if (prefix && prefix !== 'Moz' && prefix !== 'O') {
+        prefix = prefix.substring(0, 1).toLowerCase() + prefix.substring(1);
+      }
       var transformProp = prefix ? prefix + 'Transform' : 'transform';
-      var transformPropLower = prefix ? prefix.toLowerCase() + 'Transform' : 'transform';
       var transformPropDash = prefix ? '-' + prefix.toLowerCase() + '-transform' : 'transform';
       var transitionProp = prefix ? prefix + 'Transition' : 'transition';
       function transitionString(transitionTime) {
@@ -412,7 +420,7 @@ angular.module('ajoslin.scrolly', [
         }
         self.$$calcPosition = function () {
           var style = $window.getComputedStyle(raw);
-          var matrix = (style[transformProp] || style[transformPropLower] || '').replace(/[^0-9-.,]/g, '').split(',');
+          var matrix = (style[transformProp] || '').replace(/[^0-9-.,]/g, '').split(',');
           if (matrix.length > 1) {
             return parseInt(matrix[_matrixIndex], 10);
           } else {
