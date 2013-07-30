@@ -1,4 +1,3 @@
-
 var sh = require('shelljs');
 
 module.exports = function(grunt) {
@@ -42,11 +41,11 @@ module.exports = function(grunt) {
       //Note: this takes several minutes
       sauce1: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: ['sauce_android', 'sauce_ie'],
+        browsers: ['sauce_firefox', 'sauce_ie'],
       },
       sauce2: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: ['sauce_ios', 'sauce_firefox'],
+        browsers: ['sauce_ios', 'sauce_android'],
       }
     },
 
