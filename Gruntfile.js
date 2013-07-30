@@ -38,7 +38,8 @@ module.exports = function(grunt) {
         singleRun: true
       },
       travis: {
-        browsers: ['sauce_android', 'sauce_ie10']
+        singleRun: true,
+        browsers: ['sauce_android', 'sauce_ie']
       }
     },
 
@@ -164,6 +165,8 @@ module.exports = function(grunt) {
 
   grunt.renameTask('watch', 'delta');
   grunt.registerTask('watch', ['karma:watch', 'delta']);
+
+  grunt.registerTask('travis', ['build', 'jshint', 'karma:travis']);
 
   grunt.registerMultiTask('shell', 'run shell commands', function() {
     var cmd = this.data;

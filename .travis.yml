@@ -1,0 +1,21 @@
+
+--- 
+language: node_js
+node_js: 
+- 0.8
+env:
+  global: 
+    - SAUCE_USERNAME=angular-scrolly
+    - SAUCE_ACCESS_KEY=0691f5ec-ddc3-4c42-a42e-b17e9cae9c9e
+    - SAUCE_CONNECT_READY_FILE=/tmp/sauce-connect-ready
+
+before_script:
+- export DISPLAY=:99.0
+- ./scripts/sauce_connect_setup.sh
+- sh -e /etc/init.d/xvfb start
+- npm link
+- npm install -g grunt-cli
+- ./scripts/sauce_connect_block.sh
+
+script:
+- grunt travis
