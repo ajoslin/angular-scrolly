@@ -1,6 +1,6 @@
 {
   "name": "angular-scrolly",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
@@ -14,8 +14,8 @@
     "grunt-ngdocs": "git://github.com/m7r/grunt-ngdocs",
     "shelljs": "~0.1.4",
     "grunt-bump": "git://github.com/ajoslin/grunt-bump",
-    "grunt-conventional-changelog": "~0.1.0",
     "karma": "~0.9.5",
-    "karma-sauce-launcher": "0.0.6"
+    "karma-sauce-launcher": "0.0.6",
+    "grunt-conventional-changelog": "~1.0.0"
   }
 }
