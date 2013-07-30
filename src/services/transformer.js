@@ -50,10 +50,21 @@ angular.module('ajoslin.scrolly.transformer', [])
     return timingFunction;
   };
 
-  this.$get = function($window, $nextFrame, $sniffer) {
+  this.$get = function($window, $nextFrame, $sniffer, $document) {
+    //TODO remove this fix when angular-1.2 comes out
+    //Fixes a known bug with android $sniffer in angular-1.1.x
+    if (!$sniffer.vendorPrefix) {
+      if (angular.isString( $document[0].body.style.webkitTransition )) {
+        $sniffer.vendorPrefix = 'webkit';
+      }
+    }
+
     var prefix = $sniffer.vendorPrefix;
+    //ie10, older webkit - expects lowercase. firefox, opera - uppercase
+    if (prefix && prefix !== 'Moz' && prefix !== 'O') {
+      prefix = prefix.substring(0,1).toLowerCase() + prefix.substring(1);
+    }
     var transformProp = prefix ? (prefix + 'Transform') : 'transform';
-    var transformPropLower = prefix ? (prefix.toLowerCase() + 'Transform') : 'transform';
     var transformPropDash = prefix ? ('-' + prefix.toLowerCase() + '-transform') : 'transform';
     var transitionProp = prefix ? (prefix + 'Transition') : 'transition';
 
@@ -106,7 +117,7 @@ angular.module('ajoslin.scrolly.transformer', [])
       //Gets the current y transform of the element
       self.$$calcPosition = function() {
         var style = $window.getComputedStyle(raw);
-        var matrix = (style[transformProp] || style[transformPropLower] || '')
+        var matrix = (style[transformProp] || '')
           .replace(/[^0-9-.,]/g,'')
           .split(',');
         if (matrix.length > 1) {

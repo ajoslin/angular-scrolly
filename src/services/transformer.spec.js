@@ -41,14 +41,14 @@ describe('scrolly.transformer', function() {
 
   it('should set pos and transform with setTo', function() {
     transformer.setTo(100);
-    expect(elm.css($transformer.transformProp)).toMatch('(0, 100px, 0)');
+    expect(elm.css($transformer.transformProp)).toMatch('100');
     expect(transformer.pos).toBe(100);
   });
 
   it('should allow a transformer that does x instead of y', function() {
     var t = new $transformer(elm, {translateX: true});
     t.setTo(100);
-    expect(elm.css($transformer.transformProp)).toMatch('(100px, 0, 0)');
+    expect(elm.css($transformer.transformProp)).toMatch('100');
   });
 
   it('should error if not giving a positive number for easeTo', function() {
@@ -60,16 +60,16 @@ describe('scrolly.transformer', function() {
     var done = jasmine.createSpy('done');
 
     transformer.easeTo(100, 500, done);
-    expect(elm.css($transformer.transitionProp)).toMatch($transformer.transformPropDash);
+    expect(elm.css($transformer.transitionProp)).toMatch('500ms');
     expect(transformer.pos).toBe(0);
     expect(transformer.changing).toBe(true);
 
     $nextFrame.expect().process();
-    expect(elm.css($transformer.transformProp)).toMatch('100px');
+    expect(elm.css($transformer.transformProp)).toMatch('100');
 
     $window.setTimeout.expect(500).process();
     expect(done).toHaveBeenCalled();
-    expect(elm.css($transformer.transitionProp)).toBe('none');
+    expect(elm.css($transformer.transitionProp)).toMatch('none');
     expect(transformer.pos).toBe(100);
   });
 
