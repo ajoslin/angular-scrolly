@@ -137,15 +137,15 @@ angular.module('ajoslin.scrolly.scroller', [
 
     $scroller.getContentRect = function(raw) {
       var style = window.getComputedStyle(raw);
-      var offTop = parseInt(style['margin-top'], 10) + 
-          parseInt(style['padding-top'], 10);
-      var offBottom = parseInt(style['margin-bottom'], 10) + 
-          parseInt(style['padding-bottom'], 10);
+    var offTop = parseInt(style.getPropertyValue('margin-top'), 10) +
+      parseInt(style.getPropertyValue('padding-top'), 10);
+    var offBottom = parseInt(style.getPropertyValue('margin-bottom'), 10) +
+      parseInt(style.getPropertyValue('padding-bottom'), 10);
 
-      var top = parseInt(style.top, 10);
-      var bottom = parseInt(style.bottom, 10);
+      var top = parseInt(style.getPropertyValue('top'), 10);
+      var bottom = parseInt(style.getPropertyValue('bottom'), 10);
 
-      var height = parseInt(style.height, 10);
+      var height = parseInt(style.getPropertyValue('height'), 10);
       return {
         top: offTop + (isNaN(top) ? 0 : top),
         bottom: offBottom + (isNaN(bottom) ? 0 : bottom),
@@ -229,7 +229,6 @@ angular.module('ajoslin.scrolly.scroller', [
             if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
               self.checkBoundaries();
             } else {
-              console.log('momentum');
               var momentum = self.momentum(dragData);
               if (momentum.position !== transformer.pos) {
                 transformer.easeTo(

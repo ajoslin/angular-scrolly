@@ -51,9 +51,10 @@ angular.module('ajoslin.scrolly.transformer', [])
   };
 
   this.$get = function($window, $nextFrame, $sniffer) {
-    var prefix = ($sniffer.vendorPrefix || '').toLowerCase();
+    var prefix = $sniffer.vendorPrefix;
     var transformProp = prefix ? (prefix + 'Transform') : 'transform';
-    var transformPropDash = prefix ? ('-' + prefix + '-transform') : 'transform';
+    var transformPropLower = prefix ? (prefix.toLowerCase() + 'Transform') : 'transform';
+    var transformPropDash = prefix ? ('-' + prefix.toLowerCase() + '-transform') : 'transform';
     var transitionProp = prefix ? (prefix + 'Transition') : 'transition';
 
     /**
@@ -104,8 +105,10 @@ angular.module('ajoslin.scrolly.transformer', [])
       //This method is only exposed for testing purposes
       //Gets the current y transform of the element
       self.$$calcPosition = function() {
-        var matrix = $window.getComputedStyle(raw)[transformProp]
-          .replace(/[^0-9-.,]/g,'').split(',');
+        var style = $window.getComputedStyle(raw);
+        var matrix = (style[transformProp] || style[transformPropLower] || '')
+          .replace(/[^0-9-.,]/g,'')
+          .split(',');
         if (matrix.length > 1) {
           return parseInt(matrix[_matrixIndex], 10);
         } else {

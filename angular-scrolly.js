@@ -219,9 +219,11 @@ angular.module('ajoslin.scrolly', [
   };
   function getRect(elm) {
     var style = window.getComputedStyle(elm);
-    var offTop = parseInt(style['margin-top'], 10) + parseInt(style['padding-top'], 10);
-    var offBottom = parseInt(style['margin-bottom'], 10) + parseInt(style['padding-bottom'], 10);
-    var height = parseInt(style.height, 10);
+    var offTop = parseInt(style.getPropertyValue('margin-top'), 10) +
+      parseInt(style.getPropertyValue('padding-top'), 10);
+    var offBottom = parseInt(style.getPropertyValue('margin-bottom'), 10) +
+      parseInt(style.getPropertyValue('padding-bottom'), 10);
+    var height = parseInt(style.getPropertyValue('height'), 10);
     return {
       top: offTop,
       bottom: offBottom,
@@ -357,7 +359,9 @@ angular.module('ajoslin.scrolly', [
         var self = {};
         var raw = elm[0];
         self.$$calcPosition = function () {
-          var matrix = $window.getComputedStyle(raw)[transformProp].replace(/[^0-9-.,]/g, '').split(',');
+          var matrix = $window.getComputedStyle(raw)
+            .getPropertyValue(transformProp)
+            .replace(/[^0-9-.,]/g, '').split(',');
           if (matrix.length > 1) {
             return parseInt(matrix[5], 10);
           } else {

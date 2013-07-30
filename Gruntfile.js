@@ -28,13 +28,17 @@ module.exports = function(grunt) {
         ' */\n'
     },
     karma: {
-      watch: {
-        background: true,
+      options: {
         configFile: 'test/karma.conf.js'
       },
+      watch: {
+        background: true
+      },
       continuous: {
-        singleRun: true,
-        configFile: 'test/karma.conf.js'
+        singleRun: true
+      },
+      travis: {
+        browsers: ['sauce_android', 'sauce_ie10']
       }
     },
 
