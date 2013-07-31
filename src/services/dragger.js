@@ -41,10 +41,16 @@ angular.module('ajoslin.scrolly.dragger', [])
    * Sets/gets the minimum distance the user needs to move his finger before
    * it is counted as a drag.
    *
+   * If the user drags his finger greater than this distance in the other direction
+   * before dragging this distance in the main direction, the drag will be cancelled.
+   *
+   * In other words, if the drag is set to vertical and the user moves horizontal at
+   * this distance before moving vertical this distance, the drag will be aborted.
+   *
    * @param {number=} newDistance Sets the minimum distance value.
    * @returns {number} minDistanceForDrag Current minimum distance value.
    */
-  var _minDistanceForDrag = 6;
+  var _minDistanceForDrag = 8;
   this.minDistanceForDrag = function(newMinDistanceForDrag) {
     arguments.length && (_minDistanceForDrag = newMinDistanceForDrag);
     return _minDistanceForDrag;
@@ -132,9 +138,9 @@ angular.module('ajoslin.scrolly.dragger', [])
      *
      * ### Ignoring Drag
      *
-     * To make an element and all its children ignore dragging, add the `data-dragger-ignore` attribute to the element, like so:
+     * To make an element and all its children ignore dragging, add the `dragger-ignore` attribute to the element, like so:
      * <pre>
-     *   <div data-dragger-ignore>
+     *   <div dragger-ignore>
      *     <button>Drag on me, it won't count!</button>
      *   </div>
      * </pre>
@@ -157,11 +163,28 @@ angular.module('ajoslin.scrolly.dragger', [])
      *  });
      *  </pre>
      */
+    
+    function getX(point) {
+      return point.pageX;
+    }
+    function getY(point) {
+      return point.pageY;
+    }
 
     //Creates a dragger for an element
-    function $dragger(elm) {
+    function $dragger(elm, options) {
       var self = {};
       var raw = elm[0];
+      var getPos, getOtherPos;
+
+      options = options || {};
+      if (options.horizontal) {
+        getPos = getX;
+        getOtherPos = getY;
+      } else {
+        getPos = getY;
+        getOtherPos = getX;
+      }
  
       var state = {
         startPos: 0,
@@ -186,16 +209,17 @@ angular.module('ajoslin.scrolly.dragger', [])
       elm.bind('touchend touchcancel', dragEnd);
 
       //Restarts the drag at the given position
-      function restartDragState(y) {
-        state.startPos = state.pos = y;
+      function restartDragState(point) {
+        state.startPos = state.pos = getPos(point);
+        state.otherStartPos = state.otherPos = getOtherPos(point);
         state.startTime = Date.now();
         state.dragging = true;
       }
 
       function isInput(raw) {
-        return raw && raw.tagName === "INPUT" ||
+        return raw && (raw.tagName === "INPUT" ||
           raw.tagName === "SELECT" || 
-          raw.tagName === "TEXTAREA";
+          raw.tagName === "TEXTAREA");
       }
 
       function dragStart(e) {
@@ -206,8 +230,8 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         //No drag on ignored elements
         //This way of doing it is taken straight from snap.js
-        //Ignore this element if it's within a 'data-dragger-ignore' element
-        if ( parentWithAttr(target, 'data-dragger-ignore') ) {
+        //Ignore this element if it's within a 'dragger-ignore' element
+        if ( parentWithAttr(target, 'dragger-ignore') ) {
           return;
         }
 
@@ -222,7 +246,7 @@ angular.module('ajoslin.scrolly.dragger', [])
         state.pos = 0;
         state.distance = 0;
 
-        restartDragState(point.pageY);
+        restartDragState(point);
 
         dispatchEvent({
           type: 'start',
@@ -235,23 +259,31 @@ angular.module('ajoslin.scrolly.dragger', [])
         e.preventDefault();
         if (state.dragging) {
           var point = e.touches ? e.touches[0] : e;
-          var delta = point.pageY - state.pos;
+          var delta = getPos(point) - state.pos;
 
           state.delta = delta;
-          state.pos = point.pageY;
+          state.pos = getPos(point);
+          state.otherPos = getOtherPos(point);
           state.distance = state.pos - state.startPos;
+          state.otherDistance = state.otherPos - state.otherStartPos;
 
-          if (Math.abs(state.pos - state.startPos) < _minDistanceForDrag) {
-            return;
+          if (!state.moved) {
+            //if we go far enough in other direction, let's cancel it
+            if (Math.abs(state.otherDistance) > _minDistanceForDrag) {
+              return dragEnd(e);
+            } else if (Math.abs(state.distance) > _minDistanceForDrag) {
+              state.moved = true;
+            } else {
+              return;
+            }
           }
-          state.moved = true;
 
           //If the user moves and then stays motionless for enough time,
           //the user 'stopped'.  If he starts dragging again after stopping,
           //we pseudo-restart his drag.
           var timeSinceMove = state.lastMoveTime - state.startTime;
           if (timeSinceMove > _maxTimeMotionless) {
-            restartDragState(state.pos);
+            restartDragState(point);
           }
           state.lastMoveTime = e.timeStamp || Date.now();
 

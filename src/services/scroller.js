@@ -137,10 +137,10 @@ angular.module('ajoslin.scrolly.scroller', [
 
     $scroller.getContentRect = function(raw) {
       var style = window.getComputedStyle(raw);
-    var offTop = parseInt(style.getPropertyValue('margin-top'), 10) +
-      parseInt(style.getPropertyValue('padding-top'), 10);
-    var offBottom = parseInt(style.getPropertyValue('margin-bottom'), 10) +
-      parseInt(style.getPropertyValue('padding-bottom'), 10);
+      var offTop = parseInt(style.getPropertyValue('margin-top'), 10) +
+        parseInt(style.getPropertyValue('padding-top'), 10);
+      var offBottom = parseInt(style.getPropertyValue('margin-bottom'), 10) +
+        parseInt(style.getPropertyValue('padding-bottom'), 10);
 
       var top = parseInt(style.getPropertyValue('top'), 10);
       var bottom = parseInt(style.getPropertyValue('bottom'), 10);
@@ -175,8 +175,14 @@ angular.module('ajoslin.scrolly.scroller', [
 
     function $scroller(elm) {
       var self = {};
-      var raw = elm[0];
+      var currentScroller = elm.data('$scrolly.scroller');
+      if (currentScroller) {
+        return currentScroller;
+      } else {
+        elm.data('$scrolly.scroller', self);
+      }
 
+      var raw = elm[0];
       var transformer = self.transformer = new $transformer(elm);
       var dragger = self.dragger = new $dragger(elm);
       if (_supportDesktop) {
@@ -208,37 +214,37 @@ angular.module('ajoslin.scrolly.scroller', [
         switch(dragData.type) {
           case 'start':
             if (transformer.changing) {
-              transformer.stop();
-            }
-            self.calculateHeight();
-            break;
+            transformer.stop();
+          }
+          self.calculateHeight();
+          break;
 
           case 'move':
             var newPos = transformer.pos + dragData.delta;
-            //If going past boundaries, scroll at half speed
-            //TODO make the 0.5 a provider option
-            if ( self.outOfBounds(newPos) ) {
-              newPos = transformer.pos + floor(dragData.delta * 0.5);
-            }
-            transformer.setTo(newPos);
-            break;
+          //If going past boundaries, scroll at half speed
+          //TODO make the 0.5 a provider option
+          if ( self.outOfBounds(newPos) ) {
+            newPos = transformer.pos + floor(dragData.delta * 0.5);
+          }
+          transformer.setTo(newPos);
+          break;
 
           case 'end':
             //If we're out of bounds, or held on to our spot for too long,
             //no momentum.  Just check that we're in bounds.
             if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
-              self.checkBoundaries();
-            } else {
-              var momentum = self.momentum(dragData);
-              if (momentum.position !== transformer.pos) {
-                transformer.easeTo(
-                  momentum.position,
-                  momentum.time,
-                  self.checkBoundaries
-                );
-              }
+            self.checkBoundaries();
+          } else {
+            var momentum = self.momentum(dragData);
+            if (momentum.position !== transformer.pos) {
+              transformer.easeTo(
+                momentum.position,
+                momentum.time,
+                self.checkBoundaries
+              );
             }
-            break;
+          }
+          break;
         }
       }
       self.checkBoundaries = function() {

@@ -31,6 +31,14 @@ describe('scrolly.transformer', function() {
     expect(typeof transformer).toBe('object');
   });
 
+  it('should put the transformer on elm.data', function() {
+    expect(elm.data('$scrolly.transformer')).toBe(transformer);
+  });
+
+  it('should return the same transformer multiple times for an element', inject(function($transformer) {
+    expect($transformer(elm)).toBe(transformer);
+  }));
+
   it('should have pos at 0 by default', function() {
     expect(transformer.pos).toBe(0);
   });
@@ -43,12 +51,6 @@ describe('scrolly.transformer', function() {
     transformer.setTo(100);
     expect(elm.css($transformer.transformProp)).toMatch('100');
     expect(transformer.pos).toBe(100);
-  });
-
-  it('should allow a transformer that does x instead of y', function() {
-    var t = new $transformer(elm, {translateX: true});
-    t.setTo(100);
-    expect(elm.css($transformer.transformProp)).toMatch('100');
   });
 
   it('should error if not giving a positive number for easeTo', function() {

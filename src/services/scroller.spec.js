@@ -23,6 +23,14 @@ describe('scroller', function() {
     });
   }));
 
+  it('should put the scroller on elm.data', function() {
+    expect(elm.data('$scrolly.scroller')).toBe(scroller);
+  });
+
+  it('should return the same scroller multiple times for an element', inject(function($scroller) {
+    expect($scroller(elm)).toBe(scroller);
+  }));
+
   describe('calculateHeight', function() {
     it('should set scrollHeight to window\'s height relative to dimensions', function() {
       $window.innerHeight = 300;

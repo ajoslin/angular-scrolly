@@ -76,7 +76,7 @@ angular.module('ajoslin.scrolly.transformer', [])
      * A factory for creating a transformation-manipulator on an element.  It manipulates the transform of an element vertically, allowing you to set, get, and animate the given element's transform.
      *
      * @param {element} element Element to manipulate the transformation of.
-     * @param {object=} options Options to pass to the transformer. Pass key "translateX" as true if you wish to operate on x instead of y.
+     * @param {object=} options Options to pass to the transformer. Pass key "horizontal" as true if you wish to operate on x instead of y.
      * @returns {object} Newly created transformer object with the following properties:
      *
      *   - `{number}` `pos` - The current vertical transform, in pixels, of the element.
@@ -100,12 +100,19 @@ angular.module('ajoslin.scrolly.transformer', [])
     //Creates a transformer for an element
     function $transformer(elm, options) {
       var self = {};
+      var currentTransformer = elm.data('$scrolly.transformer');
+      if (currentTransformer) {
+        return currentTransformer;
+      } else {
+        elm.data('$scrolly.transformer', self);
+      }
+
       var raw = elm[0];
       var _transformGetter;
       var _matrixIndex;
 
       options = options || {};
-      if (options.translateX) {
+      if (options.horizontal) {
         _transformGetter = transformGetterX;
         _matrixIndex = 4;
       } else {
