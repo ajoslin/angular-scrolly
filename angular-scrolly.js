@@ -1,11 +1,9 @@
 /*
- * angular-scrolly - v0.0.2 - 2013-07-30
+ * angular-scrolly - v0.0.3 - 2013-08-09
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
 angular.module('ajoslin.scrolly', [
-  'ajoslin.scrolly.dragger',
-  'ajoslin.scrolly.transformer',
   'ajoslin.scrolly.scroller',
   'ajoslin.scrolly.directives'
 ]);angular.module('ajoslin.scrolly.directives', ['ajoslin.scrolly.scroller']).directive('scrollyScroll', [
@@ -22,56 +20,78 @@ angular.module('ajoslin.scrolly', [
       }
     };
   }
-]);angular.module('ajoslin.scrolly.desktop', []).factory('$desktopScroller', [
-  '$document',
-  function ($document) {
-    return function $desktopScroller(elm, scroller) {
-      elm.bind('$destroy', function () {
-        $document.unbind('mousewheel', onMousewheel);
-        $document.unbind('keydown', onKey);
-      });
-      $document.bind('mousewheel', onMousewheel);
-      $document.bind('keydown', onKey);
-      function onMousewheel(e) {
-        var delta = e.wheelDeltaY / 2;
-        scroller.calculateHeight();
-        var newPos = scroller.transformer.pos + delta;
-        scroller.transformer.setTo(clamp(-scroller.scrollHeight, newPos, 0));
-        e.preventDefault();
-      }
-      var KEYS = {
-          38: 150,
-          40: -150,
-          32: -600
-        };
-      function onKey(e) {
-        var delta = KEYS[e.keyCode || e.which];
-        if (delta) {
-          e.preventDefault();
-          if (scroller.transformer.changing)
-            return;
+]);angular.module('ajoslin.scrolly.desktop', []).provider('$desktopScroller', function () {
+  var KEYS = {
+      38: 150,
+      40: -150,
+      32: -600
+    };
+  this.key = function (keyCode, delta) {
+    if (arguments.length > 1) {
+      KEYS[keyCode] = delta;
+    }
+    return KEYS[keyCode];
+  };
+  var _mouseWheelDistanceMulti = 0.5;
+  this.mouseWheelDistanceMulti = function (newMulti) {
+    arguments.length && (_mouseWheelDistanceMulti = newMulti);
+    return _mouseWheelDistanceMulti;
+  };
+  this.$get = [
+    '$document',
+    function ($document) {
+      $desktopScroller.mouseWheelDistanceMulti = _mouseWheelDistanceMulti;
+      $desktopScroller.easeTimeMulti = 0.66;
+      function $desktopScroller(elm, scroller) {
+        var self = {};
+        elm.bind('$destroy', function () {
+          $document.unbind('mousewheel', onMousewheel);
+          $document.unbind('keydown', onKey);
+        });
+        $document.bind('mousewheel', onMousewheel);
+        $document.bind('keydown', onKey);
+        function onMousewheel(e) {
+          var delta = e.wheelDeltaY * $desktopScroller.mouseWheelDistanceMulti;
           scroller.calculateHeight();
           var newPos = scroller.transformer.pos + delta;
-          newPos = clamp(-scroller.scrollHeight, newPos, 0);
-          if (newPos !== scroller.transformer.pos) {
-            var newDelta = newPos - scroller.transformer.pos;
-            var time = Math.abs(delta / 1.5) * (newDelta / delta);
-            scroller.transformer.easeTo(newPos, time);
+          scroller.transformer.setTo(clamp(-scroller.scrollHeight, newPos, 0));
+          e.preventDefault();
+        }
+        var INPUT_REGEX = /INPUT|TEXTAREA|SELECT/i;
+        function onKey(e) {
+          if (document.activeElement && document.activeElement.tagName && document.activeElement.tagName.match(INPUT_REGEX)) {
+            return;
+          }
+          var delta = KEYS[e.keyCode || e.which];
+          if (delta) {
+            e.preventDefault();
+            if (scroller.transformer.changing)
+              return;
+            scroller.calculateHeight();
+            var newPos = scroller.transformer.pos + delta;
+            newPos = clamp(-scroller.scrollHeight, newPos, 0);
+            if (newPos !== scroller.transformer.pos) {
+              var newDelta = newPos - scroller.transformer.pos;
+              var time = Math.abs(newDelta * $desktopScroller.easeTimeMulti);
+              scroller.transformer.easeTo(newPos, time);
+            }
           }
         }
+        return self;
       }
-    };
-    function clamp(a, b, c) {
-      return Math.min(Math.max(a, b), c);
+      function clamp(a, b, c) {
+        return Math.min(Math.max(a, b), c);
+      }
+      return $desktopScroller;
     }
-  }
-]);angular.module('ajoslin.scrolly.dragger', []).provider('$dragger', function () {
+  ];
+});angular.module('ajoslin.scrolly.dragger', []).provider('$dragger', function () {
   var _shouldBlurOnDrag = true;
   this.shouldBlurOnDrag = function (shouldBlur) {
     arguments.length && (_shouldBlurOnDrag = !!shouldBlur);
     return _shouldBlurOnDrag;
   };
-  var _minDistanceForDrag = 6;
+  var _minDistanceForDrag = 8;
   this.minDistanceForDrag = function (newMinDistanceForDrag) {
     arguments.length && (_minDistanceForDrag = newMinDistanceForDrag);
     return _minDistanceForDrag;
@@ -94,9 +114,24 @@ angular.module('ajoslin.scrolly', [
     '$window',
     '$document',
     function ($window, $document) {
-      function $dragger(elm) {
+      function getX(point) {
+        return point.pageX;
+      }
+      function getY(point) {
+        return point.pageY;
+      }
+      function $dragger(elm, options) {
         var self = {};
         var raw = elm[0];
+        var getPos, getOtherPos;
+        options = options || {};
+        if (options.horizontal) {
+          getPos = getX;
+          getOtherPos = getY;
+        } else {
+          getPos = getY;
+          getOtherPos = getX;
+        }
         var state = {
             startPos: 0,
             startTime: 0,
@@ -116,19 +151,20 @@ angular.module('ajoslin.scrolly', [
         elm.bind('touchstart', dragStart);
         elm.bind('touchmove', dragMove);
         elm.bind('touchend touchcancel', dragEnd);
-        function restartDragState(y) {
-          state.startPos = state.pos = y;
+        function restartDragState(point) {
+          state.startPos = state.pos = getPos(point);
+          state.otherStartPos = state.otherPos = getOtherPos(point);
           state.startTime = Date.now();
           state.dragging = true;
         }
         function isInput(raw) {
-          return raw && raw.tagName === 'INPUT' || raw.tagName === 'SELECT' || raw.tagName === 'TEXTAREA';
+          return raw && (raw.tagName === 'INPUT' || raw.tagName === 'SELECT' || raw.tagName === 'TEXTAREA');
         }
         function dragStart(e) {
           e = e.originalEvent || e;
           var target = e.target || e.srcElement;
           var point = e.touches ? e.touches[0] : e;
-          if (parentWithAttr(target, 'data-dragger-ignore')) {
+          if (parentWithAttr(target, 'dragger-ignore')) {
             return;
           }
           if (_shouldBlurOnDrag && isInput(target)) {
@@ -139,7 +175,7 @@ angular.module('ajoslin.scrolly', [
           state.delta = 0;
           state.pos = 0;
           state.distance = 0;
-          restartDragState(point.pageY);
+          restartDragState(point);
           dispatchEvent({
             type: 'start',
             startPos: state.startPos,
@@ -151,17 +187,24 @@ angular.module('ajoslin.scrolly', [
           e.preventDefault();
           if (state.dragging) {
             var point = e.touches ? e.touches[0] : e;
-            var delta = point.pageY - state.pos;
+            var delta = getPos(point) - state.pos;
             state.delta = delta;
-            state.pos = point.pageY;
+            state.pos = getPos(point);
+            state.otherPos = getOtherPos(point);
             state.distance = state.pos - state.startPos;
-            if (Math.abs(state.pos - state.startPos) < _minDistanceForDrag) {
-              return;
+            state.otherDistance = state.otherPos - state.otherStartPos;
+            if (!state.moved) {
+              if (Math.abs(state.otherDistance) > _minDistanceForDrag) {
+                return dragEnd(e);
+              } else if (Math.abs(state.distance) > _minDistanceForDrag) {
+                state.moved = true;
+              } else {
+                return;
+              }
             }
-            state.moved = true;
             var timeSinceMove = state.lastMoveTime - state.startTime;
             if (timeSinceMove > _maxTimeMotionless) {
-              restartDragState(state.pos);
+              restartDragState(point);
             }
             state.lastMoveTime = e.timeStamp || Date.now();
             dispatchEvent({
@@ -276,6 +319,12 @@ angular.module('ajoslin.scrolly', [
       }
       function $scroller(elm) {
         var self = {};
+        var currentScroller = elm.data('$scrolly.scroller');
+        if (currentScroller) {
+          return currentScroller;
+        } else {
+          elm.data('$scrolly.scroller', self);
+        }
         var raw = elm[0];
         var transformer = self.transformer = new $transformer(elm);
         var dragger = self.dragger = new $dragger(elm);
@@ -407,11 +456,17 @@ angular.module('ajoslin.scrolly', [
       }
       function $transformer(elm, options) {
         var self = {};
+        var currentTransformer = elm.data('$scrolly.transformer');
+        if (currentTransformer) {
+          return currentTransformer;
+        } else {
+          elm.data('$scrolly.transformer', self);
+        }
         var raw = elm[0];
         var _transformGetter;
         var _matrixIndex;
         options = options || {};
-        if (options.translateX) {
+        if (options.horizontal) {
           _transformGetter = transformGetterX;
           _matrixIndex = 4;
         } else {
