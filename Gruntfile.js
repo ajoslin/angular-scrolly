@@ -144,8 +144,7 @@ module.exports = function(grunt) {
         'grunt changelog',
         'git add angular-scrolly.js angular-scrolly.min.js',
         'git commit -am "chore(release): v<%= pkg.version %>"',
-        'git tag v<%= pkg.version %>',
-        'git push --tags origin master'
+        'git tag v<%= pkg.version %>'
       ]
     },
 
