@@ -16,14 +16,14 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$dragger",
       "shortName": "$dragger",
       "type": "object",
-      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds ajoslin alert all allowed an and api at attach attribute be being below break callback callbacks called cares case change children count created creating current data data-dragger-ignore delta distance do dom drag drag-listeners dragdata dragger dragging duration each element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total type used useful user usually var vertical we when whenever where whether will with won"
+      "keywords": "$dragger $draggerprovider about abstracted add addlistener adds ajoslin alert all allowed an and api at attach attribute be being below break callback callbacks called cares case change children count created creating current data delta distance do dom drag drag-listeners dragdata dragger dragger-ignore dragging duration each element elements emitted end event events example factory finger finished following for format from given happens has have having held his ignore ignoring in inactivedrag is it its just last lasted like list listener listeners longer make maximum maxtimemotionless me methods more move moved moving new newly object of on only or page parameter plain pos position properties px removelistener removes scrolling scrolly see since so specified start started startpos starttime still switch take takes than the this time timestamp to total type used useful user usually var vertical we when whenever where whether will with won"
     },
     {
       "section": "api",
       "id": "ajoslin.scrolly.$draggerProvider",
       "shortName": "$draggerProvider",
       "type": "object",
-      "keywords": "$draggerprovider active actively ajoslin an and any anymore api as be before blur blurred can configuring counted current cursor defaults distance does drag dragging element finger for his if in is it major maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move needs newdistance newshouldblur newtime not object occur of on options position problems scrolly sets should shouldblurondrag shouldblurontouch some starts the then there time to touch touches true used user value visual when whether with"
+      "keywords": "$draggerprovider aborted active actively ajoslin an and any anymore api as at be before blur blurred can cancelled configuring counted current cursor defaults direction distance does drag dragging drags element finger for greater his horizontal if in is it main major maximum maxtimemotionless method milliseconds mindistancefordrag minimum motionless move moves moving needs newdistance newshouldblur newtime not object occur of on options other position problems scrolly set sets should shouldblurondrag shouldblurontouch some starts than the then there this time to touch touches true used user value vertical visual when whether will with words"
     },
     {
       "section": "api",
@@ -51,7 +51,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$transformer",
       "shortName": "$transformer",
       "type": "object",
-      "keywords": "$transformer ajoslin allowing an and animate animation any api as be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given if in instead is it key manipulate manipulates milliseconds newly next object of on operate options pass pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions translatex true used value version vertical vertically webkittransform webkittransition when will wish with you"
+      "keywords": "$transformer ajoslin allowing an and animate animation any api as be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given horizontal if in instead is it key manipulate manipulates milliseconds newly next object of on operate options pass pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions true used value version vertical vertically webkittransform webkittransition when will wish with you"
     },
     {
       "section": "api",

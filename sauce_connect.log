@@ -1,0 +1,117 @@
+2013-08-09 10:20:09,510 - sauce_connect:558 - INFO - / Starting \
+2013-08-09 10:20:09,513 - sauce_connect:559 - INFO - Please wait for "You may start your tests" to start your tests.
+2013-08-09 10:20:09,519 - sauce_connect:571 - DEBUG - System is -4.0 hours off UTC
+2013-08-09 10:20:09,519 - sauce_connect:573 - DEBUG - options: {'user': 'angular-scrolly', 'ports': ['54399'], 'domains': None, 'debug_ssh': False, 'tunnel_ports': ['80'], 'allow_unclean_exit': False, 'rest_url': 'https://saucelabs.com/rest/v1', 'logfile': 'sauce_connect.log', 'squid_opts': '', 'ssh': False, 'se_port': '4445', 'readyfile': '/Users/andyjoslin/dev/me/angular-scrolly/node_modules/karma-sauce-launcher/node_modules/sauce-connect-launcher/lib/readyfile', 'shared_tunnel': False, 'boost_mode': True, 'tunnel_identifier': 'karma1376058001', 'ssh_port': 443, 'fast_fail_regexps': '', 'direct_domains': '', 'host': '127.0.0.1', 'quiet': False, 'latency_log': 150, 'use_ssh_config': False}
+2013-08-09 10:20:09,520 - sauce_connect:574 - DEBUG - metadata: {'PythonVersion': '2.5.1', 'OwnerHost': '127.0.0.1', 'Release': '3.0-r28', 'OwnerPorts': ['54399'], 'Ports': ['80'], 'Platform': 'Java-1.6.0_51-Java_HotSpot-TM-_64-Bit_Server_VM,_20.51-b01-457,_Apple_Inc.-on-Mac_OS_X-10.8.4-x86_64', 'Build': '43', 'ScriptRelease': 43, 'ScriptName': 'sauce_connect'}
+2013-08-09 10:20:09,522 - sauce_connect:576 - INFO - Forwarding: None:['80'] -> 127.0.0.1:['54399']
+2013-08-09 10:20:09,532 - sauce_connect:375 - INFO - Succesfully connected to local server 127.0.0.1:54399 in 4ms
+2013-08-09 10:20:13,736 - sauce_connect:238 - INFO - {"squid_config":null,"use_caching_proxy":true,"metadata":{"PythonVersion":"2.5.1","OwnerHost":"127.0.0.1","Release":"3.0-r28","OwnerPorts":["54399"],"Ports":["80"],"Platform":"Java-1.6.0_51-Java_HotSpot-TM-_64-Bit_Server_VM,_20.51-b01-457,_Apple_Inc.-on-Mac_OS_X-10.8.4-x86_64","Build":"43","ScriptRelease":43,"ScriptName":"sauce_connect"},"use_kgp":true,"tunnel_identifier":"karma1376058001","shared_tunnel":false,"fast_fail_regexps":null,"ssh_port":443,"direct_domains":null,"domain_names":[]}
+2013-08-09 10:20:17,677 - sauce_connect:250 - INFO - Tunnel remote VM is provisioned (79c2defd10554e58a1fbb392c6b8c525)
+2013-08-09 10:20:17,848 - sauce_connect:268 - INFO - Tunnel remote VM is booting ..
+2013-08-09 10:20:40,487 - sauce_connect:272 - INFO - Tunnel remote VM is running at maki13025.miso.saucelabs.com
+2013-08-09 10:20:40,506 - sauce_connect:375 - INFO - Succesfully connected to local server 127.0.0.1:54399 in 0ms
+2013-08-09 10:20:40,509 - sauce_connect:646 - INFO - Starting connection to tunnel host...
+2013-08-09 10:20:40,510 - sauce_connect:646 - INFO - Connecting to tunnel host maki13025.miso.saucelabs.com as angular-scrolly
+2013-08-09 10:20:40,653 - sauce_connect:646 - INFO - Forwarding Selenium with ephemeral port 54435
+2013-08-09 10:20:40,660 - sauce_connect:646 - INFO - Selenium HTTP proxy listening on port 4445
+2013-08-09 10:20:41,220 - sauce_connect:0 - INFO - Successful handshake with Sauce Connect server
+2013-08-09 10:20:41,311 - sauce_connect:0 - INFO - Tunnel host version: 0.1.0, remote endpoint ID: 55a9dd9af0ee4059ae12e1713531717e
+2013-08-09 10:20:41,315 - sauce_connect:646 - INFO - Connected! You may start your tests.
+2013-08-09 10:20:52,737 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/?id=16880636
+2013-08-09 10:20:52,762 - sauce_connect:0 - INFO - GET http://localhost:9878/?id=16880636 -> 200 (24ms, 2868 bytes)
+2013-08-09 10:20:52,911 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/karma.js
+2013-08-09 10:20:52,911 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/socket.io.js
+2013-08-09 10:20:52,921 - sauce_connect:0 - INFO - GET http://localhost:9878/karma.js -> 200 (9ms, 7582 bytes)
+2013-08-09 10:20:53,605 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/socket.io.js -> 200 (695ms, 97204 bytes)
+2013-08-09 10:20:54,575 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/?id=70919702
+2013-08-09 10:20:54,579 - sauce_connect:0 - INFO - GET http://localhost:9878/?id=70919702 -> 200 (5ms, 2868 bytes)
+2013-08-09 10:20:54,755 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/socket.io.js
+2013-08-09 10:20:54,759 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/socket.io.js -> 200 (6ms, 97204 bytes)
+2013-08-09 10:20:54,858 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/karma.js
+2013-08-09 10:20:54,861 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/?t=1376058053333
+2013-08-09 10:20:54,865 - sauce_connect:0 - INFO - GET http://localhost:9878/karma.js -> 200 (7ms, 7582 bytes)
+2013-08-09 10:20:54,868 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/?t=1376058053333 -> 200 (8ms, 74 bytes)
+2013-08-09 10:20:55,776 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/?t=1376058054233
+2013-08-09 10:20:55,779 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/?t=1376058054233 -> 200 (4ms, 74 bytes)
+2013-08-09 10:21:05,727 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064255
+2013-08-09 10:21:05,733 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064255 -> 200 (5ms, 3 bytes)
+2013-08-09 10:21:05,855 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064381
+2013-08-09 10:21:05,855 - sauce_connect:0 - INFO - Request started: POST http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064380
+2013-08-09 10:21:05,859 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064381 -> 200 (5ms, 105 bytes)
+2013-08-09 10:21:05,861 - sauce_connect:0 - INFO - POST http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064380 -> 200 (5ms, 1 bytes)
+2013-08-09 10:21:05,957 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064508
+2013-08-09 10:21:05,960 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064508 -> 200 (5ms, 3 bytes)
+2013-08-09 10:21:06,066 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064597
+2013-08-09 10:21:06,072 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064597 -> 200 (5ms, 311 bytes)
+2013-08-09 10:21:06,168 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064784
+2013-08-09 10:21:06,168 - sauce_connect:0 - INFO - Request started: POST http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064783
+2013-08-09 10:21:06,177 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064784 -> 200 (7ms, 184 bytes)
+2013-08-09 10:21:06,177 - sauce_connect:0 - INFO - POST http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058064783 -> 200 (7ms, 1 bytes)
+2013-08-09 10:21:06,276 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064807
+2013-08-09 10:21:06,279 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058064807 -> 200 (3ms, 186 bytes)
+2013-08-09 10:21:06,480 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058065002
+2013-08-09 10:21:06,483 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058065002 -> 200 (3ms, 186 bytes)
+2013-08-09 10:21:06,582 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058065018
+2013-08-09 10:21:06,687 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058065305
+2013-08-09 10:21:26,585 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058065018 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:21:26,690 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058065305 -> 200 (20003ms, 3 bytes)
+2013-08-09 10:21:26,694 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058085225
+2013-08-09 10:21:26,813 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058085426
+2013-08-09 10:21:46,698 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058085225 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:21:46,815 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058105343
+2013-08-09 10:21:46,819 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058085426 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:21:47,035 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058105648
+2013-08-09 10:21:52,421 - sauce_connect:0 - INFO - Request started: POST http://evintl-ocsp.verisign.com/
+2013-08-09 10:21:52,601 - sauce_connect:0 - INFO - POST http://evintl-ocsp.verisign.com/ -> 200 (179ms, 1999 bytes)
+2013-08-09 10:21:52,732 - sauce_connect:0 - INFO - Request started: POST http://evsecure-ocsp.verisign.com/
+2013-08-09 10:21:52,880 - sauce_connect:0 - INFO - POST http://evsecure-ocsp.verisign.com/ -> 200 (149ms, 1891 bytes)
+2013-08-09 10:22:06,822 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058105343 -> 200 (20009ms, 3 bytes)
+2013-08-09 10:22:06,937 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058125467
+2013-08-09 10:22:07,042 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058105648 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:22:07,161 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058125775
+2013-08-09 10:22:09,368 - sauce_connect:0 - INFO - Request started: POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS
+2013-08-09 10:22:09,694 - sauce_connect:0 - INFO - POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS -> 200 (326ms, 1994 bytes)
+2013-08-09 10:22:25,483 - sauce_connect:0 - INFO - Request started: POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS
+2013-08-09 10:22:25,723 - sauce_connect:0 - INFO - POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS -> 200 (240ms, 1994 bytes)
+2013-08-09 10:22:26,944 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058125467 -> 200 (20005ms, 3 bytes)
+2013-08-09 10:22:27,058 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058145585
+2013-08-09 10:22:27,167 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058125775 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:22:27,278 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058145895
+2013-08-09 10:22:47,062 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058145585 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:22:47,174 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058165705
+2013-08-09 10:22:47,283 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058145895 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:22:47,506 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058166019
+2013-08-09 10:22:56,283 - sauce_connect:0 - INFO - Request started: POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS
+2013-08-09 10:22:56,440 - sauce_connect:0 - INFO - POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS -> 200 (157ms, 1994 bytes)
+2013-08-09 10:23:07,180 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058165705 -> 200 (20005ms, 3 bytes)
+2013-08-09 10:23:07,292 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058185823
+2013-08-09 10:23:07,513 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058166019 -> 200 (20007ms, 3 bytes)
+2013-08-09 10:23:07,667 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058186278
+2013-08-09 10:23:27,299 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058185823 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:23:27,674 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058186278 -> 200 (20007ms, 3 bytes)
+2013-08-09 10:23:28,085 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058206330
+2013-08-09 10:23:28,730 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058206513
+2013-08-09 10:23:48,089 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058206330 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:23:48,203 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058226729
+2013-08-09 10:23:48,736 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058206513 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:23:48,852 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058227464
+2013-08-09 10:23:57,092 - sauce_connect:0 - INFO - Request started: POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS
+2013-08-09 10:23:57,279 - sauce_connect:0 - INFO - POST https://albert.apple.com/WebObjects/ALUnbrick.woa/wa/deviceActivation?device=MacOS -> 200 (185ms, 1994 bytes)
+2013-08-09 10:24:08,207 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058226729 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:24:08,316 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058246848
+2013-08-09 10:24:08,855 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058227464 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:24:08,967 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058247582
+2013-08-09 10:24:28,319 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058246848 -> 200 (20003ms, 3 bytes)
+2013-08-09 10:24:28,430 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058266957
+2013-08-09 10:24:28,974 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058247582 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:24:29,081 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058267698
+2013-08-09 10:24:48,436 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058266957 -> 200 (20005ms, 3 bytes)
+2013-08-09 10:24:48,671 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058287197
+2013-08-09 10:24:49,085 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058267698 -> 200 (20004ms, 3 bytes)
+2013-08-09 10:24:49,210 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058287813
+2013-08-09 10:25:08,678 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058287197 -> 200 (20006ms, 3 bytes)
+2013-08-09 10:25:08,789 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/goL9w_wrf19EdJPLcsdb?t=1376058307317
+2013-08-09 10:25:09,214 - sauce_connect:0 - INFO - GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058287813 -> 200 (20005ms, 3 bytes)
+2013-08-09 10:25:09,427 - sauce_connect:0 - INFO - Request started: GET http://localhost:9878/socket.io/1/xhr-polling/Rq5AeWJb2SValwQvcsdc?t=1376058307943
+2013-08-09 10:25:16,055 - sauce_connect:0 - INFO - received SIGTERM
+2013-08-09 10:25:16,055 - sauce_connect:0 - INFO - received SIGINT

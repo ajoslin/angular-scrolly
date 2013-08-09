@@ -18,7 +18,13 @@ the user is counted as 'not actively dragging' anymore.</p><h4 id="Parameters">P
 </li>
 <li><h3 id="minDistanceForDrag">minDistanceForDrag(newDistance)</h3>
 <div class="mindistancefordrag"><p>Sets/gets the minimum distance the user needs to move his finger before
-it is counted as a drag.</p><h4 id="Parameters">Parameters</h4>
+it is counted as a drag.</p>
+
+<p>If the user drags his finger greater than this distance in the other direction
+before dragging this distance in the main direction, the drag will be cancelled.</p>
+
+<p>In other words, if the drag is set to vertical and the user moves horizontal at
+this distance before moving vertical this distance, the drag will be aborted.</p><h4 id="Parameters">Parameters</h4>
 <ul class="parameters"><li><code ng:non-bindable="">newDistance<i>(optional)</i> – {number=} – </code>
 <p>Sets the minimum distance value.</p></li>
 </ul>
