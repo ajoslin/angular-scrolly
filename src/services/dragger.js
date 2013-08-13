@@ -224,6 +224,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
       function dragStart(e) {
         e = e.originalEvent || e; //for jquery
+        e.stopPropagation();
 
         var target = e.target || e.srcElement;
         var point = e.touches ? e.touches[0] : e;
@@ -257,6 +258,8 @@ angular.module('ajoslin.scrolly.dragger', [])
       function dragMove(e) {
         e = e.originalEvent || e; //for jquery
         e.preventDefault();
+        e.stopPropagation();
+
         if (state.dragging) {
           var point = e.touches ? e.touches[0] : e;
           var delta = getPos(point) - state.pos;
@@ -299,6 +302,8 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
       function dragEnd(e) {
         e = e.originalEvent || e; // for jquery
+        e.stopPropagation();
+
         if (state.dragging) {
           state.dragging = false;
 
