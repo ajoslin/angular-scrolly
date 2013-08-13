@@ -1,3 +1,11 @@
+<a name="v0.0.4"></a>
+### v0.0.4 (2013-08-13)
+
+
+#### Bug Fixes
+
+* **dragger:** stop propagation, so scroll on popups works ([2006b0bc](http://github.com/ajoslin/angular-scrolly/commit/2006b0bc658c78d4349ef718b860c557cd3a7e97))
+
 <a name="v0.0.3"></a>
 ### v0.0.3 (2013-08-09)
 

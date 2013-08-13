@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.3 - 2013-08-09
+ * angular-scrolly - v0.0.4 - 2013-08-13
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -162,6 +162,7 @@ angular.module('ajoslin.scrolly', [
         }
         function dragStart(e) {
           e = e.originalEvent || e;
+          e.stopPropagation();
           var target = e.target || e.srcElement;
           var point = e.touches ? e.touches[0] : e;
           if (parentWithAttr(target, 'dragger-ignore')) {
@@ -185,6 +186,7 @@ angular.module('ajoslin.scrolly', [
         function dragMove(e) {
           e = e.originalEvent || e;
           e.preventDefault();
+          e.stopPropagation();
           if (state.dragging) {
             var point = e.touches ? e.touches[0] : e;
             var delta = getPos(point) - state.pos;
@@ -219,6 +221,7 @@ angular.module('ajoslin.scrolly', [
         }
         function dragEnd(e) {
           e = e.originalEvent || e;
+          e.stopPropagation();
           if (state.dragging) {
             state.dragging = false;
             var now = Date.now();
