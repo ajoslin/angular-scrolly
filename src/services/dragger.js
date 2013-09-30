@@ -113,8 +113,7 @@ angular.module('ajoslin.scrolly.dragger', [])
      * @name ajoslin.scrolly.$dragger
      *
      * @description
-     * A factory for creating drag-listeners on elements. It only cares about
-     * vertical drag, usually used for scrolling.
+     * A factory for creating drag-listeners on elements. 
      *
      * @param {element} element Element to attach drag listeners to.
      * @param {number=} dragDirection Which direction the dragger should be restricted to dispatching events for. 
