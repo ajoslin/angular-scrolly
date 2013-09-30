@@ -295,8 +295,12 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
 
   $scope.navClass = function(page1, page2) {
     return {
+      first: this.$first,
       last: this.$last,
-      active: page1 && this.currentPage == page1 || page2 && this.currentPage == page2
+      active: page1 && this.currentPage == page1 || page2 && this.currentPage == page2,
+      match: this.focused && this.currentPage != page1 &&
+             this.bestMatch.rank > 0 && this.bestMatch.page == page1
+             
     };
   };
 
@@ -352,7 +356,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
       match, sectionPath = (NG_DOCS.html5Mode ? '' : '#/') +  sectionId;
 
     if (partialId) {
-      breadcrumb.push({ name: NG_DOCS.sections[sectionName], url: sectionPath });
+      breadcrumb.push({ name: sectionName, url: sectionPath });
       if (partialId == 'angular.Module') {
         breadcrumb.push({ name: 'angular.Module' });
       } else if (match = partialId.match(GLOBALS)) {
@@ -389,7 +393,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
         breadcrumb.push({ name: page.shortName });
       }
     } else {
-      breadcrumb.push({ name: NG_DOCS.sections[sectionName] });
+      breadcrumb.push({ name: sectionName });
     }
   });
 

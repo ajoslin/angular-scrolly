@@ -5,7 +5,18 @@
 <div><h2 id="Description">Description</h2>
 <div class="description"><p>Used for configuring drag options. </p></div>
 <div class="member method"><h2 id="Methods">Methods</h2>
-<ul class="methods"><li><h3 id="maxTimeMotionless">maxTimeMotionless(newTime)</h3>
+<ul class="methods"><li><h3 id="allowedDragAngle">allowedDragAngle(newAllowedDragAngle)</h3>
+<div class="alloweddragangle"><p>Sets/gets the maximum allowed angle a user can drag from the vertical or horizontal axis
+for a drag to be counted as a vertical or horizontal drag.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newAllowedDragAngle<i>(optional)</i> – {number=} – </code>
+<p>Sets the new allowed drag angle.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>allowedDragAngle Current allowed drag angle.</p></div>
+</div>
+</li>
+<li><h3 id="maxTimeMotionless">maxTimeMotionless(newTime)</h3>
 <div class="maxtimemotionless"><p>Sets/gets the maximum time a user can be motionless, in milliseconds, before 
 the user is counted as 'not actively dragging' anymore.</p><h4 id="Parameters">Parameters</h4>
 <ul class="parameters"><li><code ng:non-bindable="">newTime<i>(optional)</i> – {number=} – </code>
@@ -14,23 +25,6 @@ the user is counted as 'not actively dragging' anymore.</p><h4 id="Parameters">P
 <h4 id="Returns">Returns</h4>
 <div class="returns"><code ng:non-bindable="">{number}</code>
 – <p>maxTimeMotionless The current maximum time motionless value.</p></div>
-</div>
-</li>
-<li><h3 id="minDistanceForDrag">minDistanceForDrag(newDistance)</h3>
-<div class="mindistancefordrag"><p>Sets/gets the minimum distance the user needs to move his finger before
-it is counted as a drag.</p>
-
-<p>If the user drags his finger greater than this distance in the other direction
-before dragging this distance in the main direction, the drag will be cancelled.</p>
-
-<p>In other words, if the drag is set to vertical and the user moves horizontal at
-this distance before moving vertical this distance, the drag will be aborted.</p><h4 id="Parameters">Parameters</h4>
-<ul class="parameters"><li><code ng:non-bindable="">newDistance<i>(optional)</i> – {number=} – </code>
-<p>Sets the minimum distance value.</p></li>
-</ul>
-<h4 id="Returns">Returns</h4>
-<div class="returns"><code ng:non-bindable="">{number}</code>
-– <p>minDistanceForDrag Current minimum distance value.</p></div>
 </div>
 </li>
 <li><h3 id="shouldBlurOnTouch">shouldBlurOnTouch(newShouldBlur)</h3>

@@ -53,11 +53,22 @@ content area.  Set this to 0 to effectively disable bouncing.</p><h4 id="Paramet
 – <p>bounceBuffer The current bounce buffer.</p></div>
 </div>
 </li>
+<li><h3 id="minDistanceForAcceleration">minDistanceForAcceleration(newRate)</h3>
+<div class="mindistanceforacceleration"><p>Sets/gets the minimum distance the user needs to scroll for acceleration to happen when
+he/she lifts his/her finger.</p><h4 id="Parameters">Parameters</h4>
+<ul class="parameters"><li><code ng:non-bindable="">newRate<i>(optional)</i> – {number=} – </code>
+<p>The new minDistanceForAcceleration to set.</p></li>
+</ul>
+<h4 id="Returns">Returns</h4>
+<div class="returns"><code ng:non-bindable="">{number}</code>
+– <p>minDistanceForAcceleration The current minimum scroll distance.</p></div>
+</div>
+</li>
 <li><h3 id="pastBoundaryScrollRate">pastBoundaryScrollRate(newRate)</h3>
 <div class="pastboundaryscrollrate"><p>Sets/gets the rate scrolling should go when the user goes past the boundary.
-For example, if the user is at the top of the list and tries to scroll up
-some more, he will only be able to scroll at half the rate. <br />
-Change this option to change 'half' to something else.</p><h4 id="Parameters">Parameters</h4>
+In other words, if the user is at the top of the list and tries to scroll up
+some more, he will only be able to scroll at half the rate by default.  This option changes
+that rate.</p><h4 id="Parameters">Parameters</h4>
 <ul class="parameters"><li><code ng:non-bindable="">newRate<i>(optional)</i> – {number=} – </code>
 <p>The new pastBoundaryScrollRate to set.</p></li>
 </ul>

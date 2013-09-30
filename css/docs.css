@@ -10,7 +10,18 @@ img.AngularJS-small {
 }
 
 .breadcrumb {
-  padding-bottom:2px;
+  padding-top: 6px;
+  padding-bottom: 0;
+  line-height: 18px
+}
+
+.header img {
+  max-height: 40px;
+  padding-right: 20px;
+}
+
+.header img+.brand {
+  padding: 10px 20px 10px 10px;
 }
 
 .clear-navbar {
@@ -35,6 +46,15 @@ img.AngularJS-small {
 
 /* =============================== */
 
+.form-search {
+  margin-right: 10px;
+}
+
+.form-search .search-query {
+  width: 180px;
+  width: 200px \9;
+}
+
 .form-search .dropdown-menu {
   margin-left: 10px;
 }
@@ -44,10 +64,6 @@ img.AngularJS-small {
   font-weight: bold;
   font-size: 13px;
   color: black;
-}
-
-.form-search > ul.nav {
-  padding: 0;
 }
 
 .form-search > ul.nav > li > a {
@@ -63,19 +79,22 @@ img.AngularJS-small {
   min-height: 14px;
 }
 
+.form-search > ul.nav > li.first {
+  padding-top: 6px;
+}
+
 .form-search > ul.nav > li.last {
-  padding-bottom: 1em;
+  padding-bottom: 6px;
 }
 
 .form-search > ul.nav > li.last + li.api-list-item {
-  margin-top:-1em;
-  padding-bottom: 1em;
+  margin-top: -6px;
+  padding-bottom: 6px;
 }
 
 .form-search .well {
   border-color: #d3d3d3;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0;
   margin-bottom: 15px;
 }
 
@@ -97,6 +116,10 @@ img.AngularJS-small {
   line-height: 14px;
 }
 
+.form-search .well li a:focus {
+	outline: none;
+}
+
 .form-search .well .guide {
   float: right;
   padding-top: 0;
@@ -104,7 +127,11 @@ img.AngularJS-small {
 }
 
 .form-search .module .guide {
-  line-height: 21px;
+  line-height: 20px;
+}
+
+.match > a, .nav > .match > a:hover {
+	background-color: #dbeaf4;
 }
 
 /* =============================== */
@@ -133,7 +160,26 @@ img.AngularJS-small {
 .content h3,
 .content h4,
 .content h5 {
-  margin-top: 1em;
+  margin: 1em 0 5px;
+}
+
+.content h1 {
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.content h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.content h3 {
+  line-height: 27px;
+  font-size: 18px;
+}
+
+.content h4 {
+  font-size: 15px;
 }
 
 ul.parameters > li > p,

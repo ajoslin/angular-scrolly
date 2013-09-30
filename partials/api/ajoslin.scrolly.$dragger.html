@@ -6,62 +6,41 @@
 <div class="description"><p>A factory for creating drag-listeners on elements. It only cares about
 vertical drag, usually used for scrolling.</p></div>
 <h2 id="Usage">Usage</h2>
-<div class="usage"><pre class="prettyprint linenums">$dragger(element);</pre>
+<div class="usage"><pre class="prettyprint linenums">$dragger(element[, dragDirection]);</pre>
 <h3 id="Parameters">Parameters</h3>
 <ul class="parameters"><li><code ng:non-bindable="">element – {element} – </code>
 <p>Element to attach drag listeners to.</p></li>
+<li><code ng:non-bindable="">dragDirection<i>(optional)</i> – {number=} – </code>
+<p>Which direction the dragger should be restricted to dispatching events for. 
+Either vertical, horizontal, or any.  Supported values are constants on $dragger: <code>DIRECTION_HORIZONTAL</code>, 
+<code>DIRECTION_VERTICAL</code>, and <code>DIRECTION_ANY</code>.</p></li>
 </ul>
 <h3 id="Returns">Returns</h3>
 <div class="returns"><code ng:non-bindable="">{object}</code>
-– <p>Newly created dragger object with the following methods:</p>
+– <p>Newly created dragger object with the following properties:</p>
 
 <ul>
-<li><code>{void}</code> <code>addListener({function} callback)</code> - Adds a new drag 
-listener with the specified callback. </li>
-<li><code>{void}</code> <code>removeListener({function} callback)</code> Removes the given
-callback from the list of listeners.</li>
+<li><code>{void}</code> <code>addListener({function} callback)</code> - Adds a new drag listener with the specified callback. </li>
+<li><code>{void}</code> <code>removeListener({function} callback)</code> Removes the given callback from the list of listeners.</li>
 </ul>
 
 <p>The <code>callback</code> given to addListener is called whenever a <code>start</code>, 
-<code>move</code>, or <code>end</code> drag event happens.  It takes the following parameter:</p>
+<code>move</code>, or <code>end</code> drag event happens.  An event will only be dispatched if the <code>dragDirection</code> given matches the direction of the drag, or if the <code>dragDirection</code> given is <code>DIRECTION_ANY</code>. </p>
+
+<p>The callback given to <code>addListener</code> takes the following parameters:</p>
 
 <ul>
-<li><strong><code>dragData</code></strong> - {object} - Data having to do with the drag, 
-abstracted to be more useful data than plain DOM events. See below 
-for the format of the data.</li>
-</ul>
+<li><strong><code>dragType</code></strong> - {string} - 'start', 'move', or 'end'.</li>
+<li><p><strong><code>dragData</code></strong> - {object} - Data pertaining to the drag event. Has the following properties:</p>
 
-<h3 id="dragdata">Drag Data</h6>
-
-<p>The callbacks given to <code>addListener</code> take a <code>dragData</code> parameter, with
-the following properties for each event:</p>
-
-<ul>
-<li><code>{string}</code> <code>type</code> - The type of drag event being emitted.  This will
-be "start", "move", or "end".</li>
-</ul>
-
-<p><strong>Given for <code>start</code>, <code>move</code>, and <code>end</code> events:</strong></p>
-
-<ul>
-<li><code>{number}</code> <code>startPos</code> - The position on the page where the drag started.</li>
-<li><code>{number}</code> <code>startTime</code> - The timestamp of when the drag started.</li>
-</ul>
-
-<p><strong>Given for only <code>move</code> and <code>end</code> events:</strong></p>
-
-<ul>
-<li><code>{number}</code> <code>pos</code> - The current position of the drag on the page.</li>
-<li><code>{number}</code> <code>delta</code> - The change in position since the last <code>move</code> event.</li>
-<li><code>{number}</code> <code>distance</code> - The total distance the drag has moved.</li>
-</ul>
-
-<p><strong>Given for only <code>end</code> events:</strong></p>
-
-<ul>
-<li><code>{boolean}</code> <code>inactiveDrag</code> - Whether the user held his finger still 
-for longer than the <a href="#/api/ajoslin.scrolly.$draggerProvider#maxTimeMotionless">maximum allowed time</a>.</li>
-<li><code>{number}</code> <code>duration</code> - The total time the drag lasted.</li>
+<ul><li><code>{object}</code> <code>origin</code> - Where the drag started. Is a point, with number fields <code>x</code> and <code>y</code>.</li>
+<li><code>{object}</code> <code>pos</code> - The current position of the drag.  Is a point, with number fields <code>x</code> and <code>y</code>.</li>
+<li><code>{object}</code> <code>delta</code> - The change in position since the last event was fired.  Is a vector, with number fields <code>x</code>, <code>y</code>, and <code>magnitude</code>.</li>
+<li><code>{object}</code> <code>distance</code> - The change in position since the start of the drag. Is a vector, with number fields <code>x</code>, <code>y</code>, and <code>magitude</code>.</li>
+<li><code>{number}</code> <code>startedAt</code> - The timestamp of when the drag started.</li>
+<li><code>{number}</code> <code>updatedAt</code> - The timestamp of when the drag was last updated.</li>
+<li><code>{number}</code> <code>direction</code> - The direction of the drag. Could be any of the constants on $dragger: <code>DIRECTION_VERTICAL</code>, <code>DIRECTION_HORIZONTAL</code>, or <code>DIRECTION_ANY</code>. Not applicable for <code>start</code> events.</li>
+<li><code>{boolean}</code> <code>stopped</code> - True if the user's pointer was motionless for awhile during the drag for greater time than maxTimeMotionless, and never started moving again.  Only applicable for 'end' events.</li></ul></li>
 </ul>
 
 <h3 id="ignoringdrag">Ignoring Drag</h6>
@@ -76,10 +55,10 @@ for longer than the <a href="#/api/ajoslin.scrolly.$draggerProvider#maxTimeMotio
 <h2 id="example">Example</h5>
 
 <pre class="prettyprint linenums">
- var dragger = new $dragger(element);
+ var dragger = new $dragger(element, $dragger.DIRECTION_VERTICAL);
 
- dragger.addListener(function(dragData) {
-   switch(dragData.type) {
+ dragger.addListener(function(dragType, dragData) {
+   switch(dragType) {
      case 'start':
        alert("We just started a drag at " + dragData.startPos + "px");
        break;
@@ -91,5 +70,17 @@ for longer than the <a href="#/api/ajoslin.scrolly.$draggerProvider#maxTimeMotio
    }
  });
  </pre></div>
+</div>
+<div class="member property"><h2 id="Properties">Properties</h2>
+<ul class="properties"><li><h3 id="DIRECTION_ANY">DIRECTION_ANY</h3>
+<div class="direction-any"><p>A constant used to denote any direction. Usually used when constructing a dragger and in dragger event data.</p></div>
+</li>
+<li><h3 id="DIRECTION_HORIZONTAL">DIRECTION_HORIZONTAL</h3>
+<div class="direction-horizontal"><p>A constant used to denote horizontal (left and right) direction. Usually used when constructing a dragger and in dragger event data.</p></div>
+</li>
+<li><h3 id="DIRECTION_VERTICAL">DIRECTION_VERTICAL</h3>
+<div class="direction-vertical"><p>A constant used to denote vertical (up and down) direction. Usually used when constructing a dragger and in dragger event data.</p></div>
+</li>
+</ul>
 </div>
 </div>
