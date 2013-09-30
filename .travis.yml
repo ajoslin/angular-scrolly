@@ -15,7 +15,7 @@ before_script:
 # We also have to run seperate grunt processes for each sauce
 # Note: this takes several minutes
 script:
-- grunt jshint
+- grunt 
 - grunt karma:sauce1
 - grunt karma:sauce2
 - grunt build docs
