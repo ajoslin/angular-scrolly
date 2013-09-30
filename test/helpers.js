@@ -9,7 +9,8 @@ beforeEach(function() {
       this.message = function() {
         var fails = [];
         for (var key in failures) {
-          fails.push('- "' + key + '"' + ' expected value ' + failures[key].expected + ', got ' + failures[key].actual);
+          fails.push('- "' + key + '"' + ' expected value ' + angular.mock.dump(failures[key].expected) + 
+                     ', got ' + angular.mock.dump(failures[key].actual));
         }
         var message =  "Expected object" + notText + " to have matching properties. Failures:\n";
         return message + fails.join('\n');
@@ -18,7 +19,7 @@ beforeEach(function() {
       var success = true;
       for (var key in expected) {
         if (expected.hasOwnProperty(key)) {
-          if (expected[key] != actual[key]) {
+          if (!angular.equals(expected[key], actual[key])) {
             failures[key] = { expected: expected[key], actual: actual[key] };
             success = false;
           }

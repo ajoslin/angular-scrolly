@@ -40,9 +40,22 @@ angular.module('ajoslin.scrolly.desktop', [])
         var delta = e.wheelDeltaY * $desktopScroller.mouseWheelDistanceMulti;
         scroller.calculateHeight();
 
-        var newPos = scroller.transformer.pos + delta;
-        scroller.transformer.setTo(clamp(-scroller.scrollHeight, newPos, 0));
-        e.preventDefault();
+        //Only go if the scroll is targeting this element
+        //We are on desktop when this is called, so we are less worried about performance
+        var target = angular.element(e.target);
+        while (target.length) {
+          if (target[0] === elm.parent()[0]) {
+            scroll(delta);
+            e.preventDefault();
+            break;
+          }
+          target = target.parent();
+        }
+      }
+
+      function scroll(delta) {
+        var newPos = scroller.transformer.pos.y + delta;
+        scroller.transformer.setTo({x: 0, y: clamp(-scroller.scrollHeight, newPos, 0)});
       }
 
       var INPUT_REGEX = /INPUT|TEXTAREA|SELECT/i;
@@ -59,16 +72,14 @@ angular.module('ajoslin.scrolly.desktop', [])
           if (scroller.transformer.changing) return;
           scroller.calculateHeight();
 
-          var newPos = scroller.transformer.pos + delta;
+          var newPos = scroller.transformer.pos.y + delta;
           newPos = clamp(-scroller.scrollHeight, newPos, 0);
 
-          if (newPos !== scroller.transformer.pos) {
-            var newDelta = newPos - scroller.transformer.pos;
+          if (newPos !== scroller.transformer.pos.y) {
+            var newDelta = newPos - scroller.transformer.pos.y;
             var time = Math.abs(newDelta * $desktopScroller.easeTimeMulti);
 
-            scroller.transformer.easeTo(
-              newPos, time
-            );
+            scroller.transformer.easeTo({x: 0, y: newPos}, time);
           }
         }
       }

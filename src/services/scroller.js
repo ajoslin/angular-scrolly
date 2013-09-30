@@ -44,9 +44,9 @@ angular.module('ajoslin.scrolly.scroller', [
    *
    * @description
    * Sets/gets the rate scrolling should go when the user goes past the boundary.
-   * For example, if the user is at the top of the list and tries to scroll up
-   * some more, he will only be able to scroll at half the rate.  
-   * Change this option to change 'half' to something else.
+   * In other words, if the user is at the top of the list and tries to scroll up
+   * some more, he will only be able to scroll at half the rate by default.  This option changes
+   * that rate.
    *
    * @param {number=} newRate The new pastBoundaryScrollRate to set.
    * @returns {number} pastBoundaryScrollRate The current scroll rate.
@@ -55,6 +55,24 @@ angular.module('ajoslin.scrolly.scroller', [
   this.pastBoundaryScrollRate = function(newRate) {
     arguments.length && (_pastBoundaryScrollRate = newRate);
     return _pastBoundaryScrollRate;
+  };
+
+  /**
+   * @ngdoc method
+   * @name ajoslin.scrolly.$scrollerProvider#minDistanceForAcceleration
+   * @methodOf ajoslin.scrolly.$scrollerProvider
+   *
+   * @description
+   * Sets/gets the minimum distance the user needs to scroll for acceleration to happen when
+   * he/she lifts his/her finger.
+   *
+   * @param {number=} newRate The new minDistanceForAcceleration to set.
+   * @returns {number} minDistanceForAcceleration The current minimum scroll distance.
+   */
+  var _minDistanceForAcceleration = 10;
+  this.minDistanceForAcceleration = function(newMinScrollDistance) {
+    arguments.length && (_minDistanceForAcceleration = newMinScrollDistance);
+    return _minDistanceForAcceleration;
   };
 
   /**
@@ -153,6 +171,7 @@ angular.module('ajoslin.scrolly.scroller', [
       };
     };
 
+
     function bounceTime(howMuchOut) {
       return Math.abs(howMuchOut) * _bounceBackDistanceMulti + 
         _bounceBackMinTime;
@@ -184,10 +203,14 @@ angular.module('ajoslin.scrolly.scroller', [
 
       var raw = elm[0];
       var transformer = self.transformer = new $transformer(elm);
-      var dragger = self.dragger = new $dragger(elm);
+      var dragger = self.dragger = new $dragger(elm, $dragger.DIRECTION_VERTICAL);
       if (_supportDesktop) {
         var desktopScroller = new $desktopScroller(elm, self);
       }
+      dragger.addListener(dragListener);
+      elm.bind('$destroy', function() {
+        dragger.removeListener(dragListener);
+      });
 
       self.calculateHeight = function() {
         var rect = $scroller.getContentRect(raw);
@@ -210,59 +233,59 @@ angular.module('ajoslin.scrolly.scroller', [
         return false;
       };
 
-      function dragListener(dragData) {
-        switch(dragData.type) {
+      function dragListener(eventType, data) {
+        switch(eventType) {
           case 'start':
             if (transformer.changing) {
-            transformer.stop();
-          }
-          self.calculateHeight();
-          break;
+              transformer.stop();
+            }
+            self.calculateHeight();
+            break;
 
           case 'move':
-            var newPos = transformer.pos + dragData.delta;
-          //If going past boundaries, scroll at half speed
-          //TODO make the 0.5 a provider option
-          if ( self.outOfBounds(newPos) ) {
-            newPos = transformer.pos + floor(dragData.delta * 0.5);
-          }
-          transformer.setTo(newPos);
-          break;
+            var newPos = transformer.pos.y + data.delta.y;
+            //If going past boundaries, scroll at half speed
+            //TODO make the 0.5 a provider option
+            if ( self.outOfBounds(newPos) ) {
+              newPos = transformer.pos.y + floor(data.delta.y * 0.5);
+            }
+            transformer.setTo({x: 0, y: newPos});
+            break;
 
           case 'end':
             //If we're out of bounds, or held on to our spot for too long,
             //no momentum.  Just check that we're in bounds.
-            if (self.outOfBounds(transformer.pos) || dragData.inactiveDrag) {
-            self.checkBoundaries();
-          } else {
-            var momentum = self.momentum(dragData);
-            if (momentum.position !== transformer.pos) {
-              transformer.easeTo(
-                momentum.position,
-                momentum.time,
-                self.checkBoundaries
-              );
+            if (self.outOfBounds(transformer.pos.y) || data.stopped) {
+              self.checkBoundaries();
+            } else if (Math.abs(data.distance.y) >= _minDistanceForAcceleration) {
+              var momentum = self.momentum(data);
+              if (momentum.position !== transformer.pos.y) {
+                transformer.easeTo(
+                  {x: 0, y: momentum.position},
+                  momentum.time,
+                  self.checkBoundaries
+                );
+              }
             }
-          }
-          break;
+            break;
         }
       }
       self.checkBoundaries = function() {
         self.calculateHeight();
 
-        var howMuchOut = self.outOfBounds(transformer.pos);
+        var howMuchOut = self.outOfBounds(transformer.pos.y);
         if (howMuchOut) {
           var newPosition = howMuchOut > 0 ? 0 : -self.scrollHeight;
-          transformer.easeTo(newPosition, bounceTime(howMuchOut));
+          transformer.easeTo({x: 0, y: newPosition}, bounceTime(howMuchOut));
         } 
       };
       self.momentum = function(dragData) {
         self.calculateHeight();
 
-        var speed = Math.abs(dragData.distance) / dragData.duration;
-        var newPos = transformer.pos + (speed * speed) /
+        var speed = Math.abs(dragData.distance.y) / (dragData.updatedAt - dragData.startedAt);
+        var newPos = transformer.pos.y + (speed * speed) /
           (2 * _decelerationRate) *
-          (dragData.distance < 0 ? -1 : 1);
+          (dragData.distance.y < 0 ? -1 : 1);
         var time = speed / _decelerationRate;
 
         var howMuchOver = self.outOfBounds(newPos);
@@ -273,7 +296,7 @@ angular.module('ajoslin.scrolly.scroller', [
           } else if (howMuchOver < 0) {
             newPos = Math.max(newPos, -(self.scrollHeight + _bounceBuffer));
           }
-          distance = Math.abs(newPos - transformer.pos);
+          distance = Math.abs(newPos - transformer.pos.y);
           time = distance / speed;
         }
         return {
@@ -281,11 +304,6 @@ angular.module('ajoslin.scrolly.scroller', [
           time: floor(time)
         };
       };
-
-      dragger.addListener(dragListener);
-      elm.bind('$destroy', function() {
-        dragger.removeListener(dragListener);
-      });
 
       return self;
     }

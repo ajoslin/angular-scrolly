@@ -89,17 +89,14 @@ angular.module('ajoslin.scrolly.transformer', [])
     function transitionString(transitionTime) {
       return transformPropDash + ' ' + transitionTime + 'ms ' + timingFunction;
     }
-
-    function transformGetterX(n) {
-      return 'translate3d(' + n +'px,0,0)';
-    }
-    function transformGetterY(n) {
-      return 'translate3d(0,' + n + 'px,0)';
+    function transformString(x, y) {
+      return 'translate3d(' + (x||0) + 'px,' + (y||0) + 'px,0)';
     }
 
     //Creates a transformer for an element
-    function $transformer(elm, options) {
+    function $transformer(elm) {
       var self = {};
+      var raw = elm[0];
       var currentTransformer = elm.data('$scrolly.transformer');
       if (currentTransformer) {
         return currentTransformer;
@@ -107,33 +104,22 @@ angular.module('ajoslin.scrolly.transformer', [])
         elm.data('$scrolly.transformer', self);
       }
 
-      var raw = elm[0];
-      var _transformGetter;
-      var _matrixIndex;
 
-      options = options || {};
-      if (options.horizontal) {
-        _transformGetter = transformGetterX;
-        _matrixIndex = 4;
-      } else {
-        _transformGetter = transformGetterY;
-        _matrixIndex = 5;
-      }
+      self.pos = {x: 0, y: 0};
 
-      //This method is only exposed for testing purposes
-      //Gets the current y transform of the element
-      self.$$calcPosition = function() {
+      //Gets the current x and y transform of the element
+      self.updatePosition = function() {
         var style = $window.getComputedStyle(raw);
         var matrix = (style[transformProp] || '')
           .replace(/[^0-9-.,]/g,'')
           .split(',');
         if (matrix.length > 1) {
-          return parseInt(matrix[_matrixIndex], 10);
-        } else {
-          return 0;
+          self.pos.x = parseInt(matrix[4], 10);
+          self.pos.y = parseInt(matrix[5], 10);
         }
+        return self.pos;
       };
-      self.pos = self.$$calcPosition();
+      self.updatePosition();
 
       var transitionEndTimeout;
       self.stop = function(done) {
@@ -146,18 +132,18 @@ angular.module('ajoslin.scrolly.transformer', [])
 
         //Stop transitions, and set self.pos to wherever we were.
         raw.style[transitionProp] = 'none';
-        self.pos = self.$$calcPosition();
+        self.updatePosition();
         self.changing = false;
 
         //On next frame, set our element's position - this wait is so the
         //transition style on the element has time to 'remove' itself
         $nextFrame(function() {
           self.setTo(self.pos);
-          done && done();
+          (done||angular.noop)();
         });
       };
 
-      self.easeTo = function(n, transitionTime, done) {
+      self.easeTo = function(pos, transitionTime, done) {
         if (!angular.isNumber(transitionTime) || transitionTime < 0) {
           throw new Error("Expected a positive number for time, got '" +
             transitionTime + "'.");
@@ -177,18 +163,20 @@ angular.module('ajoslin.scrolly.transformer', [])
           //style on the element has time to 'apply' itself before the elm's
           //position is set
           $nextFrame(function() {
-            self.setTo(n);
+            self.setTo(pos);
             transitionEndTimeout = $window.setTimeout(function() {
               self.stop();
-              done && done();
+              (done||angular.noop)();
             }, transitionTime);
           });
         }
       };
 
-      self.setTo = function(n) {
-        self.pos = n;
-        raw.style[transformProp] = _transformGetter(n);
+      //Allow setting with setTo(x,y) or setTo({x:x, y:y})
+      self.setTo = function(pos) {
+        self.pos.x = pos.x;
+        self.pos.y = pos.y;
+        raw.style[transformProp] = transformString(self.pos.x, self.pos.y);
       };
 
       return self;

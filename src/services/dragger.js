@@ -34,26 +34,20 @@ angular.module('ajoslin.scrolly.dragger', [])
 
   /**
    * @ngdoc method
-   * @name ajoslin.scrolly.$draggerProvider#minDistanceForDrag
+   * @name ajoslin.scrolly.$draggerProvider#allowedDragAngle
    * @methodOf ajoslin.scrolly.$draggerProvider
    *
    * @description
-   * Sets/gets the minimum distance the user needs to move his finger before
-   * it is counted as a drag.
+   * Sets/gets the maximum allowed angle a user can drag from the vertical or horizontal axis
+   * for a drag to be counted as a vertical or horizontal drag.
    *
-   * If the user drags his finger greater than this distance in the other direction
-   * before dragging this distance in the main direction, the drag will be cancelled.
-   *
-   * In other words, if the drag is set to vertical and the user moves horizontal at
-   * this distance before moving vertical this distance, the drag will be aborted.
-   *
-   * @param {number=} newDistance Sets the minimum distance value.
-   * @returns {number} minDistanceForDrag Current minimum distance value.
+   * @param {number=} newAllowedDragAngle Sets the new allowed drag angle.
+   * @returns {number} allowedDragAngle Current allowed drag angle.
    */
-  var _minDistanceForDrag = 8;
-  this.minDistanceForDrag = function(newMinDistanceForDrag) {
-    arguments.length && (_minDistanceForDrag = newMinDistanceForDrag);
-    return _minDistanceForDrag;
+  var _allowedDragAngle = 40;
+  this.allowedDragAngle = function(newDragAngle) {
+    arguments.length && (_allowedDragAngle = newDragAngle);
+    return _allowedDragAngle;
   };
 
   /**
@@ -86,7 +80,33 @@ angular.module('ajoslin.scrolly.dragger', [])
     return null;
   }
 
+
   this.$get = function($window, $document) {
+
+    /**
+     * @ngdoc property
+     * @name ajoslin.scrolly.$dragger#DIRECTION_VERTICAL
+     * @propertyOf ajoslin.scrolly.$dragger
+     *
+     * @description A constant used to denote vertical (up and down) direction. Usually used when constructing a dragger and in dragger event data.
+     */
+    /**
+     * @ngdoc property
+     * @name ajoslin.scrolly.$dragger#DIRECTION_HORIZONTAL
+     * @propertyOf ajoslin.scrolly.$dragger
+     *
+     * @description A constant used to denote horizontal (left and right) direction. Usually used when constructing a dragger and in dragger event data.
+     */
+    /**
+     * @ngdoc property
+     * @name ajoslin.scrolly.$dragger#DIRECTION_ANY
+     * @propertyOf ajoslin.scrolly.$dragger
+     *
+     * @description A constant used to denote any direction. Usually used when constructing a dragger and in dragger event data.
+     */
+    var DIRECTION_VERTICAL = $dragger.DIRECTION_VERTICAL = 1;
+    var DIRECTION_HORIZONTAL = $dragger.DIRECTION_HORIZONTAL = 2;
+    var DIRECTION_ANY = $dragger.DIRECTION_ANY = 3;
 
     /**
      * @ngdoc object
@@ -97,44 +117,31 @@ angular.module('ajoslin.scrolly.dragger', [])
      * vertical drag, usually used for scrolling.
      *
      * @param {element} element Element to attach drag listeners to.
-     * @returns {object} Newly created dragger object with the following methods:
+     * @param {number=} dragDirection Which direction the dragger should be restricted to dispatching events for. 
+     * Either vertical, horizontal, or any.  Supported values are constants on $dragger: `DIRECTION_HORIZONTAL`, 
+     * `DIRECTION_VERTICAL`, and `DIRECTION_ANY`.
      *
-     *   - `{void}` `addListener({function} callback)` - Adds a new drag 
-     *   listener with the specified callback. 
-     *   - `{void}` `removeListener({function} callback)` Removes the given
-     *   callback from the list of listeners.
+     * @returns {object} Newly created dragger object with the following properties:
+     *
+     *   - `{void}` `addListener({function} callback)` - Adds a new drag listener with the specified callback. 
+     *   - `{void}` `removeListener({function} callback)` Removes the given callback from the list of listeners.
      *
      * The `callback` given to addListener is called whenever a `start`, 
-     * `move`, or `end` drag event happens.  It takes the following parameter:
+     * `move`, or `end` drag event happens.  An event will only be dispatched if the `dragDirection` given matches the direction of the drag, or if the `dragDirection` given is `DIRECTION_ANY`. 
      *
-     *   - **`dragData`** - {object} - Data having to do with the drag, 
-     *   abstracted to be more useful data than plain DOM events. See below 
-     *   for the format of the data.
-     *    
-     * ### Drag Data
+     * The callback given to `addListener` takes the following parameters:
      *
-     * The callbacks given to `addListener` take a `dragData` parameter, with
-     * the following properties for each event:
+     *   - **`dragType`** - {string} - 'start', 'move', or 'end'.
+     *   - **`dragData`** - {object} - Data pertaining to the drag event. Has the following properties:
      *
-     *   - `{string}` `type` - The type of drag event being emitted.  This will
-     *   be "start", "move", or "end".
-     *
-     * **Given for `start`, `move`, and `end` events:**
-     *
-     *   - `{number}` `startPos` - The position on the page where the drag started.
-     *   - `{number}` `startTime` - The timestamp of when the drag started.
-     *
-     * **Given for only `move` and `end` events:**
-     *
-     *   - `{number}` `pos` - The current position of the drag on the page.
-     *   - `{number}` `delta` - The change in position since the last `move` event.
-     *   - `{number}` `distance` - The total distance the drag has moved.
-     *
-     * **Given for only `end` events:**
-     * 
-     *   - `{boolean}` `inactiveDrag` - Whether the user held his finger still 
-     *   for longer than the {@link ajoslin.scrolly.$draggerProvider#maxTimeMotionless maximum allowed time}.
-     *   - `{number}` `duration` - The total time the drag lasted.
+     *    * `{object}` `origin` - Where the drag started. Is a point, with number fields `x` and `y`.
+     *    * `{object}` `pos` - The current position of the drag.  Is a point, with number fields `x` and `y`.
+     *    * `{object}` `delta` - The change in position since the last event was fired.  Is a vector, with number fields `x`, `y`, and `magnitude`.
+     *    * `{object}` `distance` - The change in position since the start of the drag. Is a vector, with number fields `x`, `y`, and `magitude`.
+     *    * `{number}` `startedAt` - The timestamp of when the drag started.
+     *    * `{number}` `updatedAt` - The timestamp of when the drag was last updated.
+     *    * `{number}` `direction` - The direction of the drag. Could be any of the constants on $dragger: `DIRECTION_VERTICAL`, `DIRECTION_HORIZONTAL`, or `DIRECTION_ANY`. Not applicable for `start` events.
+     *    * `{boolean}` `stopped` - True if the user's pointer was motionless for awhile during the drag for greater time than maxTimeMotionless, and never started moving again.  Only applicable for 'end' events.
      *
      * ### Ignoring Drag
      *
@@ -147,10 +154,10 @@ angular.module('ajoslin.scrolly.dragger', [])
      *
      * ## Example
      *  <pre>
-     *  var dragger = new $dragger(element);
+     *  var dragger = new $dragger(element, $dragger.DIRECTION_VERTICAL);
      *
-     *  dragger.addListener(function(dragData) {
-     *    switch(dragData.type) {
+     *  dragger.addListener(function(dragType, dragData) {
+     *    switch(dragType) {
      *      case 'start':
      *        alert("We just started a drag at " + dragData.startPos + "px");
      *        break;
@@ -163,64 +170,23 @@ angular.module('ajoslin.scrolly.dragger', [])
      *  });
      *  </pre>
      */
-    
-    function getX(point) {
-      return point.pageX;
-    }
-    function getY(point) {
-      return point.pageY;
-    }
 
     //Creates a dragger for an element
-    function $dragger(elm, options) {
+    function $dragger(elm, draggerDirection) {
+      draggerDirection = draggerDirection || DIRECTION_VERTICAL;
+
       var self = {};
       var raw = elm[0];
-      var getPos, getOtherPos;
-
-      options = options || {};
-      if (options.horizontal) {
-        getPos = getX;
-        getOtherPos = getY;
-      } else {
-        getPos = getY;
-        getOtherPos = getX;
-      }
- 
-      var state = {
-        startPos: 0,
-        startTime: 0,
-        pos: 0,
-        delta: 0,
-        distance: 0,
-        lastMoveTime: 0,
-        inactiveDrag: false,
-        dragging: false
-      };
+     
       var listeners = [];
-
-      function dispatchEvent(eventType, arg) {
-        angular.forEach(listeners, function(cb) {
-          cb(eventType, arg);
-        });
-      }
+      self.state = {};
 
       elm.bind('touchstart', dragStart);
       elm.bind('touchmove', dragMove);
       elm.bind('touchend touchcancel', dragEnd);
-
-      //Restarts the drag at the given position
-      function restartDragState(point) {
-        state.startPos = state.pos = getPos(point);
-        state.otherStartPos = state.otherPos = getOtherPos(point);
-        state.startTime = Date.now();
-        state.dragging = true;
-      }
-
-      function isInput(raw) {
-        return raw && (raw.tagName === "INPUT" ||
-          raw.tagName === "SELECT" || 
-          raw.tagName === "TEXTAREA");
-      }
+      elm.bind('$destroy', function() {
+        listeners.length = 0;
+      });
 
       function dragStart(e) {
         e = e.originalEvent || e; //for jquery
@@ -241,87 +207,111 @@ angular.module('ajoslin.scrolly.dragger', [])
           document.activeElement && document.activeElement.blur();
         }
 
-        state.moved = false;
-        state.inactiveDrag = false;
-        state.delta = 0;
-        state.pos = 0;
-        state.distance = 0;
+        self.state = startDragState({x: point.pageX, y: point.pageY});
 
-        restartDragState(point);
-
-        dispatchEvent({
-          type: 'start',
-          startPos: state.startPos,
-          startTime: state.startTime
-        });
+        dispatchEvent('start');
       }
       function dragMove(e) {
         e = e.originalEvent || e; //for jquery
         e.preventDefault();
         e.stopPropagation();
 
-        if (state.dragging) {
+        if (self.state.active) {
           var point = e.touches ? e.touches[0] : e;
-          var delta = getPos(point) - state.pos;
-
-          state.delta = delta;
-          state.pos = getPos(point);
-          state.otherPos = getOtherPos(point);
-          state.distance = state.pos - state.startPos;
-          state.otherDistance = state.otherPos - state.otherStartPos;
-
-          if (!state.moved) {
-            //if we go far enough in other direction, let's cancel it
-            if (Math.abs(state.otherDistance) > _minDistanceForDrag) {
-              return dragEnd(e);
-            } else if (Math.abs(state.distance) > _minDistanceForDrag) {
-              state.moved = true;
-            } else {
-              return;
-            }
-          }
+          point = {x: point.pageX, y: point.pageY};
+          var timeSinceLastMove = Date.now() - self.state.updatedAt;
 
           //If the user moves and then stays motionless for enough time,
           //the user 'stopped'.  If he starts dragging again after stopping,
           //we pseudo-restart his drag.
-          var timeSinceMove = state.lastMoveTime - state.startTime;
-          if (timeSinceMove > _maxTimeMotionless) {
-            restartDragState(point);
+          if (timeSinceLastMove > _maxTimeMotionless) {
+            self.state = startDragState(point);
           }
-          state.lastMoveTime = e.timeStamp || Date.now();
+          moveDragState(self.state, point);
 
-          dispatchEvent({
-            type: 'move',
-            startPos: state.startPos,
-            startTime: state.startTime,
-            pos: state.pos,
-            delta: state.delta,
-            distance: state.distance
-          });
+          var deg = findDragDegrees(point, self.state.origin) % 180;
+          if (deg < 90 + _allowedDragAngle && deg > 90 - _allowedDragAngle) {
+            self.state.direction = DIRECTION_VERTICAL;
+          } else if (deg < _allowedDragAngle && deg > -_allowedDragAngle) {
+            self.state.direction = DIRECTION_HORIZONTAL;
+          } else {
+            self.state.direction = DIRECTION_ANY;
+          }
+
+          if (draggerDirection === DIRECTION_ANY || draggerDirection === self.state.direction) {
+            dispatchEvent('move');
+          }
         }
       }
+
       function dragEnd(e) {
         e = e.originalEvent || e; // for jquery
         e.stopPropagation();
 
-        if (state.dragging) {
-          state.dragging = false;
+        if (self.state.active) {
+          self.state.updatedAt = Date.now();
+          self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
 
-          var now = Date.now();
-          var duration = now - state.startTime;
-          var inactiveDrag = ((now - state.lastMoveTime) > _maxTimeMotionless);
-
-          dispatchEvent({
-            type: 'end',
-            startPos: state.startPos,
-            startTime: state.startTime,
-            pos: state.pos,
-            delta: state.delta,
-            distance: state.distance,
-            duration: duration,
-            inactiveDrag: inactiveDrag
-          });
+          dispatchEvent('end');
+          self.state = {};
         }
+      }
+      
+      function dispatchEvent(eventType) {
+        var eventData = angular.copy(self.state); // don't want to give them exact same data
+        for (var i=0, ii=listeners.length; i<ii; i++) {
+          listeners[i](eventType, eventData);
+        }
+      }
+
+      function findDragDegrees(point2, point1) {
+        var theta = Math.atan2(-(point1.y - point2.y), point1.x - point2.x);
+        if (theta < 0) {
+          theta += 2 * Math.PI;
+        }
+        var degrees = Math.floor(theta * (180 / Math.PI) - 180);
+        if (degrees < 0 && degrees > -180) {
+          degrees = 360 - Math.abs(degrees);
+        }
+        return Math.abs(degrees);
+      }
+
+      //Restarts the drag at the given position
+      function startDragState(point) {
+        return {
+          origin: {x: point.x, y: point.y},
+          pos: {x: point.x, y: point.y},
+          distance: {x: 0, y: 0, magnitude: 0},
+          delta: {x: 0, y: 0, magnitude: 0},
+
+          startedAt: Date.now(),
+          updatedAt: Date.now(),
+
+          stopped: false,
+          active: true
+        };
+      }
+
+      function moveDragState(state, point) {
+        state.delta = distanceBetween(point, state.pos);
+        state.distance = distanceBetween(point, state.origin);
+        state.pos = {x: point.x, y: point.y};
+        state.updatedAt = Date.now();
+      }
+      
+      function distanceBetween(p2, p1) {
+        var dist = {
+          x: p2.x - p1.x,
+          y: p2.y - p1.y
+        };
+        dist.magnitude = Math.sqrt(dist.x*dist.x + dist.y*dist.y);
+        return dist;
+      }
+
+      function isInput(raw) {
+        return raw && (raw.tagName === "INPUT" ||
+          raw.tagName === "SELECT" || 
+          raw.tagName === "TEXTAREA");
       }
 
       self.addListener = function(callback) {
@@ -329,7 +319,6 @@ angular.module('ajoslin.scrolly.dragger', [])
           throw new Error("Expected callback to be a function, instead got '" +
             typeof callback + '".');
         }
-
         listeners.push(callback);
       };
       self.removeListener = function(callback) {

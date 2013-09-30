@@ -69,20 +69,20 @@ describe('scroller', function() {
 
     it('should do nothing if in boundaries', function() {
       scroller.scrollHeight = 100;
-      scroller.transformer.pos = -50;
+      scroller.transformer.pos.y = -50;
       scroller.checkBoundaries();
       expect(scroller.transformer.easeTo).not.toHaveBeenCalled();
     });
 
     it('should ease back to boundaries if outside', function() {
       scroller.scrollHeight = 100;
-      scroller.transformer.pos = 30;
+      scroller.transformer.pos.y = 30;
       scroller.checkBoundaries();
       expect(scroller.transformer.easeTo).toHaveBeenCalled();
       expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toBe(0);
       
       scroller.transformer.easeTo.reset();
-      scroller.transformer.pos = -144;
+      scroller.transformer.pos.y = -144;
       scroller.checkBoundaries();
       expect(scroller.transformer.easeTo).toHaveBeenCalled();
       expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toBe(-100);

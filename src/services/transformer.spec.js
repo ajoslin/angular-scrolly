@@ -15,7 +15,7 @@ describe('scrolly.transformer', function() {
     $transformer = _$transformer_;
     transformer = new $transformer(elm);
 
-    spyOn(transformer, '$$calcPosition').andCallFake(function() {
+    spyOn(transformer, 'updatePosition').andCallFake(function() {
       return transformer.pos;
     });
 
@@ -39,8 +39,8 @@ describe('scrolly.transformer', function() {
     expect($transformer(elm)).toBe(transformer);
   }));
 
-  it('should have pos at 0 by default', function() {
-    expect(transformer.pos).toBe(0);
+  it('should have pos at 0,0 by default', function() {
+    expect(transformer.pos).toEqual({x: 0, y: 0});
   });
 
   it('should not be changing by default', function() {
@@ -48,44 +48,44 @@ describe('scrolly.transformer', function() {
   });
 
   it('should set pos and transform with setTo', function() {
-    transformer.setTo(100);
-    expect(elm.css($transformer.transformProp)).toMatch('100');
-    expect(transformer.pos).toBe(100);
+    transformer.setTo({x: 33, y: 66});
+    expect(elm.css($transformer.transformProp)).toMatch('33px*.*66px');
+    expect(transformer.pos).toEqual({x: 33, y: 66});
   });
 
   it('should error if not giving a positive number for easeTo', function() {
-    expect(function() { $transformer.easeTo(1, -1); }).toThrow();
-    expect(function() { $transformer.easeTo(1, 'pizza'); }).toThrow();
+    expect(function() { $transformer.easeTo({x: 4, y: 4}, -1); }).toThrow();
+    expect(function() { $transformer.easeTo({x: 3, y: 6}, 'pizza'); }).toThrow();
   });
 
   it('should set transition, then on next frame set position, then call callback after time', function() {
     var done = jasmine.createSpy('done');
 
-    transformer.easeTo(100, 500, done);
+    transformer.easeTo({x: 55, y: 66}, 500, done);
     expect(elm.css($transformer.transitionProp)).toMatch('500ms');
-    expect(transformer.pos).toBe(0);
+    expect(transformer.pos).toEqual({x: 0, y: 0});
     expect(transformer.changing).toBe(true);
 
     $nextFrame.expect().process();
-    expect(elm.css($transformer.transformProp)).toMatch('100');
+    expect(elm.css($transformer.transformProp)).toMatch('55px*.*66px');
 
     $window.setTimeout.expect(500).process();
     expect(done).toHaveBeenCalled();
     expect(elm.css($transformer.transitionProp)).toMatch('none');
-    expect(transformer.pos).toBe(100);
+    expect(transformer.pos).toEqual({x: 55, y: 66});
   });
 
   it('should stop before easing if already easing', function() {
     spyOn(transformer, 'stop').andCallThrough();
     spyOn(transformer, 'easeTo').andCallThrough();
 
-    transformer.easeTo(-100, 1000);
+    transformer.easeTo({x:-10, y:-20}, 1000);
     //It should request the next frame, then start a timeout for transitionEnd
     $nextFrame.expect().process();
     expect($window.setTimeout.queue.length).toBe(1);
 
     //it should stop, then after the next frame change the easing.
-    transformer.easeTo(200, 250);
+    transformer.easeTo({x: -20, y: -40}, 250);
     expect(transformer.stop).toHaveBeenCalled();
     expect($window.setTimeout.queue.length).toBe(1);
     $nextFrame.expect().process();
