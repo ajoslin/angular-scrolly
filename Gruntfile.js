@@ -28,7 +28,8 @@ module.exports = function(grunt) {
     },
     karma: {
       options: {
-        configFile: 'test/karma-shared.conf.js'
+        configFile: 'test/karma-shared.conf.js',
+        browsers: [process.env.TRAVIS ? 'Firefox' : 'Chrome']
       },
       watch: {
         background: true
@@ -39,7 +40,7 @@ module.exports = function(grunt) {
       //We're only allowed two concurrent browsers on saucelabs
       sauce1: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: ['sauce_firefox', 'sauce_ie'],
+        browsers: [/*'sauce_firefox', */'sauce_ie'],
       },
       sauce2: {
         configFile: 'test/karma-saucelabs.conf.js',
@@ -128,7 +129,7 @@ module.exports = function(grunt) {
 
     shell: {
       docs: [ 
-        'grunt build docs',
+        'grunt build docs copy',
         'git stash',
         'git checkout gh-pages',
         'cp -Rf dist/docs/* .',
@@ -179,12 +180,5 @@ module.exports = function(grunt) {
         return;
       }
     }
-  });
-
-  grunt.registerTask('release', 'Send out a release', function() {
-    sh.exec('grunt bump:' + (this.args[0] || 'patch'));
-    grunt.config('pkg', grunt.file.readJSON('bower.json')); //Refresh package
-    grunt.task.run('shell:release');
-    grunt.task.run('shell:docs');
   });
 };

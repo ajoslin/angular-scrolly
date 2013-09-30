@@ -76,12 +76,11 @@ angular.module('ajoslin.scrolly.transformer', [])
      * A factory for creating a transformation-manipulator on an element.  It manipulates the transform of an element vertically, allowing you to set, get, and animate the given element's transform.
      *
      * @param {element} element Element to manipulate the transformation of.
-     * @param {object=} options Options to pass to the transformer. Pass key "horizontal" as true if you wish to operate on x instead of y.
      * @returns {object} Newly created transformer object with the following properties:
      *
-     *   - `{number}` `pos` - The current vertical transform, in pixels, of the element.
-     *   - `{void}` `setTo({number} y)` - Sets the current transform to the given y value.
-     *   - `{void}` `easeTo({number} y, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends.
+     *   - `{object}` `pos` - A point giving the current x and y transform of the element.  Is an object with number fields `x` and `y`.
+     *   - `{void}` `setTo({object} point)` - Sets the current transform to the given x and y position. Expects point object with fields `x` and `y`.
+     *   - `{void}` `easeTo({object} point, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends. Expects point object with fields `x` and `y`.
      *   - `{void}` `stop({function=} done)` - Stops any current animation. If given, the `done` function will be called when the stop is done (after the next frame).
      *
      */

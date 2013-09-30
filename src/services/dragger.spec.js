@@ -1,9 +1,7 @@
 
 describe('scrolly.dragger', function() {
 
-  beforeEach(module('ajoslin.scrolly.dragger', function($draggerProvider) {
-    $draggerProvider.minDistanceForDrag(6);
-  }));
+  beforeEach(module('ajoslin.scrolly.dragger'));
 
   var $dragger;
   beforeEach(inject(function(_$dragger_) {

@@ -1,3 +1,17 @@
+<a name="v0.0.5"></a>
+### v0.0.5 (2013-09-30)
+
+
+#### Bug Fixes
+
+
+#### Features
+
+* **dragger:**
+  * Give 2d x and y data instead of 1d ([559ea186](http://github.com/ajoslin/angular-scrolly/commit/559ea1861996a594e7bdbc0642e147fc29640ff0))
+  * If you use $dragger directly, the event data you receive and the usage has changed, see the documentation.
+
+
 <a name="v0.0.4"></a>
 ### v0.0.4 (2013-08-13)
 

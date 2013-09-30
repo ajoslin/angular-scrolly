@@ -79,13 +79,13 @@ describe('scroller', function() {
       scroller.transformer.pos.y = 30;
       scroller.checkBoundaries();
       expect(scroller.transformer.easeTo).toHaveBeenCalled();
-      expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toBe(0);
+      expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toEqual({x:0 , y:0});
       
       scroller.transformer.easeTo.reset();
       scroller.transformer.pos.y = -144;
       scroller.checkBoundaries();
       expect(scroller.transformer.easeTo).toHaveBeenCalled();
-      expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toBe(-100);
+      expect(scroller.transformer.easeTo.mostRecentCall.args[0]).toEqual({x:0, y:-100});
     });
 
   });
