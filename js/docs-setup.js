@@ -51,7 +51,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$transformer",
       "shortName": "$transformer",
       "type": "object",
-      "keywords": "$transformer ajoslin allowing an and animate animation any api as be callback called created creating current dashed done eases easeto element ends example factory following for frame function get given horizontal if in instead is it key manipulate manipulates milliseconds newly next object of on operate options pass pixels pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions true used value version vertical vertically webkittransform webkittransition when will wish with you"
+      "keywords": "$transformer ajoslin allowing an and animate animation any api as be callback called created creating current dashed done eases easeto element ends example expects factory fields following for frame function get given giving horizontal if in instead is it key manipulate manipulates milliseconds newly next number object of on operate options pass point pos position properties property scrolly set sets setto stop stops the time to transform transformation transformation-manipulator transformations transformer transformprop transformpropdash transition transitionprop transitions true used version vertically webkittransform webkittransition when will wish with you"
     },
     {
       "section": "api",
