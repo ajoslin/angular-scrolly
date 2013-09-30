@@ -37,14 +37,12 @@ module.exports = function(grunt) {
       continuous: {
         singleRun: true
       },
-      //We're only allowed two concurrent browsers on saucelabs
-      sauce1: {
+      sauce: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: [/*'sauce_firefox', */'sauce_ie'],
+        browsers: ['sauce_ie', 'sauce_ios', 'sauce_android']
       },
       sauce2: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: ['sauce_ios', 'sauce_android'],
       }
     },
 

@@ -11,11 +11,6 @@ before_script:
 - npm link
 - npm install -g grunt-cli
 
-# We're only allowed two concurrent browsers on saucelabs
-# We also have to run seperate grunt processes for each sauce
-# Note: this takes several minutes
 script:
 - grunt 
-- grunt karma:sauce1
-- grunt karma:sauce2
-- grunt build docs
+- grunt karma:sauce

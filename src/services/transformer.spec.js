@@ -49,7 +49,7 @@ describe('scrolly.transformer', function() {
 
   it('should set pos and transform with setTo', function() {
     transformer.setTo({x: 33, y: 66});
-    expect(elm.css($transformer.transformProp)).toMatch('33px*.*66px');
+    expect(elm.css($transformer.transformProp)).toMatch('33*.*66');
     expect(transformer.pos).toEqual({x: 33, y: 66});
   });
 
@@ -67,7 +67,7 @@ describe('scrolly.transformer', function() {
     expect(transformer.changing).toBe(true);
 
     $nextFrame.expect().process();
-    expect(elm.css($transformer.transformProp)).toMatch('55px*.*66px');
+    expect(elm.css($transformer.transformProp)).toMatch('55*.*66');
 
     $window.setTimeout.expect(500).process();
     expect(done).toHaveBeenCalled();
