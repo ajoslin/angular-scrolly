@@ -30,11 +30,11 @@ describe('desktop', function() {
 
   describe('mousewheel', function() {
     it('should not scroll if delta is 0', function() {
-      trigger('mousewheel', { wheelDeltaY: 1 });
-      expect(transformer.setTo).not.toHaveBeenCalled();
+      trigger('mousewheel', { wheelDeltaY: 1, target: elm[0] });
+      expect(transformer.setTo).toHaveBeenCalled();
 
       transformer.setTo.reset();
-      trigger('mousewheel', { wheelDeltaY: 0 });
+      trigger('mousewheel', { wheelDeltaY: 0, target: elm[0] });
       expect(transformer.setTo).not.toHaveBeenCalled();
     });
     it('should not scroll if target is not element or a child of element', function() {
