@@ -1,7 +1,7 @@
 angular-scrolly
 ===============
 
-[![Build Status](https://travis-ci.org/ajoslin/anguar-scrolly.png)](https://travis-ci.org/ajoslin/angular-scrolly])
+[![Build Status](https://travis-ci.org/ajoslin/angular-scrolly.png)](https://travis-ci.org/ajoslin/angular-scrolly)
 
 Angular fake-scroller for mobile.  Lightweight and webkit-friendly.
 
