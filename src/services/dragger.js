@@ -68,18 +68,6 @@ angular.module('ajoslin.scrolly.dragger', [])
     return _maxTimeMotionless;
   };
 
-  //Returns any parent element that has an attribute, or null
-  //Taken from snap.js http://github.com/jakiestfu/snap.js
-  function parentWithAttr(el, attr) {
-    while (el.parentNode) {
-      if (el.getAttribute && el.getAttribute(attr)) {
-        return el;
-      }
-      el = el.parentNode;
-    }
-    return null;
-  }
-
 
   this.$get = function($window, $document) {
 
@@ -189,17 +177,19 @@ angular.module('ajoslin.scrolly.dragger', [])
 
       function dragStart(e) {
         e = e.originalEvent || e; //for jquery
-        e.stopPropagation();
 
-        var target = e.target || e.srcElement;
+        var target = angular.element(e.target || e.srcElement);
+        //Ignore element or parents with scrolly-drag-ignore
+        if (target.controller('scrollyDraggerIgnore')) {
+          return;
+        }
+
+        e.stopPropagation();
         var point = e.touches ? e.touches[0] : e;
 
         //No drag on ignored elements
         //This way of doing it is taken straight from snap.js
         //Ignore this element if it's within a 'dragger-ignore' element
-        if ( parentWithAttr(target, 'dragger-ignore') ) {
-          return;
-        }
 
         //Blur stuff on scroll if the option says we should
         if (_shouldBlurOnDrag && isInput(target)) {
@@ -212,10 +202,11 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
       function dragMove(e) {
         e = e.originalEvent || e; //for jquery
-        e.preventDefault();
-        e.stopPropagation();
 
         if (self.state.active) {
+          e.preventDefault();
+          e.stopPropagation();
+
           var point = e.touches ? e.touches[0] : e;
           point = {x: point.pageX, y: point.pageY};
           var timeSinceLastMove = Date.now() - self.state.updatedAt;
@@ -244,10 +235,11 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
 
       function dragEnd(e) {
-        e = e.originalEvent || e; // for jquery
-        e.stopPropagation();
 
         if (self.state.active) {
+          e = e.originalEvent || e; // for jquery
+          e.stopPropagation();
+
           self.state.updatedAt = Date.now();
           self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
 

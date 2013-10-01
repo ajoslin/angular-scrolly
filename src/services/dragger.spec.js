@@ -1,7 +1,7 @@
 
 describe('scrolly.dragger', function() {
 
-  beforeEach(module('ajoslin.scrolly.dragger'));
+  beforeEach(module('ajoslin.scrolly.dragger', 'ajoslin.scrolly.directives'));
 
   var $dragger;
   beforeEach(inject(function(_$dragger_) {
@@ -78,6 +78,30 @@ describe('scrolly.dragger', function() {
         e.pageY = pageY;
         elm.trigger(e);
       }
+
+      describe('scrolly-dragger-ignore', function() {
+        it('should ignore start if scrolly-dragger-ignore is on element', function() {
+          triggerDrag('touchstart', 0, 0);
+          expect(dragSpy).toHaveBeenCalled();
+
+          dragSpy.reset();
+          inject(function($compile, $rootScope) {
+            elm.attr('scrolly-dragger-ignore', '');
+            $compile(elm)($rootScope);
+            $rootScope.$apply();
+          });
+          triggerDrag('touchstart', 0, 0);
+          expect(dragSpy).not.toHaveBeenCalled();
+        });
+
+        it('should ignore start if scrolly-dragger-ignore is on parent element', inject(function($compile, $rootScope) {
+          var parent = $compile('<span scrolly-dragger-ignore></span>')($rootScope);
+          parent.append(elm);
+          $rootScope.$apply();
+          triggerDrag('touchstart', 0, 0);
+          expect(dragSpy).not.toHaveBeenCalled();
+        }));
+      });
 
       it('should remove the listener', function() {
         triggerDrag('touchstart', 0, 0);
