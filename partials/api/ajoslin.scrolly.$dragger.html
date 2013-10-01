@@ -54,13 +54,13 @@ Either vertical, horizontal, or any.  Supported values are constants on $dragger
  dragger.addListener(function(dragType, dragData) {
    switch(dragType) {
      case 'start':
-       alert("We just started a drag at " + dragData.startPos + "px");
+       alert("We just started a drag at " + dragData.origin.x + ", " + dragData.origin.y + "!");
        break;
      case 'move':
-       alert("We have moved " + dragData.delta + " since the last move.");
+       alert("We have moved " + dragData.delta.magnitude + " since the last move.");
        break;
      case 'end':
-       alert("We just finished a drag, moving a total of " + dragData.distance + "px");
+       alert("We just finished a drag, moving a total of " + dragData.distance.magnitude + "px");
    }
  });
  </pre></div>
