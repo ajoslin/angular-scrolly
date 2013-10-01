@@ -57,7 +57,9 @@ angular.module('ajoslin.scrolly', [
         $document.bind('keydown', onKey);
         function onMousewheel(e) {
           var delta = e.wheelDeltaY * $desktopScroller.mouseWheelDistanceMulti;
-          scroller.calculateHeight();
+          if (!delta) {
+            return;
+          }
           var target = angular.element(e.target);
           while (target.length) {
             if (target[0] === elm.parent()[0]) {
@@ -69,6 +71,7 @@ angular.module('ajoslin.scrolly', [
           }
         }
         function scroll(delta) {
+          scroller.calculateHeight();
           var newPos = scroller.transformer.pos.y + delta;
           scroller.transformer.setTo({
             x: 0,
