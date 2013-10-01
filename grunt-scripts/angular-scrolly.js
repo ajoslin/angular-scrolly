@@ -20,7 +20,12 @@ angular.module('ajoslin.scrolly', [
       }
     };
   }
-]);angular.module('ajoslin.scrolly.desktop', []).provider('$desktopScroller', function () {
+]);angular.module('ajoslin.scrolly.directives').directive('scrollyDraggerIgnore', function () {
+  return {
+    restrict: 'A',
+    controller: angular.noop
+  };
+});angular.module('ajoslin.scrolly.desktop', []).provider('$desktopScroller', function () {
   var KEYS = {
       38: 150,
       40: -150,
@@ -117,15 +122,6 @@ angular.module('ajoslin.scrolly', [
     arguments.length && (_maxTimeMotionless = newMaxTimeMotionless);
     return _maxTimeMotionless;
   };
-  function parentWithAttr(el, attr) {
-    while (el.parentNode) {
-      if (el.getAttribute && el.getAttribute(attr)) {
-        return el;
-      }
-      el = el.parentNode;
-    }
-    return null;
-  }
   this.$get = [
     '$window',
     '$document',
@@ -147,12 +143,12 @@ angular.module('ajoslin.scrolly', [
         });
         function dragStart(e) {
           e = e.originalEvent || e;
-          e.stopPropagation();
-          var target = e.target || e.srcElement;
-          var point = e.touches ? e.touches[0] : e;
-          if (parentWithAttr(target, 'dragger-ignore')) {
+          var target = angular.element(e.target || e.srcElement);
+          if (target.controller('scrollyDraggerIgnore')) {
             return;
           }
+          e.stopPropagation();
+          var point = e.touches ? e.touches[0] : e;
           if (_shouldBlurOnDrag && isInput(target)) {
             document.activeElement && document.activeElement.blur();
           }
@@ -164,9 +160,9 @@ angular.module('ajoslin.scrolly', [
         }
         function dragMove(e) {
           e = e.originalEvent || e;
-          e.preventDefault();
-          e.stopPropagation();
           if (self.state.active) {
+            e.preventDefault();
+            e.stopPropagation();
             var point = e.touches ? e.touches[0] : e;
             point = {
               x: point.pageX,
@@ -191,9 +187,9 @@ angular.module('ajoslin.scrolly', [
           }
         }
         function dragEnd(e) {
-          e = e.originalEvent || e;
-          e.stopPropagation();
           if (self.state.active) {
+            e = e.originalEvent || e;
+            e.stopPropagation();
             self.state.updatedAt = Date.now();
             self.state.stopped = self.state.updatedAt - self.state.startedAt > _maxTimeMotionless;
             dispatchEvent('end');

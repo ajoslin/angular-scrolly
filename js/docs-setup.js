@@ -62,6 +62,13 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "ajoslin.scrolly.directive:scrollyDraggerIgnore",
+      "shortName": "scrollyDraggerIgnore",
+      "type": "directive",
+      "keywords": "$dragger ajoslin all and any api behave behavior children directive dragged element ignore in its like makes normal of other scrolly this when will words"
+    },
+    {
+      "section": "api",
       "id": "ajoslin.scrolly.directive:scrollyScroll",
       "shortName": "scrollyScroll",
       "type": "directive",
