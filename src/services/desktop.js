@@ -38,7 +38,10 @@ angular.module('ajoslin.scrolly.desktop', [])
 
       function onMousewheel(e) {
         var delta = e.wheelDeltaY * $desktopScroller.mouseWheelDistanceMulti;
-        scroller.calculateHeight();
+
+        if (!delta) {
+          return;
+        }
 
         //Only go if the scroll is targeting this element
         //We are on desktop when this is called, so we are less worried about performance
@@ -54,6 +57,7 @@ angular.module('ajoslin.scrolly.desktop', [])
       }
 
       function scroll(delta) {
+        scroller.calculateHeight();
         var newPos = scroller.transformer.pos.y + delta;
         scroller.transformer.setTo({x: 0, y: clamp(-scroller.scrollHeight, newPos, 0)});
       }
