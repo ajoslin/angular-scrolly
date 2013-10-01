@@ -16,7 +16,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.$dragger",
       "shortName": "$dragger",
       "type": "object",
-      "keywords": "$dragger add addlistener adds again ajoslin alert all an and any api applicable are at attach attribute awhile be break callback called case change children constant constants constructing could count created creating current data delta denote direction direction_any direction_horizontal direction_vertical dispatched dispatching distance down drag drag-listeners dragdata dragdirection dragger dragger-ignore dragging dragtype during either element elements end event events example factory fields finished fired following for from given greater happens has have horizontal if ignore ignoring in is it its just last like list listener listeners magitude magnitude make matches maxtimemotionless me motionless move moved moving never new newly not number object of on only or origin parameters pertaining point pointer pos position properties property px removelistener removes restricted right scrolly should since so specified start started startedat startpos stopped supported switch takes than the time timestamp to total true updated updatedat used user usually values var vector vertical was we when whenever where which will with won"
+      "keywords": "$dragger addlistener adds again ajoslin alert all an and any api applicable are at attach awhile be break callback called case change check children constant constants constructing could created creating current data delta denote direction direction_any direction_horizontal direction_vertical directive dispatched dispatching distance down drag drag-listeners dragdata dragdirection dragger dragging dragtype during either element elements end event events example factory fields finished fired following for from given greater happens has have horizontal if ignore ignoring in is its just last list listener listeners magitude magnitude make matches maxtimemotionless motionless move moved moving never new newly not number object of on only or origin out parameters pertaining point pointer pos position properties property px removelistener removes restricted right scrolly scrollydraggerignore should since specified start started startedat startpos stopped supported switch takes than the time timestamp to total true updated updatedat used user usually values var vector vertical was we when whenever where which will with"
     },
     {
       "section": "api",
@@ -65,7 +65,7 @@ NG_DOCS={
       "id": "ajoslin.scrolly.directive:scrollyDraggerIgnore",
       "shortName": "scrollyDraggerIgnore",
       "type": "directive",
-      "keywords": "$dragger ajoslin all and any api behave behavior children directive dragged element ignore in its like makes normal of other scrolly this when will words"
+      "keywords": "$dragger ajoslin all and any api behave behavior children directive dragged element ignore in it its like makes normal of other scrolly so this when will words"
     },
     {
       "section": "api",
