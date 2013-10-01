@@ -5,7 +5,7 @@
  * @restrict A
  *
  * @description
- * Attaches a {@link #/scrolly.$scroller $scroller} to the given element.
+ * Attaches a {@link #/ajoslin.scrolly.$scroller $scroller} to the given element.
  *
  * ## Example
  * <pre>

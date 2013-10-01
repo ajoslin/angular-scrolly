@@ -4,7 +4,7 @@
  * @restrict A
  *
  * @description
- * Makes its o this element and all of its children ignore any $dragger behavior. In other words, this element and children will behave like normal when dragged.
+ * Makes it so this element and all of its children ignore any $dragger behavior. In other words, this element and children will behave like normal when dragged.
  */
 angular.module('ajoslin.scrolly.directives')
 .directive('scrollyDraggerIgnore', function() {

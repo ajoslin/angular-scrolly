@@ -132,12 +132,7 @@ angular.module('ajoslin.scrolly.dragger', [])
      *
      * ### Ignoring Drag
      *
-     * To make an element and all its children ignore dragging, add the `dragger-ignore` attribute to the element, like so:
-     * <pre>
-     *   <div dragger-ignore>
-     *     <button>Drag on me, it won't count!</button>
-     *   </div>
-     * </pre>
+     * To make an element and all its children ignore dragging, check out the {@link ajoslin.scrolly.directive:scrollyDraggerIgnore scrollyDraggerIgnore} directive.
      *
      * ## Example
      *  <pre>
