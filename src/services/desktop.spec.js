@@ -5,7 +5,7 @@ describe('desktop', function() {
 
   var desktop, scroller, elm, $document, transformer, $doc;
   beforeEach(inject(function($desktopScroller, $transformer, $document) {
-    elm = angular.element("<div id='banana'></div>");
+    elm = jqLite("<div id='banana'></div>");
     document.body.appendChild(elm[0]);
     scroller = {
       calculateHeight: jasmine.createSpy('calculateHeight'),
@@ -42,7 +42,7 @@ describe('desktop', function() {
       expect(transformer.setTo).not.toHaveBeenCalled();
     });
     it('should scroll if target is child of element', function() {
-      var child = angular.element('<span>');
+      var child = jqLite('<span>');
       elm.append(child);
       trigger('mousewheel', { wheelDeltaY: 1, target: child[0] });
       expect(transformer.setTo).toHaveBeenCalled();

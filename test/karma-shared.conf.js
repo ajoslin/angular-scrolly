@@ -17,6 +17,7 @@ module.exports = function(config) {
       'lib/jquery.js',
       'lib/angular.js',
       'lib/angular-mocks.js',
+      'src/_main.js',
       'src/**/*.js'
     ],
 

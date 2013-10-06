@@ -10,7 +10,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngdocs');
-  grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-conventional-changelog');
 
@@ -24,7 +23,9 @@ module.exports = function(grunt) {
         ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
         ' * <%= pkg.homepage %>\n' +
         ' * Created by <%= pkg.author %>; Licensed under <%= pkg.license %>\n' +
-        ' */\n'
+        ' */\n' +
+        '(function() {\n',
+      footer: '\n}());'
     },
     karma: {
       options: {
@@ -59,22 +60,14 @@ module.exports = function(grunt) {
       }
     },
 
-    ngmin: {
-      dist: {
-       files: {
-        '<%= dist %>/<%= pkg.name %>.js': ['src/**/*.js', '!src/**/*.spec.js']
-        }
-      }
-    },
-
-    //Concat really only adds the banner ... ngmin concats for us
     concat: {
       dist: {
         options: {
-          banner: '<%= meta.banner %>'
+          banner: '<%= meta.banner %>',
+          footer: '<%= meta.footer %>'
         },
         files: {
-          '<%= dist %>/<%= pkg.name %>.js': '<%= dist %>/<%= pkg.name %>.js'
+          '<%= dist %>/<%= pkg.name %>.js': ['src/**/*.js', '!src/**/*.spec.js']
         }
       }
     },
@@ -82,7 +75,8 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         options: {
-          banner: '<%= meta.banner %>'
+          banner: '<%= meta.banner %>',
+          footer: '<%= meta.footer %>'
         },
         files: {
           '<%= dist %>/<%= pkg.name %>.min.js': '<%= dist %>/<%= pkg.name %>.js'
@@ -153,7 +147,6 @@ module.exports = function(grunt) {
     }
   });
 
-  //TODO fix ngmin and uglify
   grunt.registerTask('default', ['clean', 'jshint', 'karma:continuous', 'build', 'docs']);
 
   grunt.registerTask('build', function() {
@@ -161,7 +154,7 @@ module.exports = function(grunt) {
       grunt.file.copy('scripts/validate-commit-msg.js', '.git/hooks/commit-msg');
       require('fs').chmodSync('.git/hooks/commit-msg', '0755');
     }
-    grunt.task.run(['ngmin', 'concat', 'uglify']);
+    grunt.task.run(['concat', 'uglify']);
   });
   grunt.registerTask('docs', ['ngdocs', 'copy']);
 

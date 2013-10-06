@@ -21,7 +21,7 @@ angular.module('ajoslin.scrolly.transformer', [])
  * @returns {number} `requestId` Unique id identifying this request, to be passed to {@link https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame window.cancelAnimationFrame}.
  */
 
-.factory('$nextFrame', function($window) {
+.factory('$nextFrame', ['$window', function($window) {
   //Polyfill for requestAnimationFrame
   return $window.requestAnimationFrame || 
     $window.webkitRequestAnimationFrame || 
@@ -29,9 +29,9 @@ angular.module('ajoslin.scrolly.transformer', [])
     function fallback(cb) { 
       return $window.setTimeout(cb, 17); 
     };
-})
+}])
 
-.provider('$transformer', function() {
+.provider('$transformer', [function() {
 
   /**
    * @ngdoc method
@@ -50,11 +50,11 @@ angular.module('ajoslin.scrolly.transformer', [])
     return timingFunction;
   };
 
-  this.$get = function($window, $nextFrame, $sniffer, $document) {
+  this.$get = ['$window', '$nextFrame', '$sniffer', '$document', function($window, $nextFrame, $sniffer, $document) {
     //TODO remove this fix when angular-1.2 comes out
     //Fixes a known bug with android $sniffer in angular-1.1.x
     if (!$sniffer.vendorPrefix) {
-      if (angular.isString( $document[0].body.style.webkitTransition )) {
+      if (isString( $document[0].body.style.webkitTransition )) {
         $sniffer.vendorPrefix = 'webkit';
       }
     }
@@ -210,5 +210,5 @@ angular.module('ajoslin.scrolly.transformer', [])
 
     return $transformer;
 
-  };
-});
+  }];
+}]);

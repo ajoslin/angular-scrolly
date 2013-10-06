@@ -8,33 +8,6 @@ describe('scrolly.dragger', function() {
     $dragger = _$dragger_;
   }));
 
-  describe('basic tests', function() {
-    var dragger;
-    beforeEach(function() {
-      dragger = $dragger(angular.element('<div></div>'));
-    });
-
-    it('should error if passing a non-function to addListener', function() {
-      expect(function() {
-        dragger.addListener('not a function');
-      }).toThrow();
-    });
-
-    it('should throw an error if passing a non-function to removeListener', function() {
-      expect(function() {
-        dragger.removeListener('not a function');
-      }).toThrow();
-    });
-
-    it('should succeed if passing a function to addListener', function() {
-      dragger.addListener(function(){});
-    });
-
-    it('should succeed if passing a function to removeListener', function() {
-      dragger.removeListener(function(){});
-    });
-  });
-
   makeTests('DIRECTION_HORIZONTAL');
   makeTests('DIRECTION_VERTICAL');
   makeTests('DIRECTION_ANY');
@@ -53,7 +26,7 @@ describe('scrolly.dragger', function() {
         $dragger = _$dragger_;
         dragDirection = $dragger[direction];
         elm = $("<div>");
-        dragger = new $dragger(elm, dragDirection);
+        dragger = new $dragger(elm);
       }));
 
       beforeEach(function() {
@@ -65,7 +38,7 @@ describe('scrolly.dragger', function() {
         spyOn(Date, 'now').andCallFake(function() {
           return nowTime;
         });
-        dragger.addListener(dragSpy);
+        dragger.addListener(dragDirection, dragSpy);
       });
 
       function triggerDrag(type, pageX, pageY) {
@@ -106,7 +79,7 @@ describe('scrolly.dragger', function() {
       it('should remove the listener', function() {
         triggerDrag('touchstart', 0, 0);
         expect(dragSpy.callCount).toBe(1);
-        dragger.removeListener(dragSpy);
+        dragger.removeListener(dragDirection, dragSpy);
         triggerDrag('touchstart', 0, 0);
         expect(dragSpy.callCount).toBe(1);
       });
@@ -229,14 +202,16 @@ describe('scrolly.dragger', function() {
         triggerDrag('touchstart', 0, 0);
         triggerDrag('touchmove', 5, 5);
         triggerDrag('touchend');
-        expect(eventData).toHaveValues({
-          origin: {x: 0, y: 0},
-          pos: {x: 5, y: 5},
-          delta: {x: 5, y: 5, magnitude: Math.sqrt(25+25)},
-          distance: {x: 5, y: 5, magnitude: Math.sqrt(25+25)},
-          direction: $dragger.DIRECTION_ANY,
-          stopped: false
-        });
+        if (any) {
+          expect(eventData).toHaveValues({
+            origin: {x: 0, y: 0},
+            pos: {x: 5, y: 5},
+            delta: {x: 5, y: 5, magnitude: Math.sqrt(25+25)},
+            distance: {x: 5, y: 5, magnitude: Math.sqrt(25+25)},
+            direction: $dragger.DIRECTION_ANY,
+            stopped: false
+          });
+        }
 
       });
 
@@ -275,13 +250,15 @@ describe('scrolly.dragger', function() {
         triggerDrag('touchmove', -100, 0);
         nowTime = 99;
         triggerDrag('touchend');
-        expect(eventType).toBe('end');
-        expect(eventData).toHaveValues({
-          distance: {x: -100, y: 0, magnitude: 100},
-          startedAt: 0,
-          updatedAt: 99,
-          stopped: false
-        });
+        if (horizontal || any) {
+          expect(eventType).toBe('end');
+          expect(eventData).toHaveValues({
+            distance: {x: -100, y: 0, magnitude: 100},
+            startedAt: 0,
+            updatedAt: 99,
+            stopped: false
+          });
+        }
       });
 
       it('should count the drag as "stopped" if we end and haven\'t moved in awhile', function() {
@@ -289,11 +266,13 @@ describe('scrolly.dragger', function() {
         triggerDrag('touchmove', 0, 50);
         nowTime = 5000;
         triggerDrag('touchend');
-        expect(eventData).toHaveValues({
-          stopped: true,
-          startedAt: 0,
-          updatedAt: 5000
-        });
+        if (vertical || any) {
+          expect(eventData).toHaveValues({
+            stopped: true,
+            startedAt: 0,
+            updatedAt: 5000
+          });
+        }
       });
     });
   }

@@ -9,7 +9,7 @@
  */
 
 angular.module('ajoslin.scrolly.dragger', [])
-.provider('$dragger', function() {
+.provider('$dragger', [function() {
 
   /**
    * @ngdoc method
@@ -69,7 +69,7 @@ angular.module('ajoslin.scrolly.dragger', [])
   };
 
 
-  this.$get = function($window, $document) {
+  this.$get = ['$window', '$document', function($window, $document) {
 
     /**
      * @ngdoc property
@@ -104,14 +104,12 @@ angular.module('ajoslin.scrolly.dragger', [])
      * A factory for creating drag-listeners on elements. 
      *
      * @param {element} element Element to attach drag listeners to.
-     * @param {number=} dragDirection Which direction the dragger should be restricted to dispatching events for. 
-     * Either vertical, horizontal, or any.  Supported values are constants on $dragger: `DIRECTION_HORIZONTAL`, 
-     * `DIRECTION_VERTICAL`, and `DIRECTION_ANY`.
      *
      * @returns {object} Newly created dragger object with the following properties:
      *
-     *   - `{void}` `addListener({function} callback)` - Adds a new drag listener with the specified callback. 
-     *   - `{void}` `removeListener({function} callback)` Removes the given callback from the list of listeners.
+     *   - `{void}` `addListener({constant=} dragDirection, {function} callback)` - Adds a new drag listener with the specified callback. Default direction: DIRECTION_ANY.
+     *   - `{void}` `removeListener({constant=} dragDirection, {function} callback)` Removes the given callback from the list of listeners. Default direction: DIRECTION_ANY.
+     *   - Allowed directions are constants on $dragger: `$dragger.DIRECTION_HORIZONTAL`, `$dragger.DIRECTION_VERTICAL`, `$dragger.DIRECTION_ANY`.
      *
      * The `callback` given to addListener is called whenever a `start`, 
      * `move`, or `end` drag event happens.  An event will only be dispatched if the `dragDirection` given matches the direction of the drag, or if the `dragDirection` given is `DIRECTION_ANY`. 
@@ -154,26 +152,55 @@ angular.module('ajoslin.scrolly.dragger', [])
      */
 
     //Creates a dragger for an element
-    function $dragger(elm, draggerDirection) {
-      draggerDirection = draggerDirection || DIRECTION_VERTICAL;
-
+    function $dragger(elm, options) {
       var self = {};
       var raw = elm[0];
-     
-      var listeners = [];
+      var listeners = {};
+      listeners[DIRECTION_VERTICAL] = [];
+      listeners[DIRECTION_HORIZONTAL] = [];
+      listeners[DIRECTION_ANY] = [];
+
+      var currentDragger = elm.data('$scrolly.dragger');
+      if (currentDragger) { 
+        return currentDragger;
+      } else {
+        elm.data('$scrolly.dragger', self);
+      }
+
       self.state = {};
+
+      self.addListener = function(direction, callback) {
+        if (arguments.length === 1) {
+          callback = direction;
+          direction = DIRECTION_ANY;
+        }
+        listeners[direction].push(callback || angular.noop);
+      };
+
+      self.removeListener = function(direction, callback) {
+        if (arguments.length === 1) {
+          callback = direction;
+          direction = DIRECTION_ANY;
+        }
+        var index = listeners[direction].indexOf(callback);
+        if (index > -1) {
+          listeners[direction].splice(index, 1);
+        }
+      };
 
       elm.bind('touchstart', dragStart);
       elm.bind('touchmove', dragMove);
       elm.bind('touchend touchcancel', dragEnd);
       elm.bind('$destroy', function() {
-        listeners.length = 0;
+        delete listeners[DIRECTION_VERITCAL];
+        delete listeners[DIRECTION_HORIZONTAL];
+        delete listeners[DIRECTION_ANY];
       });
 
       function dragStart(e) {
         e = e.originalEvent || e; //for jquery
 
-        var target = angular.element(e.target || e.srcElement);
+        var target = jqLite(e.target || e.srcElement);
         //Ignore element or parents with scrolly-drag-ignore
         if (target.controller('scrollyDraggerIgnore')) {
           return;
@@ -223,9 +250,7 @@ angular.module('ajoslin.scrolly.dragger', [])
             self.state.direction = DIRECTION_ANY;
           }
 
-          if (draggerDirection === DIRECTION_ANY || draggerDirection === self.state.direction) {
-            dispatchEvent('move');
-          }
+          dispatchEvent('move');
         }
       }
 
@@ -244,10 +269,16 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
       
       function dispatchEvent(eventType) {
-        var eventData = angular.copy(self.state); // don't want to give them exact same data
-        for (var i=0, ii=listeners.length; i<ii; i++) {
-          listeners[i](eventType, eventData);
-        }
+        var data = copy(self.state); // don't want to give them exact same data
+        forEach(listeners, function(callbacks, listenerDirection) {
+          /* jshint eqeqeq: false */
+          if (!data.direction || data.direction == listenerDirection || 
+              listenerDirection == DIRECTION_ANY) {
+            forEach(callbacks, function(cb) {
+              cb(eventType, data);
+            });
+          }
+        });
       }
 
       function findDragDegrees(point2, point1) {
@@ -300,29 +331,11 @@ angular.module('ajoslin.scrolly.dragger', [])
           raw.tagName === "TEXTAREA");
       }
 
-      self.addListener = function(callback) {
-        if ( !angular.isFunction(callback) ) {
-          throw new Error("Expected callback to be a function, instead got '" +
-            typeof callback + '".');
-        }
-        listeners.push(callback);
-      };
-      self.removeListener = function(callback) {
-        if ( !angular.isFunction(callback) ) {
-          throw new Error("Expected callback to be a function, instead got '" +
-            typeof callback + '".');
-        }
-        var index = listeners.indexOf(callback);
-        if (index > -1) {
-          listeners.splice(index, 1);
-        }
-      };
-
       return self;
     }
 
     return $dragger;
 
-  };
-});
+  }];
+}]);
 

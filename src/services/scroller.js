@@ -11,7 +11,7 @@ angular.module('ajoslin.scrolly.scroller', [
   'ajoslin.scrolly.transformer',
   'ajoslin.scrolly.desktop'
 ])
-.provider('$scroller', function() {
+.provider('$scroller', [function() {
 
   var _decelerationRate = 0.001;
   this.decelerationRate = function(newDecelerationRate) {
@@ -151,7 +151,7 @@ angular.module('ajoslin.scrolly.scroller', [
   //http://jsperf.com/math-floor-vs-math-round-vs-parseint/69
   function floor(n) { return n | 0; }
 
-  this.$get = function($dragger, $transformer, $window, $document, $desktopScroller) {
+  this.$get = ['$dragger', '$transformer', '$window', '$document', '$desktopScroller', function($dragger, $transformer, $window, $document, $desktopScroller) {
 
     $scroller.getContentRect = function(raw) {
       var style = window.getComputedStyle(raw);
@@ -203,13 +203,13 @@ angular.module('ajoslin.scrolly.scroller', [
 
       var raw = elm[0];
       var transformer = self.transformer = new $transformer(elm);
-      var dragger = self.dragger = new $dragger(elm, $dragger.DIRECTION_VERTICAL);
+      var dragger = self.dragger = new $dragger(elm);
       if (_supportDesktop) {
         var desktopScroller = new $desktopScroller(elm, self);
       }
-      dragger.addListener(dragListener);
+      dragger.addListener($dragger.DIRECTION_VERTICAL, dragListener);
       elm.bind('$destroy', function() {
-        dragger.removeListener(dragListener);
+        dragger.removeListener($dragger.DIRECTION_VERTICAL, dragListener);
       });
 
       self.calculateHeight = function() {
@@ -309,6 +309,6 @@ angular.module('ajoslin.scrolly.scroller', [
     }
 
     return $scroller;
-  };
+  }];
 
-});
+}]);

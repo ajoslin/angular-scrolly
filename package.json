@@ -8,7 +8,6 @@
     "grunt-contrib-uglify": "~0.2.1",
     "grunt-karma": "~0.5.0",
     "grunt-contrib-jshint": "~0.5.4",
-    "grunt-ngmin": "0.0.2",
     "grunt-contrib-watch": "~0.4.3",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-ngdocs": "git://github.com/m7r/grunt-ngdocs",
@@ -16,6 +15,6 @@
     "grunt-bump": "git://github.com/ajoslin/grunt-bump",
     "karma": "~0.9.5",
     "karma-sauce-launcher": "0.0.6",
-    "grunt-conventional-changelog": "~1.0.0"
+    "grunt-conventional-changelog": "latest"
   }
 }

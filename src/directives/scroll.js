@@ -16,8 +16,8 @@
  */
 
 angular.module('ajoslin.scrolly.directives', ['ajoslin.scrolly.scroller'])
-.directive('scrollyScroll', function($scroller, $document) {
-  angular.element(document.body).bind('touchmove', function(e) {
+.directive('scrollyScroll', ['$scroller', '$document', function($scroller, $document) {
+  jqLite(document.body).bind('touchmove', function(e) {
     e.preventDefault();
   });
   return {
@@ -26,4 +26,4 @@ angular.module('ajoslin.scrolly.directives', ['ajoslin.scrolly.scroller'])
       var scroller = new $scroller(elm);
     }
   };
-});
+}]);

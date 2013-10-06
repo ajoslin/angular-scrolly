@@ -1,7 +1,7 @@
 
 angular.module('ajoslin.scrolly.desktop', [])
 
-.provider('$desktopScroller', function() {
+.provider('$desktopScroller', [function() {
 
   var KEYS = { 
     38: 150, //up arrow -> up
@@ -45,7 +45,7 @@ angular.module('ajoslin.scrolly.desktop', [])
 
         //Only go if the scroll is targeting this element
         //We are on desktop when this is called, so we are less worried about performance
-        var target = angular.element(e.target);
+        var target = jqLite(e.target);
         while (target.length) {
           if (target[0] === elm.parent()[0]) {
             scroll(delta);
@@ -96,4 +96,4 @@ angular.module('ajoslin.scrolly.desktop', [])
 
     return $desktopScroller;
   };
-});
+}]);
