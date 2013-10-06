@@ -298,15 +298,13 @@ describe('scrolly.dragger', function() {
         triggerDrag('touchmove', -100, 0);
         nowTime = 99;
         triggerDrag('touchend');
-        if (horizontal || any) {
-          expect(eventType).toBe('end');
-          expect(eventData).toHaveValues({
-            distance: {x: -100, y: 0, magnitude: 100},
-            startedAt: 0,
-            updatedAt: 99,
-            stopped: false
-          });
-        }
+        expect(eventType).toBe('end');
+        expect(eventData).toHaveValues({
+          distance: {x: -100, y: 0, magnitude: 100},
+          startedAt: 0,
+          updatedAt: 99,
+          stopped: false
+        });
       });
 
       it('should count the drag as "stopped" if we end and haven\'t moved in awhile', function() {
@@ -314,13 +312,11 @@ describe('scrolly.dragger', function() {
         triggerDrag('touchmove', 0, 50);
         nowTime = 5000;
         triggerDrag('touchend');
-        if (vertical || any) {
-          expect(eventData).toHaveValues({
-            stopped: true,
-            startedAt: 0,
-            updatedAt: 5000
-          });
-        }
+        expect(eventData).toHaveValues({
+          stopped: true,
+          startedAt: 0,
+          updatedAt: 5000
+        });
       });
     });
   }
