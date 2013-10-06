@@ -236,7 +236,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         self.state = startDragState({x: point.pageX, y: point.pageY});
 
-        dispatchEvent('start');
+        dispatchEvent('start', true);
       }
       function dragMove(e) {
         e = e.originalEvent || e; //for jquery
@@ -279,16 +279,16 @@ angular.module('ajoslin.scrolly.dragger', [])
           self.state.updatedAt = Date.now();
           self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
 
-          dispatchEvent('end');
+          dispatchEvent('end', true);
           self.state = {};
         }
       }
       
-      function dispatchEvent(eventType) {
+      function dispatchEvent(eventType, force) {
         var data = copy(self.state); // don't want to give them exact same data
         forEach(listeners, function(callbacks, listenerDirection) {
           /* jshint eqeqeq: false */
-          if (!data.direction || data.direction == listenerDirection || 
+          if (force || !data.direction || data.direction == listenerDirection || 
               listenerDirection == DIRECTION_ANY) {
             forEach(callbacks, function(cb) {
               cb(eventType, data);
