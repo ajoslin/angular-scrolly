@@ -11,7 +11,7 @@ To get started with angular-scrolly, follow these steps:
 
 You have a few options for getting the javascript you need.
 
-* a. You can install it from bower (TODO):
+* a. You can install it from bower:
 
 ```
 bower install ajoslin/angular-scrolly
