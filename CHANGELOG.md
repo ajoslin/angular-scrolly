@@ -1,3 +1,31 @@
+<a name="v0.0.6"></a>
+### v0.0.6 (2013-10-06)
+
+#### Bug Fixes
+
+* **dragger:**
+  * Let drag events propagate
+
+#### Features
+
+* **dragger:**
+  * listen to mouse and touch, options to disable either ([87766439](http://github.com/ajoslin/angular-scrolly/commit/87766439c08ffa82ac5d9d94bbf4c893ab761db7))
+  * Make addListener specify a dragDirection ([1506d03e](http://github.com/ajoslin/angular-scrolly/commit/1506d03ed5d6df81d5acdd279621928cfb13c913))
+    - This is a breaking change.  To migrate your code, do the following:
+
+    Change this:
+
+    ```js
+    var myDragger = $dragger(element, $dragger.DIRECTION_HORIZONTAL);
+    myDragger.addListener(myListener);
+    ```
+
+    Into this:
+    ```js
+    var myDragger = $dragger(element);
+    myDragger.addListener($dragger.DIRECTION_HORIZONTAL, element);
+    ```
+
 <a name="v0.0.5"></a>
 ### v0.0.5 (2013-09-30)
 
