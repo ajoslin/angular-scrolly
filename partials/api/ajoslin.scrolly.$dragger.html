@@ -5,22 +5,23 @@
 <div><h2 id="Description">Description</h2>
 <div class="description"><p>A factory for creating drag-listeners on elements. </p></div>
 <h2 id="Usage">Usage</h2>
-<div class="usage"><pre class="prettyprint linenums">$dragger(element[, dragDirection]);</pre>
+<div class="usage"><pre class="prettyprint linenums">$dragger(element[, options]);</pre>
 <h3 id="Parameters">Parameters</h3>
 <ul class="parameters"><li><code ng:non-bindable="">element – {element} – </code>
 <p>Element to attach drag listeners to.</p></li>
-<li><code ng:non-bindable="">dragDirection<i>(optional)</i> – {number=} – </code>
-<p>Which direction the dragger should be restricted to dispatching events for. 
-Either vertical, horizontal, or any.  Supported values are constants on $dragger: <code>DIRECTION_HORIZONTAL</code>, 
-<code>DIRECTION_VERTICAL</code>, and <code>DIRECTION_ANY</code>.</p></li>
+<li><code ng:non-bindable="">options<i>(optional)</i> – {object=} – </code>
+<p>Options object. Able to have the following properties:
+- <strong><code>mouse</code></strong> - {boolean=} - Whether to bind mouse events for this dragger. Default <code>true</code>.
+- <strong><code>touch</code></strong> - {boolean=} - Whether to bind touch events for this dragger. Default <code>true</code>.</p></li>
 </ul>
 <h3 id="Returns">Returns</h3>
 <div class="returns"><code ng:non-bindable="">{object}</code>
 – <p>Newly created dragger object with the following properties:</p>
 
 <ul>
-<li><code>{void}</code> <code>addListener({function} callback)</code> - Adds a new drag listener with the specified callback. </li>
-<li><code>{void}</code> <code>removeListener({function} callback)</code> Removes the given callback from the list of listeners.</li>
+<li><code>{void}</code> <code>addListener({constant=} dragDirection, {function} callback)</code> - Adds a new drag listener with the specified callback. Default direction: DIRECTION_ANY.</li>
+<li><code>{void}</code> <code>removeListener({constant=} dragDirection, {function} callback)</code> Removes the given callback from the list of listeners. Default direction: DIRECTION_ANY.</li>
+<li>Allowed directions are constants on $dragger: <code>$dragger.DIRECTION_HORIZONTAL</code>, <code>$dragger.DIRECTION_VERTICAL</code>, <code>$dragger.DIRECTION_ANY</code>.</li>
 </ul>
 
 <p>The <code>callback</code> given to addListener is called whenever a <code>start</code>, 
