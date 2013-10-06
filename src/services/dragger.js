@@ -104,6 +104,9 @@ angular.module('ajoslin.scrolly.dragger', [])
      * A factory for creating drag-listeners on elements. 
      *
      * @param {element} element Element to attach drag listeners to.
+     * @param {object=} options Options object. Able to have the following properties:
+     *  - **`mouse`** - {boolean=} - Whether to bind mouse events for this dragger. Default `true`.
+     *  - **`touch`** - {boolean=} - Whether to bind touch events for this dragger. Default `true`.
      *
      * @returns {object} Newly created dragger object with the following properties:
      *
@@ -153,6 +156,11 @@ angular.module('ajoslin.scrolly.dragger', [])
 
     //Creates a dragger for an element
     function $dragger(elm, options) {
+      options = extend({
+        mouse: true,
+        touch: true
+      }, options);
+
       var self = {};
       var raw = elm[0];
       var listeners = {};
@@ -188,9 +196,17 @@ angular.module('ajoslin.scrolly.dragger', [])
         }
       };
 
-      elm.bind('touchstart', dragStart);
-      elm.bind('touchmove', dragMove);
-      elm.bind('touchend touchcancel', dragEnd);
+      if (options.touch) {
+        elm.bind('touchstart', dragStart);
+        elm.bind('touchmove', dragMove);
+        elm.bind('touchend touchcancel', dragEnd);
+      }
+      if (options.mouse) {
+        elm.bind('mousedown', dragStart);
+        elm.bind('mousemove', dragMove);
+        elm.bind('mouseup mouseout', dragEnd);
+      }
+
       elm.bind('$destroy', function() {
         delete listeners[DIRECTION_VERITCAL];
         delete listeners[DIRECTION_HORIZONTAL];

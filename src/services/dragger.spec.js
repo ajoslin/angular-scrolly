@@ -8,6 +8,54 @@ describe('scrolly.dragger', function() {
     $dragger = _$dragger_;
   }));
 
+  describe('options', function() {
+    var elm, spy, d;
+    function setup(opts) {
+      elm = angular.element("<div>");
+      d = new $dragger(elm, opts);
+      spy = jasmine.createSpy();
+      d.addListener($dragger.DIRECTION_ANY, spy);
+    }
+    function trigger(elm, type) {
+      var e = $.Event(type);
+      e.pageX = e.pageY = 0;
+      $(elm[0]).trigger(e);
+    }
+    it('should mouse and touch by default', function() {
+      setup({});
+      
+      trigger(elm, 'mousedown');
+      expect(spy).toHaveBeenCalled();
+      spy.reset();
+
+      trigger(elm, 'touchstart');
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should not listen to mouse events with option', function() {
+      setup({
+        mouse: false
+      });
+
+      trigger(elm, 'mousedown');
+      expect(spy).not.toHaveBeenCalled();
+      
+      trigger(elm, 'touchstart');
+      expect(spy).toHaveBeenCalled();
+    });
+    it('should not listen to touch events with option', function() {
+      setup({
+        touch: false
+      });
+
+      trigger(elm, 'mousedown');
+      expect(spy).toHaveBeenCalled();
+      spy.reset();
+
+      trigger(elm, 'touchstart');
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
   makeTests('DIRECTION_HORIZONTAL');
   makeTests('DIRECTION_VERTICAL');
   makeTests('DIRECTION_ANY');

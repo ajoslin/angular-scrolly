@@ -203,7 +203,10 @@ angular.module('ajoslin.scrolly.scroller', [
 
       var raw = elm[0];
       var transformer = self.transformer = new $transformer(elm);
-      var dragger = self.dragger = new $dragger(elm);
+      var dragger = self.dragger = new $dragger(elm, {
+        touch: true,
+        mouse: false
+      });
       if (_supportDesktop) {
         var desktopScroller = new $desktopScroller(elm, self);
       }
