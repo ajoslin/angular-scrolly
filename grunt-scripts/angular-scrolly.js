@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.5 - 2013-10-06
+ * angular-scrolly - v0.0.6 - 2013-10-08
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -18,6 +18,7 @@ angular.module('ajoslin.scrolly', [
 ]);
 
 var jqLite = angular.element,
+  isDefined = angular.isDefined,
   copy = angular.copy,
   forEach = angular.forEach,
   isString = angular.isString,
@@ -407,7 +408,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         self.state = startDragState({x: point.pageX, y: point.pageY});
 
-        dispatchEvent('start');
+        dispatchEvent('start', true);
       }
       function dragMove(e) {
         e = e.originalEvent || e; //for jquery
@@ -450,16 +451,16 @@ angular.module('ajoslin.scrolly.dragger', [])
           self.state.updatedAt = Date.now();
           self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
 
-          dispatchEvent('end');
+          dispatchEvent('end', true);
           self.state = {};
         }
       }
       
-      function dispatchEvent(eventType) {
+      function dispatchEvent(eventType, force) {
         var data = copy(self.state); // don't want to give them exact same data
         forEach(listeners, function(callbacks, listenerDirection) {
           /* jshint eqeqeq: false */
-          if (!data.direction || data.direction == listenerDirection || 
+          if (force || !data.direction || data.direction == listenerDirection || 
               listenerDirection == DIRECTION_ANY) {
             forEach(callbacks, function(cb) {
               cb(eventType, data);
@@ -926,7 +927,7 @@ angular.module('ajoslin.scrolly.transformer', [])
      * @returns {object} Newly created transformer object with the following properties:
      *
      *   - `{object}` `pos` - A point giving the current x and y transform of the element.  Is an object with number fields `x` and `y`.
-     *   - `{void}` `setTo({object} point)` - Sets the current transform to the given x and y position. Expects point object with fields `x` and `y`.
+     *   - `{void}` `setTo({object} point)` - Sets the current transform to the given x and y position. Expects point object with fields `x` and/or `y`. If only `x` or `y` is given, it will only set that field. For example, `transformer.setTo({x: 33})` will only change the current x-position.
      *   - `{void}` `easeTo({object} point, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends. Expects point object with fields `x` and `y`.
      *   - `{void}` `stop({function=} done)` - Stops any current animation. If given, the `done` function will be called when the stop is done (after the next frame).
      *
@@ -949,7 +950,6 @@ angular.module('ajoslin.scrolly.transformer', [])
       } else {
         elm.data('$scrolly.transformer', self);
       }
-
 
       self.pos = {x: 0, y: 0};
 
@@ -1020,8 +1020,8 @@ angular.module('ajoslin.scrolly.transformer', [])
 
       //Allow setting with setTo(x,y) or setTo({x:x, y:y})
       self.setTo = function(pos) {
-        self.pos.x = pos.x;
-        self.pos.y = pos.y;
+        isDefined(pos.x) && (self.pos.x = pos.x);
+        isDefined(pos.y) && (self.pos.y = pos.y);
         raw.style[transformProp] = transformString(self.pos.x, self.pos.y);
       };
 
