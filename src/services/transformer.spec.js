@@ -54,14 +54,16 @@ describe('scrolly.transformer', function() {
     transformer.setTo({x: 2, y: 99});
     expect(elm.css($transformer.transformProp)).toMatch('2*.*99');
     transformer.clear();
-    expect(elm.css($transformer.transformProp)).toBeFalsy();
+    //Firefox does 'none', other browsers do ''
+    expect(['none', '']).toContain(elm.css($transformer.transformProp));
   });
 
   it('should clear transitionProp with clear()', function() {
     transformer.easeTo({x: 15, y: 82}, 100);
     expect(elm.css($transformer.transitionProp)).toMatch('100');
     transformer.clear();
-    expect(elm.css($transformer.transitionProp)).toBeFalsy();
+    //Firefox does 'none', other browsers do ''
+    expect(['none', '']).toContain(elm.css($transformer.transitionProp));
   });
 
   it('should set pos and transform with setTo', function() {
