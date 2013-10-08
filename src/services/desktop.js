@@ -59,7 +59,7 @@ angular.module('ajoslin.scrolly.desktop', [])
       function scroll(delta) {
         scroller.calculateHeight();
         var newPos = scroller.transformer.pos.y + delta;
-        scroller.transformer.setTo({x: 0, y: clamp(-scroller.scrollHeight, newPos, 0)});
+        scroller.transformer.setTo({y: clamp(-scroller.scrollHeight, newPos, 0)});
       }
 
       var INPUT_REGEX = /INPUT|TEXTAREA|SELECT/i;
@@ -83,7 +83,7 @@ angular.module('ajoslin.scrolly.desktop', [])
             var newDelta = newPos - scroller.transformer.pos.y;
             var time = Math.abs(newDelta * $desktopScroller.easeTimeMulti);
 
-            scroller.transformer.easeTo({x: 0, y: newPos}, time);
+            scroller.transformer.easeTo({y: newPos}, time);
           }
         }
       }

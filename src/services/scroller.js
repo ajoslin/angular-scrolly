@@ -252,7 +252,7 @@ angular.module('ajoslin.scrolly.scroller', [
             if ( self.outOfBounds(newPos) ) {
               newPos = transformer.pos.y + floor(data.delta.y * 0.5);
             }
-            transformer.setTo({x: 0, y: newPos});
+            transformer.setTo({y: newPos});
             break;
 
           case 'end':
@@ -264,7 +264,7 @@ angular.module('ajoslin.scrolly.scroller', [
               var momentum = self.momentum(data);
               if (momentum.position !== transformer.pos.y) {
                 transformer.easeTo(
-                  {x: 0, y: momentum.position},
+                  {y: momentum.position},
                   momentum.time,
                   self.checkBoundaries
                 );
@@ -279,7 +279,7 @@ angular.module('ajoslin.scrolly.scroller', [
         var howMuchOut = self.outOfBounds(transformer.pos.y);
         if (howMuchOut) {
           var newPosition = howMuchOut > 0 ? 0 : -self.scrollHeight;
-          transformer.easeTo({x: 0, y: newPosition}, bounceTime(howMuchOut));
+          transformer.easeTo({y: newPosition}, bounceTime(howMuchOut));
         } 
       };
       self.momentum = function(dragData) {

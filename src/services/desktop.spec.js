@@ -54,21 +54,21 @@ describe('desktop', function() {
     it('should use multiplier', inject(function($desktopScroller) {
       $desktopScroller.mouseWheelDistanceMulti = 0.24;
       trigger('mousewheel', { wheelDeltaY: -100, target: elm[0] });
-      expect(transformer.setTo).toHaveBeenCalledWith({x:0, y: -24});
+      expect(transformer.setTo).toHaveBeenCalledWith({y: -24});
     }));
     it('should scroll on mousewheel if in bounds', function() {
       transformer.pos.y = -13;
       trigger('mousewheel', { wheelDeltaY: -50, target: elm[0] });
-      expect(transformer.setTo).toHaveBeenCalledWith({x: 0, y: -63});
+      expect(transformer.setTo).toHaveBeenCalledWith({y: -63});
     });
     it('should stay in bounds', function() {
       transformer.pos.y = -20;
       trigger('mousewheel', { wheelDeltaY: 100, target: elm[0] });
-      expect(transformer.setTo).toHaveBeenCalledWith({x: 0, y:0});
+      expect(transformer.setTo).toHaveBeenCalledWith({y:0});
       
       transformer.pos.y = -60;
       trigger('mousewheel', { wheelDeltaY: -50, target: elm[0] });
-      expect(transformer.setTo).toHaveBeenCalledWith({x: 0, y: -100});
+      expect(transformer.setTo).toHaveBeenCalledWith({y: -100});
     });
   });
 
@@ -76,16 +76,16 @@ describe('desktop', function() {
     it('should use multipler', inject(function($desktopScroller) {
       $desktopScroller.easeTimeMulti = 0.18;
       trigger('keydown', { keyCode: 1 });
-      expect(transformer.easeTo).toHaveBeenCalledWith({x: 0, y: -20}, 20 * 0.18);
+      expect(transformer.easeTo).toHaveBeenCalledWith({y: -20}, 20 * 0.18);
     }));
     it('should ease when pressing given key', function() {
       trigger('keydown', { keyCode: 1 });
-      expect(transformer.easeTo).toHaveBeenCalledWith({x: 0, y: -20}, 20);
+      expect(transformer.easeTo).toHaveBeenCalledWith({y: -20}, 20);
     });
     it('should stay within bounds and change time to delta', function() {
       transformer.pos.y = -90;
       trigger('keydown', { keyCode: 1 });
-      expect(transformer.easeTo).toHaveBeenCalledWith({x: 0, y: -100}, 10);
+      expect(transformer.easeTo).toHaveBeenCalledWith({y: -100}, 10);
     });
     it('should ignore key events if focusing an input', function() {
       var input = $("<input>").appendTo("body").focus();
