@@ -83,6 +83,7 @@ angular.module('ajoslin.scrolly.transformer', [])
      *   - `{void}` `setTo({object} point)` - Sets the current transform to the given x and y position. Expects point object with fields `x` and/or `y`. If only `x` or `y` is given, it will only set that field. For example, `transformer.setTo({x: 33})` will only change the current x-position.
      *   - `{void}` `easeTo({object} point, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends. Expects point object with fields `x` and `y`.
      *   - `{void}` `stop({function=} done)` - Stops any current animation. If given, the `done` function will be called when the stop is done (after the next frame).
+     *   - `{void}` `clear()` - Clears out any transform or transition styles currently set on the element by this transformer.
      *
      */
 
@@ -179,6 +180,10 @@ angular.module('ajoslin.scrolly.transformer', [])
         isDefined(pos.x) && (self.pos.x = pos.x);
         isDefined(pos.y) && (self.pos.y = pos.y);
         raw.style[transformProp] = transformString(self.pos.x, self.pos.y);
+      };
+
+      self.clear = function() {
+        raw.style[transformProp] = raw.style[transitionProp] = '';
       };
 
       return self;
