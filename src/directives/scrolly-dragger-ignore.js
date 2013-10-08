@@ -10,6 +10,6 @@ angular.module('ajoslin.scrolly.directives')
 .directive('scrollyDraggerIgnore', [function() {
   return {
     restrict: 'A',
-    controller: angular.noop // just so we can see if it exists, add a controller
+    controller: noop // just so we can see if it exists, add a controller
   };
 }]);

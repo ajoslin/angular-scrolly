@@ -12,6 +12,7 @@ angular.module('ajoslin.scrolly', [
 ]);
 
 var jqLite = angular.element,
+  noop = angular.noop,
   isDefined = angular.isDefined,
   copy = angular.copy,
   forEach = angular.forEach,

@@ -182,7 +182,7 @@ angular.module('ajoslin.scrolly.dragger', [])
           callback = direction;
           direction = DIRECTION_ANY;
         }
-        listeners[direction].push(callback || angular.noop);
+        listeners[direction].push(callback || noop);
       };
 
       self.removeListener = function(direction, callback) {

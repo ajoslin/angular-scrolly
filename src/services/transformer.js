@@ -67,6 +67,7 @@ angular.module('ajoslin.scrolly.transformer', [])
     var transformProp = prefix ? (prefix + 'Transform') : 'transform';
     var transformPropDash = prefix ? ('-' + prefix.toLowerCase() + '-transform') : 'transform';
     var transitionProp = prefix ? (prefix + 'Transition') : 'transition';
+    var transitionEndProp = prefix ? (prefix + 'TransitionEnd') : 'transitionend';
 
     /**
      * @ngdoc object
@@ -103,6 +104,11 @@ angular.module('ajoslin.scrolly.transformer', [])
         elm.data('$scrolly.transformer', self);
       }
 
+      elm.bind('$destroy', function() {
+        self.pos = null;
+        changingDoneCallback = null;
+      });
+
       self.pos = {x: 0, y: 0};
 
       //Gets the current x and y transform of the element
@@ -119,17 +125,17 @@ angular.module('ajoslin.scrolly.transformer', [])
       };
       self.updatePosition();
 
-      var transitionEndTimeout;
-      self.stop = function(done) {
-        //If an easeTo is currently waiting for its transition to end, stop the
-        //listen. Because we are ending now with this stop() call.
-        if (transitionEndTimeout) {
-          $window.clearTimeout(transitionEndTimeout);
-          transitionEndTimeout = null;
+      var changingDoneCallback;
+      elm.bind(transitionEndProp, onTransitionEnd);
+      function onTransitionEnd() {
+        if (self.changing) {
+          self.stop(changingDoneCallback);
         }
+      }
 
+      self.stop = function(done) {
         //Stop transitions, and set self.pos to wherever we were.
-        raw.style[transitionProp] = 'none';
+        raw.style[transitionProp] = '';
         self.updatePosition();
         self.changing = false;
 
@@ -137,7 +143,7 @@ angular.module('ajoslin.scrolly.transformer', [])
         //transition style on the element has time to 'remove' itself
         $nextFrame(function() {
           self.setTo(self.pos);
-          (done||angular.noop)();
+          (done || noop)();
         });
       };
 
@@ -155,17 +161,15 @@ angular.module('ajoslin.scrolly.transformer', [])
         }
         function doTransition() {
           raw.style[transitionProp] = transitionString(transitionTime);
+
           self.changing = true;
+          changingDoneCallback = done;
 
           //On next frame, start transition - this wait is so the transition
           //style on the element has time to 'apply' itself before the elm's
           //position is set
           $nextFrame(function() {
             self.setTo(pos);
-            transitionEndTimeout = $window.setTimeout(function() {
-              self.stop();
-              (done||angular.noop)();
-            }, transitionTime);
           });
         }
       };
@@ -200,12 +204,21 @@ angular.module('ajoslin.scrolly.transformer', [])
     $transformer.transformPropDash = transformPropDash;
     /**
      * @ngdoc property
-     * @name ajoslin.scrolly.$transformer#transitionprop
+     * @name ajoslin.scrolly.$transformer#transitionProp
      * @propertyOf ajoslin.scrolly.$transformer
      *
      * @description {string} The property used for element transitions.  For example "webkitTransition".
      */
     $transformer.transitionProp = transitionProp;
+
+    /**
+     * @ngdoc property
+     * @name ajoslin.scrolly.$transformer#transitionEndProp
+     * @propertyOf ajoslin.scrolly.$transformer
+     *
+     * @description {string} The property used for binding element transitionEnd. For example "webkitTransitionEnd".
+     */
+    $transformer.transitionEndProp = transitionEndProp;
 
     return $transformer;
 

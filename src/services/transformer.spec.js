@@ -3,7 +3,6 @@ describe('scrolly.transformer', function() {
 
   beforeEach(module('ajoslin.scrolly.transformer'));
   beforeEach(module(function($provide) {
-    $provide.value('$window', angular.mock.createMockWindow());
     $provide.factory('$nextFrame', function($window) {
       return angular.mock.createMockWindow().setTimeout;
     });
@@ -22,6 +21,10 @@ describe('scrolly.transformer', function() {
     $window = _$window_;
     $nextFrame = _$nextFrame_;
   }));
+
+  function fireTransitionEnd() {
+    elm.triggerHandler($transformer.transitionEndProp);
+  }
 
   it('should be a function', function() {
     expect(typeof $transformer).toBe('function');
@@ -55,7 +58,7 @@ describe('scrolly.transformer', function() {
 
   it('should set only x if only x given', function() {
     transformer.setTo({x: 22});
-    expect(elm.css($transformer.transformProp)).toMatch('33*.*0*.*0');
+    expect(elm.css($transformer.transformProp)).toMatch('22*.*0');
     transformer.setTo({x: 23, y: 24});
     expect(elm.css($transformer.transformProp)).toMatch('23*.*24');
     transformer.setTo({x: 1});
@@ -64,12 +67,12 @@ describe('scrolly.transformer', function() {
 
   it('should set only y if only y given', function() {
     transformer.setTo({y: 22});
-    expect(elm.css($transformer.transformProp)).toMatch('0*.*33*.*0');
+    expect(elm.css($transformer.transformProp)).toMatch('0*.*22');
     transformer.setTo({x: 23, y: 24});
     expect(elm.css($transformer.transformProp)).toMatch('23*.*24');
     transformer.setTo({y: 1});
     expect(elm.css($transformer.transformProp)).toMatch('23*.*1');
-  });
+  }); 
 
   it('should error if not giving a positive number for easeTo', function() {
     expect(function() { $transformer.easeTo({x: 4, y: 4}, -1); }).toThrow();
@@ -86,10 +89,12 @@ describe('scrolly.transformer', function() {
 
     $nextFrame.expect().process();
     expect(elm.css($transformer.transformProp)).toMatch('55*.*66');
+    expect(elm.css($transformer.transitionProp)).toMatch('500');
 
-    $window.setTimeout.expect(500).process();
+    fireTransitionEnd();
+    $nextFrame.expect().process();
     expect(done).toHaveBeenCalled();
-    expect(elm.css($transformer.transitionProp)).toMatch('none');
+    expect(elm.css($transformer.transitionProp)).toMatch('');
     expect(transformer.pos).toEqual({x: 55, y: 66});
   });
 
@@ -98,17 +103,19 @@ describe('scrolly.transformer', function() {
     spyOn(transformer, 'easeTo').andCallThrough();
 
     transformer.easeTo({x:-10, y:-20}, 1000);
-    //It should request the next frame, then start a timeout for transitionEnd
+    expect(transformer.changing).toBe(true);
+    //It should request the next frame and set transition prop, then set transform
     $nextFrame.expect().process();
-    expect($window.setTimeout.queue.length).toBe(1);
+    expect(elm.css($transformer.transformProp)).toMatch('-10*.*-20');
 
     //it should stop, then after the next frame change the easing.
     transformer.easeTo({x: -20, y: -40}, 250);
     expect(transformer.stop).toHaveBeenCalled();
-    expect($window.setTimeout.queue.length).toBe(1);
+    expect(transformer.changing).toBe(false);
     $nextFrame.expect().process();
+    expect(transformer.changing).toBe(true);
     //After requesting the frame from stop, it will do the ease and add the transitionEnd timeout
     $nextFrame.expect().process();
-    expect($window.setTimeout.queue.length).toBe(2);
+    expect(elm.css($transformer.transformProp)).toMatch('-20*.*-40');
   });
 });
