@@ -53,6 +53,24 @@ describe('scrolly.transformer', function() {
     expect(transformer.pos).toEqual({x: 33, y: 66});
   });
 
+  it('should set only x if only x given', function() {
+    transformer.setTo({x: 22});
+    expect(elm.css($transformer.transformProp)).toMatch('33*.*0*.*0');
+    transformer.setTo({x: 23, y: 24});
+    expect(elm.css($transformer.transformProp)).toMatch('23*.*24');
+    transformer.setTo({x: 1});
+    expect(elm.css($transformer.transformProp)).toMatch('1*.*24');
+  });
+
+  it('should set only y if only y given', function() {
+    transformer.setTo({y: 22});
+    expect(elm.css($transformer.transformProp)).toMatch('0*.*33*.*0');
+    transformer.setTo({x: 23, y: 24});
+    expect(elm.css($transformer.transformProp)).toMatch('23*.*24');
+    transformer.setTo({y: 1});
+    expect(elm.css($transformer.transformProp)).toMatch('23*.*1');
+  });
+
   it('should error if not giving a positive number for easeTo', function() {
     expect(function() { $transformer.easeTo({x: 4, y: 4}, -1); }).toThrow();
     expect(function() { $transformer.easeTo({x: 3, y: 6}, 'pizza'); }).toThrow();
