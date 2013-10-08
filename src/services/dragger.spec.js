@@ -9,27 +9,55 @@ describe('scrolly.dragger', function() {
   }));
 
   describe('options', function() {
-    var elm, spy, d;
+    var elm, dragSpy, d;
     function setup(opts) {
       elm = angular.element("<div>");
       d = new $dragger(elm, opts);
-      spy = jasmine.createSpy();
-      d.addListener($dragger.DIRECTION_ANY, spy);
+      dragSpy = jasmine.createSpy();
+      d.addListener($dragger.DIRECTION_ANY, dragSpy);
     }
-    function trigger(elm, type) {
+    function trigger(elm, type, options) {
       var e = $.Event(type);
       e.pageX = e.pageY = 0;
+      angular.extend(e, options || {});
       $(elm[0]).trigger(e);
     }
+    it('should not stop propagation by default', function() {
+      setup({});
+      var stopSpy = jasmine.createSpy('stop');
+      trigger(elm, 'touchstart', {stopPropagation: stopSpy});
+      expect(stopSpy).not.toHaveBeenCalled();
+      trigger(elm, 'touchmove', {stopPropagation: stopSpy});
+      expect(stopSpy).not.toHaveBeenCalled();
+      trigger(elm, 'touchend', {stopPropagation: stopSpy});
+      expect(stopSpy).not.toHaveBeenCalled();
+    });
+    it('should stop propagation with option', function() {
+      setup({
+        stopPropagation: true
+      });
+      var stopSpy = jasmine.createSpy('stop');
+
+      trigger(elm, 'touchstart', {stopPropagation: stopSpy});
+      expect(stopSpy).toHaveBeenCalled();
+      stopSpy.reset();
+
+      trigger(elm, 'touchmove', {stopPropagation: stopSpy});
+      expect(stopSpy).toHaveBeenCalled();
+      stopSpy.reset();
+
+      trigger(elm, 'touchend', {stopPropagation: stopSpy});
+      expect(stopSpy).toHaveBeenCalled();
+    });
     it('should mouse and touch by default', function() {
       setup({});
       
       trigger(elm, 'mousedown');
-      expect(spy).toHaveBeenCalled();
-      spy.reset();
+      expect(dragSpy).toHaveBeenCalled();
+      dragSpy.reset();
 
       trigger(elm, 'touchstart');
-      expect(spy).toHaveBeenCalled();
+      expect(dragSpy).toHaveBeenCalled();
     });
     it('should not listen to mouse events with option', function() {
       setup({
@@ -37,10 +65,10 @@ describe('scrolly.dragger', function() {
       });
 
       trigger(elm, 'mousedown');
-      expect(spy).not.toHaveBeenCalled();
+      expect(dragSpy).not.toHaveBeenCalled();
       
       trigger(elm, 'touchstart');
-      expect(spy).toHaveBeenCalled();
+      expect(dragSpy).toHaveBeenCalled();
     });
     it('should not listen to touch events with option', function() {
       setup({
@@ -48,11 +76,11 @@ describe('scrolly.dragger', function() {
       });
 
       trigger(elm, 'mousedown');
-      expect(spy).toHaveBeenCalled();
-      spy.reset();
+      expect(dragSpy).toHaveBeenCalled();
+      dragSpy.reset();
 
       trigger(elm, 'touchstart');
-      expect(spy).not.toHaveBeenCalled();
+      expect(dragSpy).not.toHaveBeenCalled();
     });
   });
 

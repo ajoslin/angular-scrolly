@@ -107,6 +107,7 @@ angular.module('ajoslin.scrolly.dragger', [])
      * @param {object=} options Options object. Able to have the following properties:
      *  - **`mouse`** - {boolean=} - Whether to bind mouse events for this dragger. Default `true`.
      *  - **`touch`** - {boolean=} - Whether to bind touch events for this dragger. Default `true`.
+     *  - **`stopPropagation**` - {boolean=} Whether to stop propagation of drag events. Default `false`.
      *
      * @returns {object} Newly created dragger object with the following properties:
      *
@@ -158,7 +159,8 @@ angular.module('ajoslin.scrolly.dragger', [])
     function $dragger(elm, options) {
       options = extend({
         mouse: true,
-        touch: true
+        touch: true,
+        stopPropagation: false
       }, options);
 
       var self = {};
@@ -208,9 +210,10 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
 
       elm.bind('$destroy', function() {
-        delete listeners[DIRECTION_VERITCAL];
+        delete listeners[DIRECTION_VERTICAL];
         delete listeners[DIRECTION_HORIZONTAL];
         delete listeners[DIRECTION_ANY];
+        listeners = null;
       });
 
       function dragStart(e) {
@@ -222,7 +225,8 @@ angular.module('ajoslin.scrolly.dragger', [])
           return;
         }
 
-        e.stopPropagation();
+        options.stopPropagation && e.stopPropagation();
+
         var point = e.touches ? e.touches[0] : e;
 
         //No drag on ignored elements
@@ -243,7 +247,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         if (self.state.active) {
           e.preventDefault();
-          e.stopPropagation();
+          options.stopPropagation && e.stopPropagation();
 
           var point = e.touches ? e.touches[0] : e;
           point = {x: point.pageX, y: point.pageY};
@@ -274,7 +278,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         if (self.state.active) {
           e = e.originalEvent || e; // for jquery
-          e.stopPropagation();
+          options.stopPropagation && e.stopPropagation();
 
           self.state.updatedAt = Date.now();
           self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
