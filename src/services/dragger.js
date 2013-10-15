@@ -192,9 +192,10 @@ angular.module('ajoslin.scrolly.dragger', [])
           callback = direction;
           direction = DIRECTION_ANY;
         }
-        var index = listeners[direction].indexOf(callback);
-        if (index > -1) {
-          listeners[direction].splice(index, 1);
+        var callbacks = listeners[direction];
+        var index = callbacks && callbacks.indexOf(callback);
+        if (callbacks && index > -1) {
+          callbacks.splice(index, 1);
         }
       };
 
@@ -213,7 +214,6 @@ angular.module('ajoslin.scrolly.dragger', [])
         delete listeners[DIRECTION_VERTICAL];
         delete listeners[DIRECTION_HORIZONTAL];
         delete listeners[DIRECTION_ANY];
-        listeners = null;
       });
 
       function dragStart(e) {

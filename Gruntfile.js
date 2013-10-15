@@ -40,7 +40,7 @@ module.exports = function(grunt) {
       },
       sauce: {
         configFile: 'test/karma-saucelabs.conf.js',
-        browsers: ['sauce_ie', 'sauce_ios', 'sauce_android']
+        browsers: ['sauce_firefox', 'sauce_ie', 'sauce_chrome', 'sauce_ios', 'sauce_android']
       },
       sauce2: {
         configFile: 'test/karma-saucelabs.conf.js',

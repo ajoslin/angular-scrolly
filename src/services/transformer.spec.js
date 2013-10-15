@@ -10,7 +10,7 @@ describe('scrolly.transformer', function() {
 
   var $transformer, transformer, elm, $window, $nextFrame;
   beforeEach(inject(function(_$transformer_, _$window_, _$nextFrame_) {
-    elm = $("<div>");
+    elm = angular.element([document.createElement('div'),document.createElement('span')]);
     $transformer = _$transformer_;
     transformer = new $transformer(elm);
 

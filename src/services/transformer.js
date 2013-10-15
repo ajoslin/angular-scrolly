@@ -114,7 +114,7 @@ angular.module('ajoslin.scrolly.transformer', [])
 
       //Gets the current x and y transform of the element
       self.updatePosition = function() {
-        var style = $window.getComputedStyle(raw);
+        var style = $window.getComputedStyle(elm[0]);
         var matrix = (style[transformProp] || '')
           .replace(/[^0-9-.,]/g,'')
           .split(',');
@@ -161,7 +161,7 @@ angular.module('ajoslin.scrolly.transformer', [])
           doTransition();
         }
         function doTransition() {
-          raw.style[transitionProp] = transitionString(transitionTime);
+          elm.css(transitionProp, transitionString(transitionTime));
 
           self.changing = true;
           changingDoneCallback = done;
@@ -179,11 +179,12 @@ angular.module('ajoslin.scrolly.transformer', [])
       self.setTo = function(pos) {
         isDefined(pos.x) && (self.pos.x = pos.x);
         isDefined(pos.y) && (self.pos.y = pos.y);
-        raw.style[transformProp] = transformString(self.pos.x, self.pos.y);
+        elm.css(transformProp, transformString(self.pos.x, self.pos.y));
       };
 
       self.clear = function() {
-        raw.style[transformProp] = raw.style[transitionProp] = '';
+        elm.css(transformProp, '');
+        elm.css(transitionProp, '');
       };
 
       return self;
