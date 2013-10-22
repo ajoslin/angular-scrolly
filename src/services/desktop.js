@@ -21,7 +21,7 @@ angular.module('ajoslin.scrolly.desktop', [])
     return _mouseWheelDistanceMulti;
   };
 
-  this.$get = function($document) {
+  this.$get = ['$document', function($document) {
 
     $desktopScroller.mouseWheelDistanceMulti = _mouseWheelDistanceMulti;
     $desktopScroller.easeTimeMulti = 0.66;
@@ -95,5 +95,5 @@ angular.module('ajoslin.scrolly.desktop', [])
     }
 
     return $desktopScroller;
-  };
+  }];
 }]);
