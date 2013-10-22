@@ -1,3 +1,12 @@
+<a name="v0.0.8"></a>
+### v0.0.8 (2013-10-22)
+
+
+#### Bug Fixes
+
+* Fix desktopScroller.js not using array annotation
+
+
 <a name="v0.0.7"></a>
 ### v0.0.7 (2013-10-15)
 

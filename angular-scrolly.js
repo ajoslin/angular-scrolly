@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.7 - 2013-10-15
+ * angular-scrolly - v0.0.8 - 2013-10-22
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -94,7 +94,7 @@ angular.module('ajoslin.scrolly.desktop', [])
     return _mouseWheelDistanceMulti;
   };
 
-  this.$get = function($document) {
+  this.$get = ['$document', function($document) {
 
     $desktopScroller.mouseWheelDistanceMulti = _mouseWheelDistanceMulti;
     $desktopScroller.easeTimeMulti = 0.66;
@@ -168,7 +168,7 @@ angular.module('ajoslin.scrolly.desktop', [])
     }
 
     return $desktopScroller;
-  };
+  }];
 }]);
 
 
