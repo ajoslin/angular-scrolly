@@ -19,6 +19,7 @@
 <li><code>{void}</code> <code>setTo({object} point)</code> - Sets the current transform to the given x and y position. Expects point object with fields <code>x</code> and/or <code>y</code>. If only <code>x</code> or <code>y</code> is given, it will only set that field. For example, <code>transformer.setTo({x: 33})</code> will only change the current x-position.</li>
 <li><code>{void}</code> <code>easeTo({object} point, {number} time, {function=} done)</code> - Eases to the given position in <code>time</code> milliseconds. If given, the <code>done</code> callback will be called when the transition ends. Expects point object with fields <code>x</code> and <code>y</code>.</li>
 <li><code>{void}</code> <code>stop({function=} done)</code> - Stops any current animation. If given, the <code>done</code> function will be called when the stop is done (after the next frame).</li>
+<li><code>{void}</code> <code>clear()</code> - Clears out any transform or transition styles currently set on the element by this transformer.</li>
 </ul></div>
 </div>
 <div class="member property"><h2 id="Properties">Properties</h2>
@@ -28,7 +29,10 @@
 <li><h3 id="transformPropDash">transformPropDash</h3>
 <div class="transformpropdash"><p>{string} The property used for element transformations, "dashed version". For example "-webkit-transform". </p></div>
 </li>
-<li><h3 id="transitionprop">transitionprop</h3>
+<li><h3 id="transitionEndProp">transitionEndProp</h3>
+<div class="transitionendprop"><p>{string} The property used for binding element transitionEnd. For example "webkitTransitionEnd".</p></div>
+</li>
+<li><h3 id="transitionProp">transitionProp</h3>
 <div class="transitionprop"><p>{string} The property used for element transitions.  For example "webkitTransition".</p></div>
 </li>
 </ul>

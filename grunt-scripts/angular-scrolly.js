@@ -1,5 +1,5 @@
 /*
- * angular-scrolly - v0.0.6 - 2013-10-08
+ * angular-scrolly - v0.0.8 - 2013-12-12
  * http://github.com/ajoslin/angular-scrolly
  * Created by Andy Joslin; Licensed under Public Domain
  */
@@ -18,6 +18,7 @@ angular.module('ajoslin.scrolly', [
 ]);
 
 var jqLite = angular.element,
+  noop = angular.noop,
   isDefined = angular.isDefined,
   copy = angular.copy,
   forEach = angular.forEach,
@@ -66,7 +67,7 @@ angular.module('ajoslin.scrolly.directives')
 .directive('scrollyDraggerIgnore', [function() {
   return {
     restrict: 'A',
-    controller: angular.noop // just so we can see if it exists, add a controller
+    controller: noop // just so we can see if it exists, add a controller
   };
 }]);
 
@@ -93,7 +94,7 @@ angular.module('ajoslin.scrolly.desktop', [])
     return _mouseWheelDistanceMulti;
   };
 
-  this.$get = function($document) {
+  this.$get = ['$document', function($document) {
 
     $desktopScroller.mouseWheelDistanceMulti = _mouseWheelDistanceMulti;
     $desktopScroller.easeTimeMulti = 0.66;
@@ -131,7 +132,7 @@ angular.module('ajoslin.scrolly.desktop', [])
       function scroll(delta) {
         scroller.calculateHeight();
         var newPos = scroller.transformer.pos.y + delta;
-        scroller.transformer.setTo({x: 0, y: clamp(-scroller.scrollHeight, newPos, 0)});
+        scroller.transformer.setTo({y: clamp(-scroller.scrollHeight, newPos, 0)});
       }
 
       var INPUT_REGEX = /INPUT|TEXTAREA|SELECT/i;
@@ -155,7 +156,7 @@ angular.module('ajoslin.scrolly.desktop', [])
             var newDelta = newPos - scroller.transformer.pos.y;
             var time = Math.abs(newDelta * $desktopScroller.easeTimeMulti);
 
-            scroller.transformer.easeTo({x: 0, y: newPos}, time);
+            scroller.transformer.easeTo({y: newPos}, time);
           }
         }
       }
@@ -167,7 +168,7 @@ angular.module('ajoslin.scrolly.desktop', [])
     }
 
     return $desktopScroller;
-  };
+  }];
 }]);
 
 
@@ -279,6 +280,7 @@ angular.module('ajoslin.scrolly.dragger', [])
      * @param {object=} options Options object. Able to have the following properties:
      *  - **`mouse`** - {boolean=} - Whether to bind mouse events for this dragger. Default `true`.
      *  - **`touch`** - {boolean=} - Whether to bind touch events for this dragger. Default `true`.
+     *  - **`stopPropagation**` - {boolean=} Whether to stop propagation of drag events. Default `false`.
      *
      * @returns {object} Newly created dragger object with the following properties:
      *
@@ -330,7 +332,8 @@ angular.module('ajoslin.scrolly.dragger', [])
     function $dragger(elm, options) {
       options = extend({
         mouse: true,
-        touch: true
+        touch: true,
+        stopPropagation: false
       }, options);
 
       var self = {};
@@ -354,7 +357,7 @@ angular.module('ajoslin.scrolly.dragger', [])
           callback = direction;
           direction = DIRECTION_ANY;
         }
-        listeners[direction].push(callback || angular.noop);
+        listeners[direction].push(callback || noop);
       };
 
       self.removeListener = function(direction, callback) {
@@ -362,9 +365,10 @@ angular.module('ajoslin.scrolly.dragger', [])
           callback = direction;
           direction = DIRECTION_ANY;
         }
-        var index = listeners[direction].indexOf(callback);
-        if (index > -1) {
-          listeners[direction].splice(index, 1);
+        var callbacks = listeners[direction];
+        var index = callbacks && callbacks.indexOf(callback);
+        if (callbacks && index > -1) {
+          callbacks.splice(index, 1);
         }
       };
 
@@ -380,7 +384,7 @@ angular.module('ajoslin.scrolly.dragger', [])
       }
 
       elm.bind('$destroy', function() {
-        delete listeners[DIRECTION_VERITCAL];
+        delete listeners[DIRECTION_VERTICAL];
         delete listeners[DIRECTION_HORIZONTAL];
         delete listeners[DIRECTION_ANY];
       });
@@ -394,7 +398,8 @@ angular.module('ajoslin.scrolly.dragger', [])
           return;
         }
 
-        e.stopPropagation();
+        options.stopPropagation && e.stopPropagation();
+
         var point = e.touches ? e.touches[0] : e;
 
         //No drag on ignored elements
@@ -415,7 +420,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         if (self.state.active) {
           e.preventDefault();
-          e.stopPropagation();
+          options.stopPropagation && e.stopPropagation();
 
           var point = e.touches ? e.touches[0] : e;
           point = {x: point.pageX, y: point.pageY};
@@ -446,7 +451,7 @@ angular.module('ajoslin.scrolly.dragger', [])
 
         if (self.state.active) {
           e = e.originalEvent || e; // for jquery
-          e.stopPropagation();
+          options.stopPropagation && e.stopPropagation();
 
           self.state.updatedAt = Date.now();
           self.state.stopped = (self.state.updatedAt - self.state.startedAt) > _maxTimeMotionless;
@@ -782,7 +787,7 @@ angular.module('ajoslin.scrolly.scroller', [
             if ( self.outOfBounds(newPos) ) {
               newPos = transformer.pos.y + floor(data.delta.y * 0.5);
             }
-            transformer.setTo({x: 0, y: newPos});
+            transformer.setTo({y: newPos});
             break;
 
           case 'end':
@@ -794,7 +799,7 @@ angular.module('ajoslin.scrolly.scroller', [
               var momentum = self.momentum(data);
               if (momentum.position !== transformer.pos.y) {
                 transformer.easeTo(
-                  {x: 0, y: momentum.position},
+                  {y: momentum.position},
                   momentum.time,
                   self.checkBoundaries
                 );
@@ -809,7 +814,7 @@ angular.module('ajoslin.scrolly.scroller', [
         var howMuchOut = self.outOfBounds(transformer.pos.y);
         if (howMuchOut) {
           var newPosition = howMuchOut > 0 ? 0 : -self.scrollHeight;
-          transformer.easeTo({x: 0, y: newPosition}, bounceTime(howMuchOut));
+          transformer.easeTo({y: newPosition}, bounceTime(howMuchOut));
         } 
       };
       self.momentum = function(dragData) {
@@ -915,6 +920,7 @@ angular.module('ajoslin.scrolly.transformer', [])
     var transformProp = prefix ? (prefix + 'Transform') : 'transform';
     var transformPropDash = prefix ? ('-' + prefix.toLowerCase() + '-transform') : 'transform';
     var transitionProp = prefix ? (prefix + 'Transition') : 'transition';
+    var transitionEndProp = prefix ? (prefix + 'TransitionEnd') : 'transitionend';
 
     /**
      * @ngdoc object
@@ -930,6 +936,7 @@ angular.module('ajoslin.scrolly.transformer', [])
      *   - `{void}` `setTo({object} point)` - Sets the current transform to the given x and y position. Expects point object with fields `x` and/or `y`. If only `x` or `y` is given, it will only set that field. For example, `transformer.setTo({x: 33})` will only change the current x-position.
      *   - `{void}` `easeTo({object} point, {number} time, {function=} done)` - Eases to the given position in `time` milliseconds. If given, the `done` callback will be called when the transition ends. Expects point object with fields `x` and `y`.
      *   - `{void}` `stop({function=} done)` - Stops any current animation. If given, the `done` function will be called when the stop is done (after the next frame).
+     *   - `{void}` `clear()` - Clears out any transform or transition styles currently set on the element by this transformer.
      *
      */
 
@@ -951,11 +958,16 @@ angular.module('ajoslin.scrolly.transformer', [])
         elm.data('$scrolly.transformer', self);
       }
 
+      elm.bind('$destroy', function() {
+        self.pos = null;
+        changingDoneCallback = null;
+      });
+
       self.pos = {x: 0, y: 0};
 
       //Gets the current x and y transform of the element
       self.updatePosition = function() {
-        var style = $window.getComputedStyle(raw);
+        var style = $window.getComputedStyle(elm[0]);
         var matrix = (style[transformProp] || '')
           .replace(/[^0-9-.,]/g,'')
           .split(',');
@@ -967,17 +979,17 @@ angular.module('ajoslin.scrolly.transformer', [])
       };
       self.updatePosition();
 
-      var transitionEndTimeout;
-      self.stop = function(done) {
-        //If an easeTo is currently waiting for its transition to end, stop the
-        //listen. Because we are ending now with this stop() call.
-        if (transitionEndTimeout) {
-          $window.clearTimeout(transitionEndTimeout);
-          transitionEndTimeout = null;
+      var changingDoneCallback;
+      elm.bind(transitionEndProp, onTransitionEnd);
+      function onTransitionEnd() {
+        if (self.changing) {
+          self.stop(changingDoneCallback);
         }
+      }
 
+      self.stop = function(done) {
         //Stop transitions, and set self.pos to wherever we were.
-        raw.style[transitionProp] = 'none';
+        raw.style[transitionProp] = '';
         self.updatePosition();
         self.changing = false;
 
@@ -985,7 +997,7 @@ angular.module('ajoslin.scrolly.transformer', [])
         //transition style on the element has time to 'remove' itself
         $nextFrame(function() {
           self.setTo(self.pos);
-          (done||angular.noop)();
+          (done || noop)();
         });
       };
 
@@ -1002,18 +1014,16 @@ angular.module('ajoslin.scrolly.transformer', [])
           doTransition();
         }
         function doTransition() {
-          raw.style[transitionProp] = transitionString(transitionTime);
+          elm.css(transitionProp, transitionString(transitionTime));
+
           self.changing = true;
+          changingDoneCallback = done;
 
           //On next frame, start transition - this wait is so the transition
           //style on the element has time to 'apply' itself before the elm's
           //position is set
           $nextFrame(function() {
             self.setTo(pos);
-            transitionEndTimeout = $window.setTimeout(function() {
-              self.stop();
-              (done||angular.noop)();
-            }, transitionTime);
           });
         }
       };
@@ -1022,7 +1032,12 @@ angular.module('ajoslin.scrolly.transformer', [])
       self.setTo = function(pos) {
         isDefined(pos.x) && (self.pos.x = pos.x);
         isDefined(pos.y) && (self.pos.y = pos.y);
-        raw.style[transformProp] = transformString(self.pos.x, self.pos.y);
+        elm.css(transformProp, transformString(self.pos.x, self.pos.y));
+      };
+
+      self.clear = function() {
+        elm.css(transformProp, '');
+        elm.css(transitionProp, '');
       };
 
       return self;
@@ -1048,12 +1063,21 @@ angular.module('ajoslin.scrolly.transformer', [])
     $transformer.transformPropDash = transformPropDash;
     /**
      * @ngdoc property
-     * @name ajoslin.scrolly.$transformer#transitionprop
+     * @name ajoslin.scrolly.$transformer#transitionProp
      * @propertyOf ajoslin.scrolly.$transformer
      *
      * @description {string} The property used for element transitions.  For example "webkitTransition".
      */
     $transformer.transitionProp = transitionProp;
+
+    /**
+     * @ngdoc property
+     * @name ajoslin.scrolly.$transformer#transitionEndProp
+     * @propertyOf ajoslin.scrolly.$transformer
+     *
+     * @description {string} The property used for binding element transitionEnd. For example "webkitTransitionEnd".
+     */
+    $transformer.transitionEndProp = transitionEndProp;
 
     return $transformer;
 
